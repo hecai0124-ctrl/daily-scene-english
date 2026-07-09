@@ -15,19 +15,31 @@ const weeklyQuestions = [
 
 export function WeeklyReview() {
   const [started, setStarted] = useState(false);
+  const [reviewingMistakes, setReviewingMistakes] = useState(false);
   const [answers, setAnswers] = useState<Record<number, string>>({});
   const { progress, actions } = useLearningProgress();
   const score = weeklyQuestions.reduce((total, item, index) => total + (answers[index] === item.answer ? 1 : 0), 0);
   const scorePercent = Math.round((score / weeklyQuestions.length) * 100);
+  const allAnswered = weeklyQuestions.every((_, index) => answers[index]);
+  const mistakes = progress.mistakes ?? [];
 
   function submit() {
-    actions.saveWeeklyScore(scorePercent);
+    const wrongItems = weeklyQuestions
+      .filter((item, index) => answers[index] !== item.answer)
+      .map((item, index) => ({
+        id: `weekly:${index}`,
+        source: `周测 · ${item.skill}`,
+        question: item.question,
+        answer: item.answer,
+        userAnswer: answers[index]
+      }));
+    actions.saveWeeklyScore(scorePercent, wrongItems);
   }
 
   return (
     <PhoneShell>
-      <div className="min-h-[calc(100vh-36px)] bg-white px-5 pb-1">
-        <header className="grid grid-cols-[40px_1fr_40px] items-center pt-6">
+      <div className="flex-1 overflow-y-auto bg-white px-5 pb-5">
+        <header className="grid grid-cols-[40px_1fr_40px] items-center pt-5">
           <Link href="/" className="text-slate-600">
             <ArrowLeft className="h-7 w-7" />
           </Link>
@@ -51,9 +63,20 @@ export function WeeklyReview() {
           <div className="grid grid-cols-[1fr_90px] gap-4">
             <div>
               <h2 className="text-xl font-black">错题复习</h2>
-              <p className="mt-2 text-sm font-semibold text-slate-500">共 12 道错题待复习</p>
-              <p className="mt-2 text-sm font-semibold text-slate-500">涉及：词汇（5） 句子（4） 听力（3）</p>
-              <button className="mt-5 rounded-lg bg-[#ff624f] px-8 py-3 text-base font-black text-white">开始复习</button>
+              <p className="mt-2 text-sm font-semibold text-slate-500">
+                共 {mistakes.length} 道错题待复习
+              </p>
+              <p className="mt-2 text-sm font-semibold text-slate-500">
+                {mistakes.length > 0 ? "来自你提交过的场景测验和周测" : "完成测验后，答错的题会自动进入这里"}
+              </p>
+              <button
+                type="button"
+                disabled={mistakes.length === 0}
+                onClick={() => setReviewingMistakes(true)}
+                className="mt-5 rounded-lg bg-[#ff624f] px-8 py-3 text-base font-black text-white disabled:bg-slate-300"
+              >
+                开始复习
+              </button>
             </div>
             <div className="relative">
               <div className="absolute right-0 top-6 h-24 w-20 rounded-2xl bg-slate-100" />
@@ -61,6 +84,25 @@ export function WeeklyReview() {
             </div>
           </div>
         </Card>
+
+        {reviewingMistakes && (
+          <section className="mt-5 space-y-3">
+            <div className="flex items-center justify-between">
+              <h2 className="text-xl font-black">错题记录</h2>
+              <button type="button" onClick={() => setReviewingMistakes(false)} className="text-sm font-black text-[#06999a]">
+                收起
+              </button>
+            </div>
+            {mistakes.map((item) => (
+              <Card key={item.id} className="p-4">
+                <p className="text-xs font-black text-[#ff624f]">{item.source}</p>
+                <h3 className="mt-2 font-black leading-7">{item.question}</h3>
+                {item.userAnswer && <p className="mt-2 text-sm font-bold text-slate-400">你的答案：{item.userAnswer}</p>}
+                <p className="mt-1 text-sm font-bold text-[#06999a]">正确答案：{item.answer}</p>
+              </Card>
+            ))}
+          </section>
+        )}
 
         <Link href="/favorites">
           <Card className="mt-5 bg-[#fff9ed] p-5">
@@ -120,9 +162,14 @@ export function WeeklyReview() {
                 </div>
               </Card>
             ))}
-            <button onClick={submit} className="h-14 w-full rounded-xl bg-[#06999a] text-lg font-black text-white">
+            <button
+              disabled={!allAnswered}
+              onClick={submit}
+              className="h-14 w-full rounded-xl bg-[#06999a] text-lg font-black text-white disabled:bg-slate-300"
+            >
               提交周测
             </button>
+            {!allAnswered && <p className="text-center text-xs font-bold text-slate-400">答完全部题目后才能提交周测</p>}
           </section>
         )}
       </div>

@@ -45,8 +45,8 @@ export function HomeDashboard({ today }: HomeDashboardProps) {
   if (!level) {
     return (
       <PhoneShell>
-        <div className="min-h-[calc(100vh-36px)] bg-white px-5 pb-1">
-          <header className="flex items-start justify-between pt-6">
+        <div className="flex-1 overflow-y-auto bg-white px-5 pb-4">
+          <header className="flex items-start justify-between pt-4">
             <div>
               <h1 className="text-2xl font-black tracking-tight">每日场景英语</h1>
               <p className="mt-1 text-sm font-semibold text-slate-400">先测水平，再生成任务</p>
@@ -56,7 +56,7 @@ export function HomeDashboard({ today }: HomeDashboardProps) {
             </button>
           </header>
 
-          <Card className="mt-8 overflow-hidden p-0">
+          <Card className="mt-6 overflow-hidden p-0">
             <div className="bg-[#06999a] p-6 text-white">
               <p className="text-sm font-bold text-white/75">Start here</p>
               <h2 className="mt-2 text-3xl font-black leading-tight">先完成水平测评</h2>
@@ -87,27 +87,27 @@ export function HomeDashboard({ today }: HomeDashboardProps) {
 
   return (
     <PhoneShell>
-      <div className="min-h-[calc(100vh-36px)] bg-white px-5 pb-1">
-        <header className="flex items-start justify-between pt-6">
+      <div className="flex-1 overflow-y-auto bg-white px-4 pb-4">
+        <header className="flex items-start justify-between pt-4">
           <div>
-            <h1 className="text-2xl font-black tracking-tight">每日场景英语</h1>
-            <p className="mt-1 text-sm font-semibold text-slate-400">每天进步一点点</p>
+            <h1 className="text-[26px] font-black tracking-tight">每日场景英语</h1>
+            <p className="text-xs font-semibold text-slate-400">每天进步一点点</p>
           </div>
-          <button className="flex h-11 w-11 items-center justify-center rounded-full bg-white text-slate-700 shadow-sm ring-1 ring-slate-100" title="通知">
-            <Bell className="h-6 w-6" />
+          <button className="flex h-10 w-10 items-center justify-center rounded-full bg-white text-slate-700 shadow-sm ring-1 ring-slate-100" title="通知">
+            <Bell className="h-5 w-5" />
           </button>
         </header>
 
-        <Card className="mt-6 p-5">
+        <Card className="mt-4 p-4">
           <div className="flex items-center justify-between gap-3">
-            <h2 className="text-xl font-black">今日学习任务</h2>
+            <h2 className="text-lg font-black">今日学习任务</h2>
             <span className="shrink-0 rounded-full bg-[#f4fbfb] px-3 py-1.5 text-xs font-black text-[#06999a]">
               连续 {streak} 天
             </span>
           </div>
-          <div className="mt-5 grid grid-cols-[150px_1fr] items-center gap-4">
+          <div className="mt-3 grid grid-cols-[116px_1fr] items-center gap-3">
             <ProgressDonut value={taskProgress} />
-            <div className="space-y-3">
+            <div className="space-y-2">
               <TaskMini icon={<BookOpenText className="h-4 w-4" />} label="词汇学习" value={`${learnedWords}/${totalWords}`} done={learnedWords === totalWords} />
               <TaskMini icon={<BookOpenText className="h-4 w-4" />} label="句子学习" value={`${learnedSentences}/${totalSentences}`} done={learnedSentences === totalSentences} />
               <TaskMini icon={<Headphones className="h-4 w-4" />} label="听力练习" value={`${learnedListening}/${totalListening}`} done={learnedListening === totalListening} />
@@ -117,14 +117,14 @@ export function HomeDashboard({ today }: HomeDashboardProps) {
           </div>
         </Card>
 
-        <section className="mt-7">
+        <section className="mt-5">
           <div className="flex items-center justify-between">
-            <h2 className="text-xl font-black">场景学习入口</h2>
+            <h2 className="text-lg font-black">场景学习入口</h2>
             <Link href="/scenes/travel" className="text-sm font-bold text-slate-400">
               全部场景 ›
             </Link>
           </div>
-          <div className="mt-4 space-y-4">
+          <div className="mt-3 space-y-3">
             <SceneEntry
               href="/scenes/travel"
               variant="travel"
@@ -142,19 +142,6 @@ export function HomeDashboard({ today }: HomeDashboardProps) {
               scene={work.title}
             />
           </div>
-        </section>
-
-        <section className="mt-6 grid grid-cols-2 gap-3">
-          <Link href="/assessment" className="rounded-2xl bg-[#f4fbfb] p-4">
-            <p className="text-sm font-bold text-[#06999a]">水平测评</p>
-            <p className="mt-2 text-xl font-black">{level}</p>
-            <p className="mt-1 text-xs font-semibold text-slate-400">校准学习难度</p>
-          </Link>
-          <Link href="/weekly" className="rounded-2xl bg-[#fff5f2] p-4">
-            <p className="text-sm font-bold text-[#ff624f]">周测复盘</p>
-            <p className="mt-2 text-xl font-black">听说读</p>
-            <p className="mt-1 text-xs font-semibold text-slate-400">检查掌握效果</p>
-          </Link>
         </section>
       </div>
       <BottomNav active="home" />
@@ -206,14 +193,14 @@ function PreviewCard({ title, desc }: { title: string; desc: string }) {
 
 function ProgressDonut({ value }: { value: number }) {
   return (
-    <div className="flex h-36 w-36 items-center justify-center rounded-full bg-[#eaf8f8]">
+    <div className="flex h-28 w-28 items-center justify-center rounded-full bg-[#eaf8f8]">
       <div
-        className="flex h-32 w-32 items-center justify-center rounded-full"
+        className="flex h-24 w-24 items-center justify-center rounded-full"
         style={{ background: `conic-gradient(#06999a ${value * 3.6}deg, #e8eeee 0deg)` }}
       >
         <div className="flex h-[76%] w-[76%] flex-col items-center justify-center rounded-full bg-white">
-          <span className="text-4xl font-black">{value}%</span>
-          <span className="mt-1 text-sm font-bold text-slate-400">已完成</span>
+          <span className="text-3xl font-black">{value}%</span>
+          <span className="text-xs font-bold text-slate-400">已完成</span>
         </div>
       </div>
     </div>
@@ -222,7 +209,7 @@ function ProgressDonut({ value }: { value: number }) {
 
 function TaskMini({ icon, label, value, done }: { icon: React.ReactNode; label: string; value: string; done?: boolean }) {
   return (
-    <div className="grid grid-cols-[18px_1fr_auto_16px] items-center gap-2 text-sm font-bold">
+    <div className="grid grid-cols-[18px_1fr_auto_16px] items-center gap-1.5 text-xs font-bold">
       <span className="text-[#2f6fe4]">{icon}</span>
       <span className="min-w-0 truncate text-slate-700">{label}</span>
       <span className="whitespace-nowrap text-slate-500">{value}</span>
@@ -253,7 +240,7 @@ function SceneEntry({
   return (
     <Link
       href={href}
-      className={`grid min-h-40 grid-cols-[168px_1fr] overflow-hidden rounded-2xl shadow-sm ${
+      className={`grid min-h-32 grid-cols-[128px_1fr] overflow-hidden rounded-2xl shadow-sm ${
         travel ? "bg-[#d8f3f2]" : "bg-[#173c76] text-white"
       }`}
     >
@@ -261,15 +248,15 @@ function SceneEntry({
         <div className="absolute inset-x-0 bottom-0 h-16 bg-black/10" />
         {travel ? <TravelIllustration /> : <WorkIllustration />}
       </div>
-      <div className="p-5">
+      <div className="p-4">
         <p className={`text-xs font-black ${travel ? "text-[#06999a]" : "text-white/70"}`}>{scene}</p>
-        <h3 className="mt-1 text-2xl font-black">{title}</h3>
-        <p className={`mt-2 text-sm font-semibold ${travel ? "text-slate-600" : "text-white/75"}`}>{subtitle}</p>
-        <div className="mt-5 flex items-center justify-between gap-3">
-          <span className={`rounded-lg px-3 py-1.5 text-sm font-black ${travel ? "bg-[#06999a] text-white" : "bg-white text-[#173c76]"}`}>
+        <h3 className="mt-1 text-xl font-black">{title}</h3>
+        <p className={`mt-1 text-xs font-semibold ${travel ? "text-slate-600" : "text-white/75"}`}>{subtitle}</p>
+        <div className="mt-3 flex items-center justify-between gap-3">
+          <span className={`rounded-lg px-2.5 py-1.5 text-xs font-black ${travel ? "bg-[#06999a] text-white" : "bg-white text-[#173c76]"}`}>
             继续学习
           </span>
-          <span className={`text-sm font-bold ${travel ? "text-slate-500" : "text-white/75"}`}>进度 {progress}</span>
+          <span className={`text-xs font-bold ${travel ? "text-slate-500" : "text-white/75"}`}>进度 {progress}</span>
         </div>
         <div className={`mt-3 h-1.5 overflow-hidden rounded-full ${travel ? "bg-white/80" : "bg-white/25"}`}>
           <div className={`h-full rounded-full ${travel ? "bg-[#06999a]" : "bg-white"}`} style={{ width: progress }} />

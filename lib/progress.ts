@@ -6,6 +6,7 @@ export type LearningProgress = {
   checkedDays: number[];
   favoriteWords: string[];
   favoriteSentences: string[];
+  mistakes: MistakeItem[];
   quizScores: Record<string, number>;
   completedScenarios: string[];
   level?: "A1" | "A2" | "B1" | "B2";
@@ -15,12 +16,21 @@ export type LearningProgress = {
   weeklyScore?: number;
 };
 
+export type MistakeItem = {
+  id: string;
+  source: string;
+  question: string;
+  answer: string;
+  userAnswer?: string;
+};
+
 const STORAGE_KEY = "daily-english-learning-progress";
 
 const initialProgress: LearningProgress = {
   checkedDays: [],
   favoriteWords: [],
   favoriteSentences: [],
+  mistakes: [],
   quizScores: {},
   completedScenarios: [],
   dailyChecks: {}
@@ -80,10 +90,11 @@ export function useLearningProgress() {
             : [...current.favoriteWords, wordId]
         }));
       },
-      saveQuizScore(scenarioId: string, score: number) {
+      saveQuizScore(scenarioId: string, score: number, mistakes: MistakeItem[] = []) {
         setProgress((current) => ({
           ...current,
           quizScores: { ...current.quizScores, [scenarioId]: score },
+          mistakes: mergeMistakes(current.mistakes, scenarioId, mistakes),
           completedScenarios: score >= 8 && !current.completedScenarios.includes(scenarioId)
             ? [...current.completedScenarios, scenarioId]
             : current.completedScenarios
@@ -104,10 +115,11 @@ export function useLearningProgress() {
           dailyChecks: { ...current.dailyChecks, [day]: score }
         }));
       },
-      saveWeeklyScore(score: number) {
+      saveWeeklyScore(score: number, mistakes: MistakeItem[] = []) {
         setProgress((current) => ({
           ...current,
-          weeklyScore: score
+          weeklyScore: score,
+          mistakes: mergeMistakes(current.mistakes, "weekly", mistakes)
         }));
       }
     }),
@@ -115,4 +127,11 @@ export function useLearningProgress() {
   );
 
   return { progress, loaded, actions };
+}
+
+function mergeMistakes(current: MistakeItem[], sourcePrefix: string, next: MistakeItem[]) {
+  return [
+    ...current.filter((item) => !item.id.startsWith(`${sourcePrefix}:`)),
+    ...next
+  ];
 }

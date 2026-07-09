@@ -6,8 +6,8 @@ import { BookOpen, ClipboardList, Home } from "lucide-react";
 export function PhoneShell({ children }: { children: React.ReactNode }) {
   return (
     <main className="min-h-screen bg-[#eef0f3] px-0 py-0 text-[#172033] sm:px-4 sm:py-6">
-      <div className="mx-auto min-h-screen w-full max-w-[480px] overflow-hidden bg-white shadow-[0_24px_80px_rgba(15,23,42,0.16)] sm:min-h-[900px] sm:rounded-[30px]">
-        <div className="flex h-9 items-center justify-between px-7 pt-2 text-sm font-black text-[#111827]">
+      <div className="mx-auto flex h-screen w-full max-w-[480px] flex-col overflow-hidden bg-white shadow-[0_24px_80px_rgba(15,23,42,0.16)] sm:h-[900px] sm:rounded-[30px]">
+        <div className="flex h-9 shrink-0 items-center justify-between px-7 pt-2 text-sm font-black text-[#111827]">
           <span>9:41</span>
           <span className="flex items-center gap-1.5">
             <span className="h-2.5 w-4 rounded-[3px] border border-[#111827]" />
@@ -29,7 +29,7 @@ export function BottomNav({ active }: { active: "home" | "study" | "review" }) {
   ] as const;
 
   return (
-    <nav className="sticky bottom-0 z-20 mt-5 border-t border-slate-100 bg-white/95 px-6 pb-6 pt-3 backdrop-blur">
+    <nav className="z-20 shrink-0 border-t border-slate-100 bg-white/95 px-6 pb-6 pt-3 backdrop-blur">
       <div className="grid grid-cols-3">
         {items.map((item) => {
           const selected = active === item.key;

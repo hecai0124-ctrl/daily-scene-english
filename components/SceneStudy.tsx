@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useState } from "react";
-import { ArrowLeft, Check, Star, Volume2 } from "lucide-react";
+import { ArrowLeft, Check, Languages, Star, Volume2 } from "lucide-react";
 import { BottomNav, Card, PhoneShell } from "@/components/AppChrome";
 import { type Category, type Scenario } from "@/lib/content";
 import { useLearningProgress } from "@/lib/progress";
@@ -30,6 +30,7 @@ export function SceneStudy({ scenarios }: SceneStudyProps) {
   const { progress, actions } = useLearningProgress();
   const active = scenarios.find((scenario) => scenario.id === activeId) ?? scenarios[0];
   const score = active.quiz.filter((item) => answers[item.id] === item.answer).length;
+  const allAnswered = active.quiz.every((item) => answers[item.id]);
 
   function speak(text: string) {
     speakEnglish(text);
@@ -37,13 +38,24 @@ export function SceneStudy({ scenarios }: SceneStudyProps) {
 
   return (
     <PhoneShell>
-      <div className="min-h-[calc(100vh-36px)] bg-white pb-1">
-        <header className="grid grid-cols-[40px_1fr_40px] items-center px-5 pt-6">
+      <div className="flex-1 overflow-y-auto bg-white pb-1">
+        <header className="grid grid-cols-[40px_1fr_auto] items-center gap-3 px-5 pt-5">
           <Link href="/" className="text-slate-600">
             <ArrowLeft className="h-7 w-7" />
           </Link>
           <h1 className="truncate text-center text-xl font-black">{active.title}场景</h1>
-          <Star className="h-7 w-7 text-slate-400" />
+          <button
+            type="button"
+            onClick={() => setShowZh((value) => !value)}
+            className={`flex items-center gap-1.5 rounded-full px-3 py-2 text-xs font-black ${
+              showZh ? "bg-[#e9f7f7] text-[#06999a]" : "bg-slate-100 text-slate-400"
+            }`}
+            aria-pressed={showZh}
+            title="译文开关"
+          >
+            <Languages className="h-4 w-4" />
+            译文
+          </button>
         </header>
 
         <div className="mt-5 flex gap-3 overflow-x-auto px-5 pb-1">
@@ -92,7 +104,6 @@ export function SceneStudy({ scenarios }: SceneStudyProps) {
                       en={sentence.en}
                       zh={sentence.zh}
                       showZh={showZh}
-                      onToggleZh={() => setShowZh((value) => !value)}
                       onSpeak={() => speak(sentence.en)}
                       favorited={favorited}
                       onFavorite={() => actions.toggleFavorite(id)}
@@ -112,7 +123,7 @@ export function SceneStudy({ scenarios }: SceneStudyProps) {
                 <Card key={word.en} className="flex items-center justify-between gap-3 p-4">
                     <div className="min-w-0">
                       <h2 className="text-lg font-black">{word.en}</h2>
-                      <p className="mt-1 text-sm font-bold text-slate-400">{word.zh}</p>
+                      {showZh && <p className="mt-1 text-sm font-bold text-slate-400">{word.zh}</p>}
                     </div>
                     <div className="flex shrink-0 items-center gap-3">
                       <button onClick={() => speakEnglish(word.en, "word")} className="flex h-10 w-10 items-center justify-center rounded-full bg-[#e9f7f7] text-[#06999a]">
@@ -144,7 +155,7 @@ export function SceneStudy({ scenarios }: SceneStudyProps) {
                     <div className="flex items-start gap-3">
                       <div className="min-w-0 flex-1">
                         <p className="font-black">{line.en}</p>
-                        <p className={`mt-2 text-sm font-semibold ${line.speaker === "B" ? "text-white/75" : "text-slate-500"}`}>{line.zh}</p>
+                        {showZh && <p className={`mt-2 text-sm font-semibold ${line.speaker === "B" ? "text-white/75" : "text-slate-500"}`}>{line.zh}</p>}
                       </div>
                       <button
                         type="button"
@@ -168,7 +179,7 @@ export function SceneStudy({ scenarios }: SceneStudyProps) {
             <div className="mt-5 space-y-4">
               <Card className="bg-[#f4fbfb] p-5">
                 <p className="text-sm font-bold text-[#06999a]">当前得分</p>
-                <h2 className="mt-1 text-3xl font-black">{score}/10</h2>
+                <h2 className="mt-1 text-3xl font-black">{score}/{active.quiz.length}</h2>
               </Card>
               {active.quiz.map((item, index) => (
                 <Card key={item.id} className="p-4">
@@ -192,9 +203,25 @@ export function SceneStudy({ scenarios }: SceneStudyProps) {
                   </div>
                 </Card>
               ))}
-              <button onClick={() => actions.saveQuizScore(active.id, score)} className="h-14 w-full rounded-xl bg-[#06999a] text-lg font-black text-white">
+              <button
+                disabled={!allAnswered}
+                onClick={() => {
+                  const mistakes = active.quiz
+                    .filter((item) => answers[item.id] !== item.answer)
+                    .map((item) => ({
+                      id: `${active.id}:${item.id}`,
+                      source: `${active.title}测验`,
+                      question: item.question,
+                      answer: item.answer,
+                      userAnswer: answers[item.id]
+                    }));
+                  actions.saveQuizScore(active.id, score, mistakes);
+                }}
+                className="h-14 w-full rounded-xl bg-[#06999a] text-lg font-black text-white disabled:bg-slate-300"
+              >
                 保存测验成绩
               </button>
+              {!allAnswered && <p className="text-center text-xs font-bold text-slate-400">答完全部题目后才能保存成绩</p>}
             </div>
           )}
         </div>
@@ -208,7 +235,6 @@ function SentenceCard({
   en,
   zh,
   showZh,
-  onToggleZh,
   onSpeak,
   favorited,
   onFavorite
@@ -216,7 +242,6 @@ function SentenceCard({
   en: string;
   zh: string;
   showZh: boolean;
-  onToggleZh: () => void;
   onSpeak: () => void;
   favorited: boolean;
   onFavorite: () => void;
@@ -236,16 +261,6 @@ function SentenceCard({
             <Star className={`h-8 w-8 ${favorited ? "fill-[#f6b73c] text-[#f6b73c]" : ""}`} />
           </button>
         </div>
-      </div>
-      <div className="mt-5 flex items-center gap-3">
-        <span className="text-sm font-bold text-slate-500">译文</span>
-        <button
-          type="button"
-          onClick={onToggleZh}
-          className={`flex h-6 w-11 items-center rounded-full p-0.5 transition ${showZh ? "bg-[#06999a]" : "bg-slate-200"}`}
-        >
-          <span className={`h-5 w-5 rounded-full bg-white transition ${showZh ? "translate-x-5" : ""}`} />
-        </button>
       </div>
     </Card>
   );

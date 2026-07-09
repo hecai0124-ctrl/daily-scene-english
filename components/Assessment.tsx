@@ -30,8 +30,8 @@ export function Assessment() {
 
   return (
     <PhoneShell>
-      <div className="min-h-[calc(100vh-36px)] bg-white px-5 pb-8">
-        <header className="grid grid-cols-[40px_1fr_40px] items-center pt-6">
+      <div className="flex-1 overflow-y-auto bg-white px-5 pb-8">
+        <header className="grid grid-cols-[40px_1fr_40px] items-center pt-5">
           <Link href="/" className="text-slate-600">
             <ArrowLeft className="h-7 w-7" />
           </Link>
