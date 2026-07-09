@@ -1,0 +1,20 @@
+{
+  "name": "每日场景英语",
+  "short_name": "场景英语",
+  "description": "每天学习旅行和工作场景英语，支持测评、收藏、朗读和复盘。",
+  "start_url": ".",
+  "scope": ".",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#ffffff",
+  "theme_color": "#06999a",
+  "lang": "zh-CN",
+  "icons": [
+    {
+      "src": "icons/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}

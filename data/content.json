@@ -1,0 +1,4263 @@
+{
+  "days": [
+    {
+      "day": 1,
+      "title": "机场出行与会议开场",
+      "focus": "顺利完成抵达、值机和会议寒暄",
+      "travel": "airport",
+      "work": "meeting"
+    },
+    {
+      "day": 2,
+      "title": "酒店入住与商务邮件",
+      "focus": "处理住宿需求，写清楚电商业务邮件",
+      "travel": "hotel",
+      "work": "email"
+    },
+    {
+      "day": 3,
+      "title": "点餐交流与数据汇报",
+      "focus": "自然表达偏好，说明订单和转化数据",
+      "travel": "restaurant",
+      "work": "reporting"
+    },
+    {
+      "day": 4,
+      "title": "问路导航与客户沟通",
+      "focus": "确认路线，回应客户对订单和库存的诉求",
+      "travel": "directions",
+      "work": "client"
+    },
+    {
+      "day": 5,
+      "title": "机场转机与项目会议",
+      "focus": "处理延误和转机，推进会议决策",
+      "travel": "airport",
+      "work": "meeting"
+    },
+    {
+      "day": 6,
+      "title": "酒店服务与活动邮件",
+      "focus": "沟通房间服务，发送促销活动邮件",
+      "travel": "hotel",
+      "work": "email"
+    },
+    {
+      "day": 7,
+      "title": "餐厅结账与经营汇报",
+      "focus": "礼貌结账，复盘店铺表现和下一步动作",
+      "travel": "restaurant",
+      "work": "reporting"
+    }
+  ],
+  "scenarios": {
+    "airport": {
+      "id": "airport",
+      "category": "travel",
+      "title": "机场",
+      "subtitle": "值机、安检、登机、转机与行李",
+      "words": [
+        {
+          "en": "boarding pass",
+          "zh": "登机牌",
+          "example": "May I see your boarding pass?"
+        },
+        {
+          "en": "check-in counter",
+          "zh": "值机柜台",
+          "example": "The check-in counter opens at six."
+        },
+        {
+          "en": "carry-on luggage",
+          "zh": "随身行李",
+          "example": "This bag is my carry-on luggage."
+        },
+        {
+          "en": "checked baggage",
+          "zh": "托运行李",
+          "example": "I have one checked baggage item."
+        },
+        {
+          "en": "security check",
+          "zh": "安检",
+          "example": "Please prepare for the security check."
+        },
+        {
+          "en": "gate",
+          "zh": "登机口",
+          "example": "Our gate has changed to B12."
+        },
+        {
+          "en": "terminal",
+          "zh": "航站楼",
+          "example": "Which terminal is for international flights?"
+        },
+        {
+          "en": "departure",
+          "zh": "出发",
+          "example": "The departure time is on the screen."
+        },
+        {
+          "en": "arrival",
+          "zh": "到达",
+          "example": "The arrival hall is downstairs."
+        },
+        {
+          "en": "delay",
+          "zh": "延误",
+          "example": "The flight has a two-hour delay."
+        },
+        {
+          "en": "transfer",
+          "zh": "转机",
+          "example": "I need to make a transfer in Seoul."
+        },
+        {
+          "en": "customs",
+          "zh": "海关",
+          "example": "You need to go through customs here."
+        },
+        {
+          "en": "immigration",
+          "zh": "入境检查",
+          "example": "Immigration is just after the escalator."
+        },
+        {
+          "en": "passport",
+          "zh": "护照",
+          "example": "Please keep your passport ready."
+        },
+        {
+          "en": "visa",
+          "zh": "签证",
+          "example": "Do I need a visa for this trip?"
+        },
+        {
+          "en": "boarding time",
+          "zh": "登机时间",
+          "example": "The boarding time is eight thirty."
+        },
+        {
+          "en": "window seat",
+          "zh": "靠窗座位",
+          "example": "Could I have a window seat?"
+        },
+        {
+          "en": "aisle seat",
+          "zh": "靠过道座位",
+          "example": "I prefer an aisle seat."
+        },
+        {
+          "en": "overweight bag",
+          "zh": "超重行李",
+          "example": "Your suitcase is an overweight bag."
+        },
+        {
+          "en": "baggage claim",
+          "zh": "行李提取处",
+          "example": "Baggage claim is on the first floor."
+        },
+        {
+          "en": "lost luggage",
+          "zh": "遗失行李",
+          "example": "I need to report lost luggage."
+        },
+        {
+          "en": "direct flight",
+          "zh": "直飞航班",
+          "example": "Is there a direct flight to London?"
+        },
+        {
+          "en": "connecting flight",
+          "zh": "转机航班",
+          "example": "My connecting flight leaves soon."
+        },
+        {
+          "en": "flight number",
+          "zh": "航班号",
+          "example": "What is your flight number?"
+        },
+        {
+          "en": "seat number",
+          "zh": "座位号",
+          "example": "My seat number is 18A."
+        },
+        {
+          "en": "takeoff",
+          "zh": "起飞",
+          "example": "Takeoff is scheduled for nine."
+        },
+        {
+          "en": "landing",
+          "zh": "降落",
+          "example": "The landing was very smooth."
+        },
+        {
+          "en": "lounge",
+          "zh": "候机休息室",
+          "example": "The lounge is near gate C3."
+        },
+        {
+          "en": "boarding announcement",
+          "zh": "登机广播",
+          "example": "I heard the boarding announcement."
+        },
+        {
+          "en": "final call",
+          "zh": "最后登机通知",
+          "example": "This is the final call for flight MU510."
+        },
+        {
+          "en": "ticket agent",
+          "zh": "票务人员",
+          "example": "The ticket agent helped me change flights."
+        },
+        {
+          "en": "self-service kiosk",
+          "zh": "自助值机机",
+          "example": "Use the self-service kiosk to print your pass."
+        },
+        {
+          "en": "excess fee",
+          "zh": "超重费",
+          "example": "How much is the excess fee?"
+        },
+        {
+          "en": "liquid limit",
+          "zh": "液体限制",
+          "example": "There is a liquid limit for carry-ons."
+        },
+        {
+          "en": "travel adapter",
+          "zh": "旅行转换插头",
+          "example": "I packed a travel adapter in my bag."
+        },
+        {
+          "en": "currency exchange",
+          "zh": "货币兑换",
+          "example": "Currency exchange is next to arrivals."
+        },
+        {
+          "en": "airport shuttle",
+          "zh": "机场班车",
+          "example": "The airport shuttle leaves every twenty minutes."
+        },
+        {
+          "en": "tax-free shop",
+          "zh": "免税店",
+          "example": "The tax-free shop is after security."
+        },
+        {
+          "en": "priority boarding",
+          "zh": "优先登机",
+          "example": "Priority boarding starts first."
+        },
+        {
+          "en": "boarding group",
+          "zh": "登机组别",
+          "example": "Please wait for your boarding group."
+        },
+        {
+          "en": "ticket change",
+          "zh": "改签",
+          "example": "Can I make a ticket change?"
+        },
+        {
+          "en": "refund",
+          "zh": "退款",
+          "example": "I would like to request a refund."
+        },
+        {
+          "en": "standby",
+          "zh": "候补",
+          "example": "Can you put me on standby?"
+        },
+        {
+          "en": "departure board",
+          "zh": "出发信息屏",
+          "example": "Check the departure board for updates."
+        },
+        {
+          "en": "arrival card",
+          "zh": "入境卡",
+          "example": "Please fill out the arrival card."
+        },
+        {
+          "en": "security tray",
+          "zh": "安检托盘",
+          "example": "Put your laptop in a security tray."
+        },
+        {
+          "en": "metal detector",
+          "zh": "金属探测门",
+          "example": "Walk through the metal detector."
+        },
+        {
+          "en": "fragile sticker",
+          "zh": "易碎标签",
+          "example": "Could you add a fragile sticker?"
+        },
+        {
+          "en": "baggage tag",
+          "zh": "行李牌",
+          "example": "Keep your baggage tag safe."
+        },
+        {
+          "en": "travel insurance",
+          "zh": "旅行保险",
+          "example": "Travel insurance covers flight delays."
+        }
+      ],
+      "sentenceScenes": [
+        "值机",
+        "安检",
+        "登机",
+        "转机",
+        "行李",
+        "延误",
+        "座位",
+        "海关",
+        "改签",
+        "问询"
+      ],
+      "sentences": [
+        {
+          "en": "I'd like to check in for my flight.",
+          "zh": "我想办理航班值机。",
+          "scene": "值机"
+        },
+        {
+          "en": "Could you tell me where the security checkpoint is?",
+          "zh": "请问安检口在哪里？",
+          "scene": "安检"
+        },
+        {
+          "en": "Has boarding started for this flight?",
+          "zh": "这个航班开始登机了吗？",
+          "scene": "登机"
+        },
+        {
+          "en": "I have a connecting flight in two hours.",
+          "zh": "我两小时后有一个转机航班。",
+          "scene": "转机"
+        },
+        {
+          "en": "My suitcase has not arrived yet.",
+          "zh": "我的行李箱还没有到。",
+          "scene": "行李"
+        },
+        {
+          "en": "Could you help me check the delay status?",
+          "zh": "你能帮我查一下延误情况吗？",
+          "scene": "延误"
+        },
+        {
+          "en": "Is it possible to change to an aisle seat?",
+          "zh": "可以换成靠过道座位吗？",
+          "scene": "座位"
+        },
+        {
+          "en": "Where should I go for immigration?",
+          "zh": "我应该去哪里办理入境检查？",
+          "scene": "海关"
+        },
+        {
+          "en": "Can I change my ticket to an earlier flight?",
+          "zh": "我可以改签到更早的航班吗？",
+          "scene": "改签"
+        },
+        {
+          "en": "Which gate should I go to?",
+          "zh": "我应该去哪个登机口？",
+          "scene": "问询"
+        },
+        {
+          "en": "I only have one carry-on bag.",
+          "zh": "我只有一个随身包。",
+          "scene": "值机"
+        },
+        {
+          "en": "Do I need to take out my laptop?",
+          "zh": "我需要把电脑拿出来吗？",
+          "scene": "安检"
+        },
+        {
+          "en": "Please let me know if the gate changes.",
+          "zh": "如果登机口变了请告诉我。",
+          "scene": "登机"
+        },
+        {
+          "en": "How much time do I need for the transfer?",
+          "zh": "转机需要预留多长时间？",
+          "scene": "转机"
+        },
+        {
+          "en": "Where can I file a lost luggage report?",
+          "zh": "我在哪里可以登记行李遗失？",
+          "scene": "行李"
+        },
+        {
+          "en": "Is there any meal voucher for the delay?",
+          "zh": "延误有餐券吗？",
+          "scene": "延误"
+        },
+        {
+          "en": "Could my family sit together?",
+          "zh": "我的家人可以坐在一起吗？",
+          "scene": "座位"
+        },
+        {
+          "en": "I am here for a business trip.",
+          "zh": "我是来出差的。",
+          "scene": "海关"
+        },
+        {
+          "en": "What is the change fee?",
+          "zh": "改签费是多少？",
+          "scene": "改签"
+        },
+        {
+          "en": "Is there an airport shuttle to downtown?",
+          "zh": "有去市区的机场班车吗？",
+          "scene": "问询"
+        }
+      ],
+      "dialogue": [
+        {
+          "speaker": "A",
+          "en": "Excuse me, I need help with airport check-in information.",
+          "zh": "打扰一下，我需要机场相关信息。"
+        },
+        {
+          "speaker": "B",
+          "en": "Of course. What would you like to know?",
+          "zh": "当然。你想了解什么？"
+        },
+        {
+          "speaker": "A",
+          "en": "I'd like to check in for my flight.",
+          "zh": "我想办理航班值机。"
+        },
+        {
+          "speaker": "B",
+          "en": "No problem. Let me check that for you.",
+          "zh": "没问题。我帮你确认一下。"
+        },
+        {
+          "speaker": "A",
+          "en": "I have a connecting flight in two hours.",
+          "zh": "我两小时后有一个转机航班。"
+        },
+        {
+          "speaker": "B",
+          "en": "Yes, and I recommend arriving a little earlier.",
+          "zh": "可以，而且我建议你稍微早点到。"
+        },
+        {
+          "speaker": "A",
+          "en": "Thank you. That is very helpful.",
+          "zh": "谢谢，这很有帮助。"
+        },
+        {
+          "speaker": "B",
+          "en": "You're welcome. Have a great trip.",
+          "zh": "不客气。祝你旅途愉快。"
+        }
+      ],
+      "quiz": [
+        {
+          "id": "机场-1",
+          "question": "\"boarding pass\" 的中文意思是？",
+          "options": [
+            "登机牌",
+            "海关",
+            "航班号",
+            "免税店"
+          ],
+          "answer": "登机牌"
+        },
+        {
+          "id": "机场-2",
+          "question": "\"check-in counter\" 的中文意思是？",
+          "options": [
+            "值机柜台",
+            "入境检查",
+            "座位号",
+            "优先登机"
+          ],
+          "answer": "值机柜台"
+        },
+        {
+          "id": "机场-3",
+          "question": "\"carry-on luggage\" 的中文意思是？",
+          "options": [
+            "随身行李",
+            "护照",
+            "起飞",
+            "登机组别"
+          ],
+          "answer": "随身行李"
+        },
+        {
+          "id": "机场-4",
+          "question": "\"checked baggage\" 的中文意思是？",
+          "options": [
+            "托运行李",
+            "签证",
+            "降落",
+            "改签"
+          ],
+          "answer": "托运行李"
+        },
+        {
+          "id": "机场-5",
+          "question": "\"security check\" 的中文意思是？",
+          "options": [
+            "安检",
+            "登机时间",
+            "候机休息室",
+            "退款"
+          ],
+          "answer": "安检"
+        },
+        {
+          "id": "机场-6",
+          "question": "\"gate\" 的中文意思是？",
+          "options": [
+            "登机口",
+            "靠窗座位",
+            "登机广播",
+            "候补"
+          ],
+          "answer": "登机口"
+        },
+        {
+          "id": "机场-7",
+          "question": "\"terminal\" 的中文意思是？",
+          "options": [
+            "航站楼",
+            "靠过道座位",
+            "最后登机通知",
+            "出发信息屏"
+          ],
+          "answer": "航站楼"
+        },
+        {
+          "id": "机场-8",
+          "question": "\"departure\" 的中文意思是？",
+          "options": [
+            "出发",
+            "超重行李",
+            "票务人员",
+            "入境卡"
+          ],
+          "answer": "出发"
+        },
+        {
+          "id": "机场-9",
+          "question": "\"arrival\" 的中文意思是？",
+          "options": [
+            "到达",
+            "行李提取处",
+            "自助值机机",
+            "安检托盘"
+          ],
+          "answer": "到达"
+        },
+        {
+          "id": "机场-10",
+          "question": "\"delay\" 的中文意思是？",
+          "options": [
+            "延误",
+            "遗失行李",
+            "超重费",
+            "金属探测门"
+          ],
+          "answer": "延误"
+        }
+      ]
+    },
+    "hotel": {
+      "id": "hotel",
+      "category": "travel",
+      "title": "酒店",
+      "subtitle": "入住、设施、客房服务与退房",
+      "words": [
+        {
+          "en": "reservation",
+          "zh": "预订",
+          "example": "I have a reservation under Li."
+        },
+        {
+          "en": "front desk",
+          "zh": "前台",
+          "example": "The front desk is open all night."
+        },
+        {
+          "en": "check-in",
+          "zh": "入住",
+          "example": "Check-in starts at three."
+        },
+        {
+          "en": "check-out",
+          "zh": "退房",
+          "example": "Check-out is before noon."
+        },
+        {
+          "en": "room key",
+          "zh": "房卡",
+          "example": "My room key does not work."
+        },
+        {
+          "en": "single room",
+          "zh": "单人间",
+          "example": "I booked a single room."
+        },
+        {
+          "en": "double room",
+          "zh": "双人间",
+          "example": "A double room is available tonight."
+        },
+        {
+          "en": "suite",
+          "zh": "套房",
+          "example": "The suite has a city view."
+        },
+        {
+          "en": "deposit",
+          "zh": "押金",
+          "example": "How much is the deposit?"
+        },
+        {
+          "en": "invoice",
+          "zh": "发票",
+          "example": "Could I have an invoice?"
+        },
+        {
+          "en": "receipt",
+          "zh": "收据",
+          "example": "Please send the receipt by email."
+        },
+        {
+          "en": "breakfast included",
+          "zh": "含早餐",
+          "example": "Is breakfast included?"
+        },
+        {
+          "en": "wifi password",
+          "zh": "无线密码",
+          "example": "What is the wifi password?"
+        },
+        {
+          "en": "room service",
+          "zh": "客房服务",
+          "example": "Room service is available until ten."
+        },
+        {
+          "en": "housekeeping",
+          "zh": "客房清洁",
+          "example": "Housekeeping will come this afternoon."
+        },
+        {
+          "en": "laundry service",
+          "zh": "洗衣服务",
+          "example": "Do you offer laundry service?"
+        },
+        {
+          "en": "air conditioner",
+          "zh": "空调",
+          "example": "The air conditioner is too loud."
+        },
+        {
+          "en": "heater",
+          "zh": "暖气",
+          "example": "The heater is not working."
+        },
+        {
+          "en": "towel",
+          "zh": "毛巾",
+          "example": "Could I get two more towels?"
+        },
+        {
+          "en": "pillow",
+          "zh": "枕头",
+          "example": "I need an extra pillow."
+        },
+        {
+          "en": "blanket",
+          "zh": "毯子",
+          "example": "Could you bring a blanket?"
+        },
+        {
+          "en": "minibar",
+          "zh": "迷你吧",
+          "example": "Is the minibar free?"
+        },
+        {
+          "en": "safe",
+          "zh": "保险箱",
+          "example": "There is a safe in the closet."
+        },
+        {
+          "en": "elevator",
+          "zh": "电梯",
+          "example": "Take the elevator to the fifth floor."
+        },
+        {
+          "en": "lobby",
+          "zh": "大堂",
+          "example": "Let's meet in the lobby."
+        },
+        {
+          "en": "concierge",
+          "zh": "礼宾部",
+          "example": "The concierge can book a taxi."
+        },
+        {
+          "en": "wake-up call",
+          "zh": "叫醒服务",
+          "example": "Please arrange a wake-up call."
+        },
+        {
+          "en": "late check-out",
+          "zh": "延迟退房",
+          "example": "Can I request a late check-out?"
+        },
+        {
+          "en": "early check-in",
+          "zh": "提前入住",
+          "example": "Is early check-in possible?"
+        },
+        {
+          "en": "non-smoking room",
+          "zh": "无烟房",
+          "example": "I need a non-smoking room."
+        },
+        {
+          "en": "city view",
+          "zh": "城市景观",
+          "example": "Does the room have a city view?"
+        },
+        {
+          "en": "quiet room",
+          "zh": "安静房间",
+          "example": "I prefer a quiet room."
+        },
+        {
+          "en": "shuttle bus",
+          "zh": "接驳车",
+          "example": "The shuttle bus goes to the airport."
+        },
+        {
+          "en": "gym",
+          "zh": "健身房",
+          "example": "Where is the gym?"
+        },
+        {
+          "en": "swimming pool",
+          "zh": "游泳池",
+          "example": "The swimming pool closes at nine."
+        },
+        {
+          "en": "business center",
+          "zh": "商务中心",
+          "example": "The business center has a printer."
+        },
+        {
+          "en": "conference room",
+          "zh": "会议室",
+          "example": "We booked a conference room."
+        },
+        {
+          "en": "maintenance",
+          "zh": "维修",
+          "example": "Please send maintenance to my room."
+        },
+        {
+          "en": "hot water",
+          "zh": "热水",
+          "example": "There is no hot water in the shower."
+        },
+        {
+          "en": "shower",
+          "zh": "淋浴",
+          "example": "The shower pressure is low."
+        },
+        {
+          "en": "bathtub",
+          "zh": "浴缸",
+          "example": "Does the room have a bathtub?"
+        },
+        {
+          "en": "adapter",
+          "zh": "转换插头",
+          "example": "Can I borrow an adapter?"
+        },
+        {
+          "en": "luggage storage",
+          "zh": "行李寄存",
+          "example": "Do you have luggage storage?"
+        },
+        {
+          "en": "taxi booking",
+          "zh": "叫车服务",
+          "example": "I need taxi booking for tomorrow."
+        },
+        {
+          "en": "complimentary",
+          "zh": "免费的",
+          "example": "Is the coffee complimentary?"
+        },
+        {
+          "en": "upgrade",
+          "zh": "升级",
+          "example": "Can I get a room upgrade?"
+        },
+        {
+          "en": "floor",
+          "zh": "楼层",
+          "example": "Which floor is my room on?"
+        },
+        {
+          "en": "amenities",
+          "zh": "洗漱用品",
+          "example": "The amenities are in the bathroom."
+        },
+        {
+          "en": "service charge",
+          "zh": "服务费",
+          "example": "Is the service charge included?"
+        },
+        {
+          "en": "confirmation number",
+          "zh": "确认号",
+          "example": "Here is my confirmation number."
+        }
+      ],
+      "sentenceScenes": [
+        "入住",
+        "房间问题",
+        "设施",
+        "服务",
+        "账单",
+        "退房",
+        "早餐",
+        "交通",
+        "商务",
+        "请求"
+      ],
+      "sentences": [
+        {
+          "en": "I have a reservation for tonight.",
+          "zh": "我今晚有预订。",
+          "scene": "入住"
+        },
+        {
+          "en": "The air conditioner in my room is not working.",
+          "zh": "我房间的空调坏了。",
+          "scene": "房间问题"
+        },
+        {
+          "en": "Could you tell me where the gym is?",
+          "zh": "请问健身房在哪里？",
+          "scene": "设施"
+        },
+        {
+          "en": "Could I order room service?",
+          "zh": "我可以点客房服务吗？",
+          "scene": "服务"
+        },
+        {
+          "en": "Could you prepare an invoice for me?",
+          "zh": "能帮我准备发票吗？",
+          "scene": "账单"
+        },
+        {
+          "en": "Can I have a late check-out?",
+          "zh": "我可以延迟退房吗？",
+          "scene": "退房"
+        },
+        {
+          "en": "What time is breakfast served?",
+          "zh": "早餐几点供应？",
+          "scene": "早餐"
+        },
+        {
+          "en": "Could you book a taxi to the airport?",
+          "zh": "能帮我预约去机场的出租车吗？",
+          "scene": "交通"
+        },
+        {
+          "en": "I need to print a document for a meeting.",
+          "zh": "我需要打印一份会议文件。",
+          "scene": "商务"
+        },
+        {
+          "en": "Could I have an extra pillow, please?",
+          "zh": "请再给我一个枕头好吗？",
+          "scene": "请求"
+        },
+        {
+          "en": "The room key does not work.",
+          "zh": "房卡打不开门。",
+          "scene": "入住"
+        },
+        {
+          "en": "There is no hot water in the bathroom.",
+          "zh": "浴室没有热水。",
+          "scene": "房间问题"
+        },
+        {
+          "en": "Is the swimming pool open now?",
+          "zh": "游泳池现在开放吗？",
+          "scene": "设施"
+        },
+        {
+          "en": "Please clean my room this afternoon.",
+          "zh": "请今天下午打扫我的房间。",
+          "scene": "服务"
+        },
+        {
+          "en": "Can you email me the receipt?",
+          "zh": "可以把收据发到我的邮箱吗？",
+          "scene": "账单"
+        },
+        {
+          "en": "I would like to store my luggage here.",
+          "zh": "我想把行李寄存在这里。",
+          "scene": "退房"
+        },
+        {
+          "en": "Is breakfast included in my booking?",
+          "zh": "我的预订包含早餐吗？",
+          "scene": "早餐"
+        },
+        {
+          "en": "When does the shuttle bus leave?",
+          "zh": "接驳车什么时候出发？",
+          "scene": "交通"
+        },
+        {
+          "en": "Is there a conference room available?",
+          "zh": "有可用的会议室吗？",
+          "scene": "商务"
+        },
+        {
+          "en": "Could you change me to a quieter room?",
+          "zh": "能给我换到更安静的房间吗？",
+          "scene": "请求"
+        }
+      ],
+      "dialogue": [
+        {
+          "speaker": "A",
+          "en": "Excuse me, I need help with hotel check-in information.",
+          "zh": "打扰一下，我需要酒店相关信息。"
+        },
+        {
+          "speaker": "B",
+          "en": "Of course. What would you like to know?",
+          "zh": "当然。你想了解什么？"
+        },
+        {
+          "speaker": "A",
+          "en": "I have a reservation for tonight.",
+          "zh": "我今晚有预订。"
+        },
+        {
+          "speaker": "B",
+          "en": "No problem. Let me check that for you.",
+          "zh": "没问题。我帮你确认一下。"
+        },
+        {
+          "speaker": "A",
+          "en": "Could I order room service?",
+          "zh": "我可以点客房服务吗？"
+        },
+        {
+          "speaker": "B",
+          "en": "Yes, and I recommend arriving a little earlier.",
+          "zh": "可以，而且我建议你稍微早点到。"
+        },
+        {
+          "speaker": "A",
+          "en": "Thank you. That is very helpful.",
+          "zh": "谢谢，这很有帮助。"
+        },
+        {
+          "speaker": "B",
+          "en": "You're welcome. Have a great trip.",
+          "zh": "不客气。祝你旅途愉快。"
+        }
+      ],
+      "quiz": [
+        {
+          "id": "酒店-1",
+          "question": "\"reservation\" 的中文意思是？",
+          "options": [
+            "预订",
+            "含早餐",
+            "电梯",
+            "维修"
+          ],
+          "answer": "预订"
+        },
+        {
+          "id": "酒店-2",
+          "question": "\"front desk\" 的中文意思是？",
+          "options": [
+            "前台",
+            "无线密码",
+            "大堂",
+            "热水"
+          ],
+          "answer": "前台"
+        },
+        {
+          "id": "酒店-3",
+          "question": "\"check-in\" 的中文意思是？",
+          "options": [
+            "入住",
+            "客房服务",
+            "礼宾部",
+            "淋浴"
+          ],
+          "answer": "入住"
+        },
+        {
+          "id": "酒店-4",
+          "question": "\"check-out\" 的中文意思是？",
+          "options": [
+            "退房",
+            "客房清洁",
+            "叫醒服务",
+            "浴缸"
+          ],
+          "answer": "退房"
+        },
+        {
+          "id": "酒店-5",
+          "question": "\"room key\" 的中文意思是？",
+          "options": [
+            "房卡",
+            "洗衣服务",
+            "延迟退房",
+            "转换插头"
+          ],
+          "answer": "房卡"
+        },
+        {
+          "id": "酒店-6",
+          "question": "\"single room\" 的中文意思是？",
+          "options": [
+            "单人间",
+            "空调",
+            "提前入住",
+            "行李寄存"
+          ],
+          "answer": "单人间"
+        },
+        {
+          "id": "酒店-7",
+          "question": "\"double room\" 的中文意思是？",
+          "options": [
+            "双人间",
+            "暖气",
+            "无烟房",
+            "叫车服务"
+          ],
+          "answer": "双人间"
+        },
+        {
+          "id": "酒店-8",
+          "question": "\"suite\" 的中文意思是？",
+          "options": [
+            "套房",
+            "毛巾",
+            "城市景观",
+            "免费的"
+          ],
+          "answer": "套房"
+        },
+        {
+          "id": "酒店-9",
+          "question": "\"deposit\" 的中文意思是？",
+          "options": [
+            "押金",
+            "枕头",
+            "安静房间",
+            "升级"
+          ],
+          "answer": "押金"
+        },
+        {
+          "id": "酒店-10",
+          "question": "\"invoice\" 的中文意思是？",
+          "options": [
+            "发票",
+            "毯子",
+            "接驳车",
+            "楼层"
+          ],
+          "answer": "发票"
+        }
+      ]
+    },
+    "restaurant": {
+      "id": "restaurant",
+      "category": "travel",
+      "title": "点餐",
+      "subtitle": "预订、点餐、口味、过敏与结账",
+      "words": [
+        {
+          "en": "menu",
+          "zh": "菜单",
+          "example": "Could I see the menu?"
+        },
+        {
+          "en": "reservation",
+          "zh": "订位",
+          "example": "We have a reservation for two."
+        },
+        {
+          "en": "table for two",
+          "zh": "两人桌",
+          "example": "A table for two, please."
+        },
+        {
+          "en": "starter",
+          "zh": "前菜",
+          "example": "We will share a starter."
+        },
+        {
+          "en": "main course",
+          "zh": "主菜",
+          "example": "The main course is grilled fish."
+        },
+        {
+          "en": "dessert",
+          "zh": "甜点",
+          "example": "What dessert do you recommend?"
+        },
+        {
+          "en": "beverage",
+          "zh": "饮料",
+          "example": "The beverage list is on the back."
+        },
+        {
+          "en": "special",
+          "zh": "特色菜",
+          "example": "Today's special is roast chicken."
+        },
+        {
+          "en": "recommendation",
+          "zh": "推荐",
+          "example": "Do you have any recommendations?"
+        },
+        {
+          "en": "spicy",
+          "zh": "辣的",
+          "example": "Is this dish spicy?"
+        },
+        {
+          "en": "mild",
+          "zh": "清淡的",
+          "example": "Please make it mild."
+        },
+        {
+          "en": "vegetarian",
+          "zh": "素食的",
+          "example": "Do you have vegetarian options?"
+        },
+        {
+          "en": "allergy",
+          "zh": "过敏",
+          "example": "I have a peanut allergy."
+        },
+        {
+          "en": "seafood",
+          "zh": "海鲜",
+          "example": "The seafood here is fresh."
+        },
+        {
+          "en": "beef",
+          "zh": "牛肉",
+          "example": "I would like the beef noodles."
+        },
+        {
+          "en": "chicken",
+          "zh": "鸡肉",
+          "example": "The chicken salad is popular."
+        },
+        {
+          "en": "pork",
+          "zh": "猪肉",
+          "example": "Does this contain pork?"
+        },
+        {
+          "en": "noodles",
+          "zh": "面条",
+          "example": "The noodles are handmade."
+        },
+        {
+          "en": "rice",
+          "zh": "米饭",
+          "example": "Could I have rice on the side?"
+        },
+        {
+          "en": "soup",
+          "zh": "汤",
+          "example": "The soup is very hot."
+        },
+        {
+          "en": "salad",
+          "zh": "沙拉",
+          "example": "I'll start with a salad."
+        },
+        {
+          "en": "sauce",
+          "zh": "酱汁",
+          "example": "Could you put the sauce on the side?"
+        },
+        {
+          "en": "side dish",
+          "zh": "配菜",
+          "example": "The side dish is included."
+        },
+        {
+          "en": "portion",
+          "zh": "份量",
+          "example": "The portion is quite large."
+        },
+        {
+          "en": "takeaway",
+          "zh": "外带",
+          "example": "Can I get this for takeaway?"
+        },
+        {
+          "en": "dine in",
+          "zh": "堂食",
+          "example": "We would like to dine in."
+        },
+        {
+          "en": "bill",
+          "zh": "账单",
+          "example": "Could we have the bill?"
+        },
+        {
+          "en": "split the bill",
+          "zh": "分开付款",
+          "example": "Can we split the bill?"
+        },
+        {
+          "en": "service charge",
+          "zh": "服务费",
+          "example": "Is the service charge included?"
+        },
+        {
+          "en": "tip",
+          "zh": "小费",
+          "example": "Should we leave a tip?"
+        },
+        {
+          "en": "cash",
+          "zh": "现金",
+          "example": "Can I pay in cash?"
+        },
+        {
+          "en": "credit card",
+          "zh": "信用卡",
+          "example": "Do you accept credit cards?"
+        },
+        {
+          "en": "QR code",
+          "zh": "二维码",
+          "example": "Please scan the QR code to order."
+        },
+        {
+          "en": "waiter",
+          "zh": "服务员",
+          "example": "The waiter brought water."
+        },
+        {
+          "en": "chef",
+          "zh": "厨师",
+          "example": "The chef recommends this dish."
+        },
+        {
+          "en": "fresh",
+          "zh": "新鲜的",
+          "example": "The vegetables taste fresh."
+        },
+        {
+          "en": "crispy",
+          "zh": "酥脆的",
+          "example": "The duck skin is crispy."
+        },
+        {
+          "en": "tender",
+          "zh": "嫩的",
+          "example": "The beef is very tender."
+        },
+        {
+          "en": "sweet",
+          "zh": "甜的",
+          "example": "The dessert is not too sweet."
+        },
+        {
+          "en": "sour",
+          "zh": "酸的",
+          "example": "The sauce is a little sour."
+        },
+        {
+          "en": "salty",
+          "zh": "咸的",
+          "example": "This soup is too salty."
+        },
+        {
+          "en": "bitter",
+          "zh": "苦的",
+          "example": "The coffee is slightly bitter."
+        },
+        {
+          "en": "hot pot",
+          "zh": "火锅",
+          "example": "Hot pot is good for groups."
+        },
+        {
+          "en": "barbecue",
+          "zh": "烧烤",
+          "example": "The barbecue smells great."
+        },
+        {
+          "en": "set meal",
+          "zh": "套餐",
+          "example": "The set meal includes soup."
+        },
+        {
+          "en": "refill",
+          "zh": "续杯",
+          "example": "Can I get a water refill?"
+        },
+        {
+          "en": "napkin",
+          "zh": "餐巾",
+          "example": "Could we have more napkins?"
+        },
+        {
+          "en": "chopsticks",
+          "zh": "筷子",
+          "example": "May I have extra chopsticks?"
+        },
+        {
+          "en": "fork",
+          "zh": "叉子",
+          "example": "I need a fork, please."
+        },
+        {
+          "en": "receipt",
+          "zh": "收据",
+          "example": "Could I have a receipt?"
+        }
+      ],
+      "sentenceScenes": [
+        "入座",
+        "推荐",
+        "口味",
+        "过敏",
+        "点菜",
+        "加点",
+        "外带",
+        "结账",
+        "付款",
+        "反馈"
+      ],
+      "sentences": [
+        {
+          "en": "Do you have a table for two?",
+          "zh": "有两人桌吗？",
+          "scene": "入座"
+        },
+        {
+          "en": "What do you recommend today?",
+          "zh": "今天你推荐什么？",
+          "scene": "推荐"
+        },
+        {
+          "en": "Could you make it less spicy?",
+          "zh": "可以少放辣吗？",
+          "scene": "口味"
+        },
+        {
+          "en": "I am allergic to peanuts.",
+          "zh": "我对花生过敏。",
+          "scene": "过敏"
+        },
+        {
+          "en": "I would like to order this dish.",
+          "zh": "我想点这道菜。",
+          "scene": "点菜"
+        },
+        {
+          "en": "Could we add one more soup?",
+          "zh": "我们可以再加一份汤吗？",
+          "scene": "加点"
+        },
+        {
+          "en": "Can I take the leftovers to go?",
+          "zh": "剩菜可以打包吗？",
+          "scene": "外带"
+        },
+        {
+          "en": "Could we have the bill, please?",
+          "zh": "请给我们账单好吗？",
+          "scene": "结账"
+        },
+        {
+          "en": "Do you accept mobile payment?",
+          "zh": "你们接受手机支付吗？",
+          "scene": "付款"
+        },
+        {
+          "en": "Everything was delicious, thank you.",
+          "zh": "都很好吃，谢谢。",
+          "scene": "反馈"
+        },
+        {
+          "en": "We have a reservation under Wang.",
+          "zh": "我们用王先生的名字订了位。",
+          "scene": "入座"
+        },
+        {
+          "en": "Is this dish suitable for vegetarians?",
+          "zh": "这道菜适合素食者吗？",
+          "scene": "推荐"
+        },
+        {
+          "en": "Please put the sauce on the side.",
+          "zh": "请把酱汁放在旁边。",
+          "scene": "口味"
+        },
+        {
+          "en": "Does this contain seafood?",
+          "zh": "这道菜含海鲜吗？",
+          "scene": "过敏"
+        },
+        {
+          "en": "We will share the main courses.",
+          "zh": "我们会一起分享主菜。",
+          "scene": "点菜"
+        },
+        {
+          "en": "Could I get a refill of water?",
+          "zh": "可以给我续杯水吗？",
+          "scene": "加点"
+        },
+        {
+          "en": "I'd like this for takeaway.",
+          "zh": "这份我要外带。",
+          "scene": "外带"
+        },
+        {
+          "en": "Can we split the bill?",
+          "zh": "我们可以分开付款吗？",
+          "scene": "结账"
+        },
+        {
+          "en": "Could you bring the receipt?",
+          "zh": "可以拿收据给我吗？",
+          "scene": "付款"
+        },
+        {
+          "en": "The soup is a little too salty.",
+          "zh": "这个汤有点太咸了。",
+          "scene": "反馈"
+        }
+      ],
+      "dialogue": [
+        {
+          "speaker": "A",
+          "en": "Excuse me, I need help with restaurant ordering information.",
+          "zh": "打扰一下，我需要点餐相关信息。"
+        },
+        {
+          "speaker": "B",
+          "en": "Of course. What would you like to know?",
+          "zh": "当然。你想了解什么？"
+        },
+        {
+          "speaker": "A",
+          "en": "Do you have a table for two?",
+          "zh": "有两人桌吗？"
+        },
+        {
+          "speaker": "B",
+          "en": "No problem. Let me check that for you.",
+          "zh": "没问题。我帮你确认一下。"
+        },
+        {
+          "speaker": "A",
+          "en": "I am allergic to peanuts.",
+          "zh": "我对花生过敏。"
+        },
+        {
+          "speaker": "B",
+          "en": "Yes, and I recommend arriving a little earlier.",
+          "zh": "可以，而且我建议你稍微早点到。"
+        },
+        {
+          "speaker": "A",
+          "en": "Thank you. That is very helpful.",
+          "zh": "谢谢，这很有帮助。"
+        },
+        {
+          "speaker": "B",
+          "en": "You're welcome. Have a great trip.",
+          "zh": "不客气。祝你旅途愉快。"
+        }
+      ],
+      "quiz": [
+        {
+          "id": "点餐-1",
+          "question": "\"menu\" 的中文意思是？",
+          "options": [
+            "菜单",
+            "素食的",
+            "份量",
+            "嫩的"
+          ],
+          "answer": "菜单"
+        },
+        {
+          "id": "点餐-2",
+          "question": "\"reservation\" 的中文意思是？",
+          "options": [
+            "订位",
+            "过敏",
+            "外带",
+            "甜的"
+          ],
+          "answer": "订位"
+        },
+        {
+          "id": "点餐-3",
+          "question": "\"table for two\" 的中文意思是？",
+          "options": [
+            "两人桌",
+            "海鲜",
+            "堂食",
+            "酸的"
+          ],
+          "answer": "两人桌"
+        },
+        {
+          "id": "点餐-4",
+          "question": "\"starter\" 的中文意思是？",
+          "options": [
+            "前菜",
+            "牛肉",
+            "账单",
+            "咸的"
+          ],
+          "answer": "前菜"
+        },
+        {
+          "id": "点餐-5",
+          "question": "\"main course\" 的中文意思是？",
+          "options": [
+            "主菜",
+            "鸡肉",
+            "分开付款",
+            "苦的"
+          ],
+          "answer": "主菜"
+        },
+        {
+          "id": "点餐-6",
+          "question": "\"dessert\" 的中文意思是？",
+          "options": [
+            "甜点",
+            "猪肉",
+            "服务费",
+            "火锅"
+          ],
+          "answer": "甜点"
+        },
+        {
+          "id": "点餐-7",
+          "question": "\"beverage\" 的中文意思是？",
+          "options": [
+            "饮料",
+            "面条",
+            "小费",
+            "烧烤"
+          ],
+          "answer": "饮料"
+        },
+        {
+          "id": "点餐-8",
+          "question": "\"special\" 的中文意思是？",
+          "options": [
+            "特色菜",
+            "米饭",
+            "现金",
+            "套餐"
+          ],
+          "answer": "特色菜"
+        },
+        {
+          "id": "点餐-9",
+          "question": "\"recommendation\" 的中文意思是？",
+          "options": [
+            "推荐",
+            "汤",
+            "信用卡",
+            "续杯"
+          ],
+          "answer": "推荐"
+        },
+        {
+          "id": "点餐-10",
+          "question": "\"spicy\" 的中文意思是？",
+          "options": [
+            "辣的",
+            "沙拉",
+            "二维码",
+            "餐巾"
+          ],
+          "answer": "辣的"
+        }
+      ]
+    },
+    "directions": {
+      "id": "directions",
+      "category": "travel",
+      "title": "问路",
+      "subtitle": "路线、交通、地标与确认方向",
+      "words": [
+        {
+          "en": "direction",
+          "zh": "方向",
+          "example": "Could you point me in the right direction?"
+        },
+        {
+          "en": "map",
+          "zh": "地图",
+          "example": "The map shows a nearby station."
+        },
+        {
+          "en": "street",
+          "zh": "街道",
+          "example": "This street goes to the museum."
+        },
+        {
+          "en": "avenue",
+          "zh": "大道",
+          "example": "Turn left on the avenue."
+        },
+        {
+          "en": "intersection",
+          "zh": "十字路口",
+          "example": "Meet me at the next intersection."
+        },
+        {
+          "en": "traffic light",
+          "zh": "红绿灯",
+          "example": "Turn right at the traffic light."
+        },
+        {
+          "en": "crosswalk",
+          "zh": "人行横道",
+          "example": "Use the crosswalk to cross the road."
+        },
+        {
+          "en": "corner",
+          "zh": "拐角",
+          "example": "The cafe is on the corner."
+        },
+        {
+          "en": "block",
+          "zh": "街区",
+          "example": "It is two blocks away."
+        },
+        {
+          "en": "landmark",
+          "zh": "地标",
+          "example": "The tower is a famous landmark."
+        },
+        {
+          "en": "subway station",
+          "zh": "地铁站",
+          "example": "The subway station is nearby."
+        },
+        {
+          "en": "bus stop",
+          "zh": "公交站",
+          "example": "The bus stop is across the street."
+        },
+        {
+          "en": "taxi stand",
+          "zh": "出租车站",
+          "example": "There is a taxi stand outside."
+        },
+        {
+          "en": "entrance",
+          "zh": "入口",
+          "example": "The entrance is on your left."
+        },
+        {
+          "en": "exit",
+          "zh": "出口",
+          "example": "Use exit B for the mall."
+        },
+        {
+          "en": "platform",
+          "zh": "站台",
+          "example": "Platform two is for downtown trains."
+        },
+        {
+          "en": "line",
+          "zh": "线路",
+          "example": "Take line two to People's Square."
+        },
+        {
+          "en": "transfer",
+          "zh": "换乘",
+          "example": "You need to transfer at Central Station."
+        },
+        {
+          "en": "fare",
+          "zh": "票价",
+          "example": "The fare is three dollars."
+        },
+        {
+          "en": "ticket machine",
+          "zh": "售票机",
+          "example": "Buy a ticket at the ticket machine."
+        },
+        {
+          "en": "one-way ticket",
+          "zh": "单程票",
+          "example": "I need a one-way ticket."
+        },
+        {
+          "en": "round-trip ticket",
+          "zh": "往返票",
+          "example": "A round-trip ticket is cheaper."
+        },
+        {
+          "en": "walking distance",
+          "zh": "步行距离",
+          "example": "The hotel is within walking distance."
+        },
+        {
+          "en": "shortcut",
+          "zh": "近路",
+          "example": "This alley is a shortcut."
+        },
+        {
+          "en": "detour",
+          "zh": "绕路",
+          "example": "There is a detour because of construction."
+        },
+        {
+          "en": "downtown",
+          "zh": "市中心",
+          "example": "The bus goes downtown."
+        },
+        {
+          "en": "uptown",
+          "zh": "住宅区方向",
+          "example": "Take the uptown train."
+        },
+        {
+          "en": "nearby",
+          "zh": "附近",
+          "example": "Is there a pharmacy nearby?"
+        },
+        {
+          "en": "far",
+          "zh": "远的",
+          "example": "The airport is far from here."
+        },
+        {
+          "en": "straight ahead",
+          "zh": "一直往前",
+          "example": "Go straight ahead for five minutes."
+        },
+        {
+          "en": "turn left",
+          "zh": "左转",
+          "example": "Turn left after the bank."
+        },
+        {
+          "en": "turn right",
+          "zh": "右转",
+          "example": "Turn right at the bookstore."
+        },
+        {
+          "en": "across from",
+          "zh": "在对面",
+          "example": "The hotel is across from the park."
+        },
+        {
+          "en": "next to",
+          "zh": "在旁边",
+          "example": "The ATM is next to the elevator."
+        },
+        {
+          "en": "behind",
+          "zh": "在后面",
+          "example": "The parking lot is behind the building."
+        },
+        {
+          "en": "in front of",
+          "zh": "在前面",
+          "example": "The bus is in front of the station."
+        },
+        {
+          "en": "north",
+          "zh": "北",
+          "example": "The museum is north of the river."
+        },
+        {
+          "en": "south",
+          "zh": "南",
+          "example": "The market is south of the hotel."
+        },
+        {
+          "en": "east",
+          "zh": "东",
+          "example": "The office is east of the station."
+        },
+        {
+          "en": "west",
+          "zh": "西",
+          "example": "The park is west of the square."
+        },
+        {
+          "en": "bridge",
+          "zh": "桥",
+          "example": "Cross the bridge and turn left."
+        },
+        {
+          "en": "tunnel",
+          "zh": "隧道",
+          "example": "The tunnel leads to the old town."
+        },
+        {
+          "en": "escalator",
+          "zh": "扶梯",
+          "example": "Take the escalator down."
+        },
+        {
+          "en": "elevator",
+          "zh": "电梯",
+          "example": "Use the elevator for platform three."
+        },
+        {
+          "en": "stairs",
+          "zh": "楼梯",
+          "example": "The stairs are on the right."
+        },
+        {
+          "en": "parking lot",
+          "zh": "停车场",
+          "example": "The parking lot is full."
+        },
+        {
+          "en": "pharmacy",
+          "zh": "药店",
+          "example": "I am looking for a pharmacy."
+        },
+        {
+          "en": "museum",
+          "zh": "博物馆",
+          "example": "How do I get to the museum?"
+        },
+        {
+          "en": "tourist information",
+          "zh": "游客信息中心",
+          "example": "Tourist information is near the exit."
+        },
+        {
+          "en": "lost",
+          "zh": "迷路的",
+          "example": "I think I am lost."
+        }
+      ],
+      "sentenceScenes": [
+        "开口问路",
+        "步行",
+        "地铁",
+        "公交",
+        "确认",
+        "地标",
+        "换乘",
+        "买票",
+        "迷路",
+        "感谢"
+      ],
+      "sentences": [
+        {
+          "en": "Excuse me, how do I get to the station?",
+          "zh": "打扰一下，我怎么去车站？",
+          "scene": "开口问路"
+        },
+        {
+          "en": "Is it within walking distance?",
+          "zh": "步行能到吗？",
+          "scene": "步行"
+        },
+        {
+          "en": "Which subway line should I take?",
+          "zh": "我应该坐哪条地铁线？",
+          "scene": "地铁"
+        },
+        {
+          "en": "Where is the nearest bus stop?",
+          "zh": "最近的公交站在哪里？",
+          "scene": "公交"
+        },
+        {
+          "en": "So I turn right at the next light, correct?",
+          "zh": "所以我在下一个红绿灯右转，对吗？",
+          "scene": "确认"
+        },
+        {
+          "en": "Is there a landmark nearby?",
+          "zh": "附近有什么地标吗？",
+          "scene": "地标"
+        },
+        {
+          "en": "Do I need to transfer?",
+          "zh": "我需要换乘吗？",
+          "scene": "换乘"
+        },
+        {
+          "en": "Where can I buy a ticket?",
+          "zh": "我在哪里可以买票？",
+          "scene": "买票"
+        },
+        {
+          "en": "I think I am lost.",
+          "zh": "我觉得我迷路了。",
+          "scene": "迷路"
+        },
+        {
+          "en": "Thank you for your help.",
+          "zh": "谢谢你的帮助。",
+          "scene": "感谢"
+        },
+        {
+          "en": "Could you show me on the map?",
+          "zh": "你能在地图上指给我看吗？",
+          "scene": "开口问路"
+        },
+        {
+          "en": "How long does it take on foot?",
+          "zh": "步行需要多久？",
+          "scene": "步行"
+        },
+        {
+          "en": "Which exit should I use?",
+          "zh": "我应该走哪个出口？",
+          "scene": "地铁"
+        },
+        {
+          "en": "Does this bus go downtown?",
+          "zh": "这辆公交去市中心吗？",
+          "scene": "公交"
+        },
+        {
+          "en": "Let me repeat the directions.",
+          "zh": "我复述一下路线。",
+          "scene": "确认"
+        },
+        {
+          "en": "The hotel is across from the park, right?",
+          "zh": "酒店在公园对面，对吗？",
+          "scene": "地标"
+        },
+        {
+          "en": "Where should I transfer to line two?",
+          "zh": "我在哪里换乘二号线？",
+          "scene": "换乘"
+        },
+        {
+          "en": "Can I use a credit card at the ticket machine?",
+          "zh": "售票机可以用信用卡吗？",
+          "scene": "买票"
+        },
+        {
+          "en": "Could you call a taxi for me?",
+          "zh": "你能帮我叫辆出租车吗？",
+          "scene": "迷路"
+        },
+        {
+          "en": "I really appreciate it.",
+          "zh": "非常感谢。",
+          "scene": "感谢"
+        }
+      ],
+      "dialogue": [
+        {
+          "speaker": "A",
+          "en": "Excuse me, I need help with asking for directions information.",
+          "zh": "打扰一下，我需要问路相关信息。"
+        },
+        {
+          "speaker": "B",
+          "en": "Of course. What would you like to know?",
+          "zh": "当然。你想了解什么？"
+        },
+        {
+          "speaker": "A",
+          "en": "Excuse me, how do I get to the station?",
+          "zh": "打扰一下，我怎么去车站？"
+        },
+        {
+          "speaker": "B",
+          "en": "No problem. Let me check that for you.",
+          "zh": "没问题。我帮你确认一下。"
+        },
+        {
+          "speaker": "A",
+          "en": "Where is the nearest bus stop?",
+          "zh": "最近的公交站在哪里？"
+        },
+        {
+          "speaker": "B",
+          "en": "Yes, and I recommend arriving a little earlier.",
+          "zh": "可以，而且我建议你稍微早点到。"
+        },
+        {
+          "speaker": "A",
+          "en": "Thank you. That is very helpful.",
+          "zh": "谢谢，这很有帮助。"
+        },
+        {
+          "speaker": "B",
+          "en": "You're welcome. Have a great trip.",
+          "zh": "不客气。祝你旅途愉快。"
+        }
+      ],
+      "quiz": [
+        {
+          "id": "问路-1",
+          "question": "\"direction\" 的中文意思是？",
+          "options": [
+            "方向",
+            "公交站",
+            "近路",
+            "南"
+          ],
+          "answer": "方向"
+        },
+        {
+          "id": "问路-2",
+          "question": "\"map\" 的中文意思是？",
+          "options": [
+            "地图",
+            "出租车站",
+            "绕路",
+            "东"
+          ],
+          "answer": "地图"
+        },
+        {
+          "id": "问路-3",
+          "question": "\"street\" 的中文意思是？",
+          "options": [
+            "街道",
+            "入口",
+            "市中心",
+            "西"
+          ],
+          "answer": "街道"
+        },
+        {
+          "id": "问路-4",
+          "question": "\"avenue\" 的中文意思是？",
+          "options": [
+            "大道",
+            "出口",
+            "住宅区方向",
+            "桥"
+          ],
+          "answer": "大道"
+        },
+        {
+          "id": "问路-5",
+          "question": "\"intersection\" 的中文意思是？",
+          "options": [
+            "十字路口",
+            "站台",
+            "附近",
+            "隧道"
+          ],
+          "answer": "十字路口"
+        },
+        {
+          "id": "问路-6",
+          "question": "\"traffic light\" 的中文意思是？",
+          "options": [
+            "红绿灯",
+            "线路",
+            "远的",
+            "扶梯"
+          ],
+          "answer": "红绿灯"
+        },
+        {
+          "id": "问路-7",
+          "question": "\"crosswalk\" 的中文意思是？",
+          "options": [
+            "人行横道",
+            "换乘",
+            "一直往前",
+            "电梯"
+          ],
+          "answer": "人行横道"
+        },
+        {
+          "id": "问路-8",
+          "question": "\"corner\" 的中文意思是？",
+          "options": [
+            "拐角",
+            "票价",
+            "左转",
+            "楼梯"
+          ],
+          "answer": "拐角"
+        },
+        {
+          "id": "问路-9",
+          "question": "\"block\" 的中文意思是？",
+          "options": [
+            "街区",
+            "售票机",
+            "右转",
+            "停车场"
+          ],
+          "answer": "街区"
+        },
+        {
+          "id": "问路-10",
+          "question": "\"landmark\" 的中文意思是？",
+          "options": [
+            "地标",
+            "单程票",
+            "在对面",
+            "药店"
+          ],
+          "answer": "地标"
+        }
+      ]
+    },
+    "meeting": {
+      "id": "meeting",
+      "category": "work",
+      "title": "会议",
+      "subtitle": "电商项目会议、决策、跟进与协作",
+      "words": [
+        {
+          "en": "agenda",
+          "zh": "议程",
+          "example": "The agenda has three topics."
+        },
+        {
+          "en": "objective",
+          "zh": "目标",
+          "example": "Our objective is to improve conversion."
+        },
+        {
+          "en": "stakeholder",
+          "zh": "相关方",
+          "example": "We need feedback from key stakeholders."
+        },
+        {
+          "en": "alignment",
+          "zh": "对齐",
+          "example": "The meeting is for alignment."
+        },
+        {
+          "en": "action item",
+          "zh": "行动项",
+          "example": "Each action item needs an owner."
+        },
+        {
+          "en": "owner",
+          "zh": "负责人",
+          "example": "Who is the owner of this task?"
+        },
+        {
+          "en": "deadline",
+          "zh": "截止日期",
+          "example": "The deadline is next Friday."
+        },
+        {
+          "en": "follow-up",
+          "zh": "跟进",
+          "example": "I will send a follow-up email."
+        },
+        {
+          "en": "decision",
+          "zh": "决定",
+          "example": "We need a decision today."
+        },
+        {
+          "en": "proposal",
+          "zh": "方案",
+          "example": "This proposal focuses on repeat purchases."
+        },
+        {
+          "en": "scope",
+          "zh": "范围",
+          "example": "Let's define the project scope."
+        },
+        {
+          "en": "priority",
+          "zh": "优先级",
+          "example": "Checkout issues are the top priority."
+        },
+        {
+          "en": "timeline",
+          "zh": "时间线",
+          "example": "The timeline is tight but realistic."
+        },
+        {
+          "en": "milestone",
+          "zh": "里程碑",
+          "example": "Launch is the next milestone."
+        },
+        {
+          "en": "risk",
+          "zh": "风险",
+          "example": "Inventory shortage is a risk."
+        },
+        {
+          "en": "blocker",
+          "zh": "阻碍",
+          "example": "Payment integration is the main blocker."
+        },
+        {
+          "en": "dependency",
+          "zh": "依赖",
+          "example": "The campaign depends on product photos."
+        },
+        {
+          "en": "resource",
+          "zh": "资源",
+          "example": "We need more design resources."
+        },
+        {
+          "en": "budget",
+          "zh": "预算",
+          "example": "The budget covers paid ads."
+        },
+        {
+          "en": "approval",
+          "zh": "审批",
+          "example": "We need approval from finance."
+        },
+        {
+          "en": "retailer",
+          "zh": "零售商",
+          "example": "The retailer joined our marketplace."
+        },
+        {
+          "en": "marketplace",
+          "zh": "电商平台",
+          "example": "The marketplace has strong traffic."
+        },
+        {
+          "en": "seller",
+          "zh": "商家",
+          "example": "The seller needs onboarding support."
+        },
+        {
+          "en": "buyer",
+          "zh": "买家",
+          "example": "The buyer expects fast delivery."
+        },
+        {
+          "en": "SKU",
+          "zh": "库存单位",
+          "example": "This SKU is our best seller."
+        },
+        {
+          "en": "inventory",
+          "zh": "库存",
+          "example": "Inventory is low for the red model."
+        },
+        {
+          "en": "promotion",
+          "zh": "促销",
+          "example": "The promotion starts on Monday."
+        },
+        {
+          "en": "discount",
+          "zh": "折扣",
+          "example": "The discount is limited to members."
+        },
+        {
+          "en": "conversion rate",
+          "zh": "转化率",
+          "example": "The conversion rate improved last week."
+        },
+        {
+          "en": "traffic",
+          "zh": "流量",
+          "example": "Traffic from social ads is growing."
+        },
+        {
+          "en": "cart abandonment",
+          "zh": "购物车放弃",
+          "example": "Cart abandonment is still high."
+        },
+        {
+          "en": "checkout",
+          "zh": "结账流程",
+          "example": "Checkout should be faster."
+        },
+        {
+          "en": "payment gateway",
+          "zh": "支付网关",
+          "example": "The payment gateway needs testing."
+        },
+        {
+          "en": "fulfillment",
+          "zh": "履约",
+          "example": "Fulfillment speed affects ratings."
+        },
+        {
+          "en": "shipping fee",
+          "zh": "运费",
+          "example": "The shipping fee is too high."
+        },
+        {
+          "en": "return policy",
+          "zh": "退货政策",
+          "example": "The return policy must be clear."
+        },
+        {
+          "en": "customer review",
+          "zh": "客户评价",
+          "example": "Customer reviews influence conversion."
+        },
+        {
+          "en": "rating",
+          "zh": "评分",
+          "example": "The rating dropped after delays."
+        },
+        {
+          "en": "campaign",
+          "zh": "活动",
+          "example": "The campaign targets new users."
+        },
+        {
+          "en": "landing page",
+          "zh": "落地页",
+          "example": "The landing page needs stronger copy."
+        },
+        {
+          "en": "A/B test",
+          "zh": "A/B 测试",
+          "example": "We will run an A/B test."
+        },
+        {
+          "en": "brief",
+          "zh": "需求简报",
+          "example": "Please share the creative brief."
+        },
+        {
+          "en": "minutes",
+          "zh": "会议纪要",
+          "example": "I will write the meeting minutes."
+        },
+        {
+          "en": "consensus",
+          "zh": "共识",
+          "example": "We reached consensus on pricing."
+        },
+        {
+          "en": "assumption",
+          "zh": "假设",
+          "example": "That assumption needs validation."
+        },
+        {
+          "en": "constraint",
+          "zh": "限制条件",
+          "example": "The main constraint is time."
+        },
+        {
+          "en": "trade-off",
+          "zh": "取舍",
+          "example": "There is a trade-off between speed and cost."
+        },
+        {
+          "en": "escalation",
+          "zh": "升级处理",
+          "example": "This issue needs escalation."
+        },
+        {
+          "en": "recap",
+          "zh": "回顾总结",
+          "example": "Let's do a quick recap."
+        },
+        {
+          "en": "next step",
+          "zh": "下一步",
+          "example": "The next step is seller outreach."
+        }
+      ],
+      "sentenceScenes": [
+        "开场",
+        "目标",
+        "讨论",
+        "分歧",
+        "数据",
+        "决策",
+        "行动项",
+        "风险",
+        "总结",
+        "会后"
+      ],
+      "sentences": [
+        {
+          "en": "Let's start with the agenda.",
+          "zh": "我们先看会议议程。",
+          "scene": "开场"
+        },
+        {
+          "en": "The goal is to increase checkout conversion.",
+          "zh": "目标是提升结账转化率。",
+          "scene": "目标"
+        },
+        {
+          "en": "Could you walk us through the proposal?",
+          "zh": "你能带我们过一下方案吗？",
+          "scene": "讨论"
+        },
+        {
+          "en": "I see your point, but I have one concern.",
+          "zh": "我理解你的观点，但我有一个顾虑。",
+          "scene": "分歧"
+        },
+        {
+          "en": "The data shows cart abandonment is increasing.",
+          "zh": "数据显示购物车放弃率在上升。",
+          "scene": "数据"
+        },
+        {
+          "en": "Can we make a decision today?",
+          "zh": "我们今天能做决定吗？",
+          "scene": "决策"
+        },
+        {
+          "en": "I will own the follow-up with sellers.",
+          "zh": "我负责跟进商家。",
+          "scene": "行动项"
+        },
+        {
+          "en": "The biggest risk is low inventory.",
+          "zh": "最大的风险是库存不足。",
+          "scene": "风险"
+        },
+        {
+          "en": "Let me recap the next steps.",
+          "zh": "我来总结下一步。",
+          "scene": "总结"
+        },
+        {
+          "en": "I will send the meeting minutes after this call.",
+          "zh": "会后我会发送会议纪要。",
+          "scene": "会后"
+        },
+        {
+          "en": "Thanks everyone for joining on time.",
+          "zh": "感谢大家准时参加。",
+          "scene": "开场"
+        },
+        {
+          "en": "We need alignment before the campaign launch.",
+          "zh": "活动上线前我们需要对齐。",
+          "scene": "目标"
+        },
+        {
+          "en": "What trade-offs are we making here?",
+          "zh": "这里我们在做什么取舍？",
+          "scene": "讨论"
+        },
+        {
+          "en": "Can we pause and clarify the scope?",
+          "zh": "我们可以暂停一下并明确范围吗？",
+          "scene": "分歧"
+        },
+        {
+          "en": "Traffic is strong, but conversion is weak.",
+          "zh": "流量不错，但转化偏弱。",
+          "scene": "数据"
+        },
+        {
+          "en": "I support option B because it is faster.",
+          "zh": "我支持方案 B，因为它更快。",
+          "scene": "决策"
+        },
+        {
+          "en": "Please add the deadline to each action item.",
+          "zh": "请给每个行动项加上截止日期。",
+          "scene": "行动项"
+        },
+        {
+          "en": "Payment testing is still a blocker.",
+          "zh": "支付测试仍然是阻碍。",
+          "scene": "风险"
+        },
+        {
+          "en": "Do we have consensus on the launch date?",
+          "zh": "我们对上线日期达成共识了吗？",
+          "scene": "总结"
+        },
+        {
+          "en": "Let's follow up in the project channel.",
+          "zh": "我们在项目群里继续跟进。",
+          "scene": "会后"
+        }
+      ],
+      "dialogue": [
+        {
+          "speaker": "A",
+          "en": "Let's discuss the meeting update for the e-commerce project.",
+          "zh": "我们讨论一下电商项目的会议更新。"
+        },
+        {
+          "speaker": "B",
+          "en": "Sure. What is the main priority today?",
+          "zh": "好的。今天最重要的事项是什么？"
+        },
+        {
+          "speaker": "A",
+          "en": "The goal is to increase checkout conversion.",
+          "zh": "目标是提升结账转化率。"
+        },
+        {
+          "speaker": "B",
+          "en": "That makes sense. Do we have any blockers?",
+          "zh": "有道理。我们有阻碍吗？"
+        },
+        {
+          "speaker": "A",
+          "en": "The data shows cart abandonment is increasing.",
+          "zh": "数据显示购物车放弃率在上升。"
+        },
+        {
+          "speaker": "B",
+          "en": "I'll take the follow-up and share an update tomorrow.",
+          "zh": "我来跟进，并在明天同步更新。"
+        },
+        {
+          "speaker": "A",
+          "en": "Great. Let's document the next steps.",
+          "zh": "很好。我们把下一步记录下来。"
+        },
+        {
+          "speaker": "B",
+          "en": "Agreed. I will send a summary after this.",
+          "zh": "同意。我会在之后发送总结。"
+        }
+      ],
+      "quiz": [
+        {
+          "id": "会议-1",
+          "question": "\"agenda\" 的中文意思是？",
+          "options": [
+            "议程",
+            "优先级",
+            "买家",
+            "评分"
+          ],
+          "answer": "议程"
+        },
+        {
+          "id": "会议-2",
+          "question": "\"objective\" 的中文意思是？",
+          "options": [
+            "目标",
+            "时间线",
+            "库存单位",
+            "活动"
+          ],
+          "answer": "目标"
+        },
+        {
+          "id": "会议-3",
+          "question": "\"stakeholder\" 的中文意思是？",
+          "options": [
+            "相关方",
+            "里程碑",
+            "库存",
+            "落地页"
+          ],
+          "answer": "相关方"
+        },
+        {
+          "id": "会议-4",
+          "question": "\"alignment\" 的中文意思是？",
+          "options": [
+            "对齐",
+            "风险",
+            "促销",
+            "A/B 测试"
+          ],
+          "answer": "对齐"
+        },
+        {
+          "id": "会议-5",
+          "question": "\"action item\" 的中文意思是？",
+          "options": [
+            "行动项",
+            "阻碍",
+            "折扣",
+            "需求简报"
+          ],
+          "answer": "行动项"
+        },
+        {
+          "id": "会议-6",
+          "question": "\"owner\" 的中文意思是？",
+          "options": [
+            "负责人",
+            "依赖",
+            "转化率",
+            "会议纪要"
+          ],
+          "answer": "负责人"
+        },
+        {
+          "id": "会议-7",
+          "question": "\"deadline\" 的中文意思是？",
+          "options": [
+            "截止日期",
+            "资源",
+            "流量",
+            "共识"
+          ],
+          "answer": "截止日期"
+        },
+        {
+          "id": "会议-8",
+          "question": "\"follow-up\" 的中文意思是？",
+          "options": [
+            "跟进",
+            "预算",
+            "购物车放弃",
+            "假设"
+          ],
+          "answer": "跟进"
+        },
+        {
+          "id": "会议-9",
+          "question": "\"decision\" 的中文意思是？",
+          "options": [
+            "决定",
+            "审批",
+            "结账流程",
+            "限制条件"
+          ],
+          "answer": "决定"
+        },
+        {
+          "id": "会议-10",
+          "question": "\"proposal\" 的中文意思是？",
+          "options": [
+            "方案",
+            "零售商",
+            "支付网关",
+            "取舍"
+          ],
+          "answer": "方案"
+        }
+      ]
+    },
+    "email": {
+      "id": "email",
+      "category": "work",
+      "title": "邮件",
+      "subtitle": "电商协作邮件、活动同步、问题跟进",
+      "words": [
+        {
+          "en": "subject line",
+          "zh": "邮件主题",
+          "example": "The subject line should be clear."
+        },
+        {
+          "en": "recipient",
+          "zh": "收件人",
+          "example": "Add the buyer as a recipient."
+        },
+        {
+          "en": "cc",
+          "zh": "抄送",
+          "example": "Please cc the operations team."
+        },
+        {
+          "en": "bcc",
+          "zh": "密送",
+          "example": "Use bcc for the mailing list."
+        },
+        {
+          "en": "attachment",
+          "zh": "附件",
+          "example": "The price list is in the attachment."
+        },
+        {
+          "en": "draft",
+          "zh": "草稿",
+          "example": "I saved the email as a draft."
+        },
+        {
+          "en": "reply",
+          "zh": "回复",
+          "example": "Please reply by tomorrow."
+        },
+        {
+          "en": "forward",
+          "zh": "转发",
+          "example": "Can you forward the seller update?"
+        },
+        {
+          "en": "inbox",
+          "zh": "收件箱",
+          "example": "My inbox is full today."
+        },
+        {
+          "en": "thread",
+          "zh": "邮件串",
+          "example": "Let's keep everything in this thread."
+        },
+        {
+          "en": "greeting",
+          "zh": "问候语",
+          "example": "Use a professional greeting."
+        },
+        {
+          "en": "opening",
+          "zh": "开头",
+          "example": "The opening explains the purpose."
+        },
+        {
+          "en": "closing",
+          "zh": "结尾",
+          "example": "The closing includes next steps."
+        },
+        {
+          "en": "signature",
+          "zh": "签名",
+          "example": "Your signature needs a phone number."
+        },
+        {
+          "en": "template",
+          "zh": "模板",
+          "example": "Use the campaign email template."
+        },
+        {
+          "en": "update",
+          "zh": "更新",
+          "example": "Here is a quick update."
+        },
+        {
+          "en": "request",
+          "zh": "请求",
+          "example": "This is a request for approval."
+        },
+        {
+          "en": "confirmation",
+          "zh": "确认",
+          "example": "We need written confirmation."
+        },
+        {
+          "en": "clarification",
+          "zh": "澄清",
+          "example": "I need clarification on the price."
+        },
+        {
+          "en": "deadline",
+          "zh": "截止日期",
+          "example": "The deadline is Friday noon."
+        },
+        {
+          "en": "campaign calendar",
+          "zh": "活动日历",
+          "example": "The campaign calendar changed."
+        },
+        {
+          "en": "product listing",
+          "zh": "商品详情页",
+          "example": "The product listing needs new images."
+        },
+        {
+          "en": "price adjustment",
+          "zh": "调价",
+          "example": "The price adjustment starts tonight."
+        },
+        {
+          "en": "coupon code",
+          "zh": "优惠码",
+          "example": "The coupon code expires soon."
+        },
+        {
+          "en": "flash sale",
+          "zh": "限时抢购",
+          "example": "The flash sale begins at eight."
+        },
+        {
+          "en": "seller center",
+          "zh": "商家后台",
+          "example": "Check the seller center for alerts."
+        },
+        {
+          "en": "order issue",
+          "zh": "订单问题",
+          "example": "The email is about an order issue."
+        },
+        {
+          "en": "tracking number",
+          "zh": "物流单号",
+          "example": "Please include the tracking number."
+        },
+        {
+          "en": "refund request",
+          "zh": "退款申请",
+          "example": "A refund request needs review."
+        },
+        {
+          "en": "return label",
+          "zh": "退货标签",
+          "example": "Send the return label to the customer."
+        },
+        {
+          "en": "stock update",
+          "zh": "库存更新",
+          "example": "We need a stock update today."
+        },
+        {
+          "en": "out of stock",
+          "zh": "缺货",
+          "example": "This item is out of stock."
+        },
+        {
+          "en": "restock date",
+          "zh": "补货日期",
+          "example": "What is the restock date?"
+        },
+        {
+          "en": "launch plan",
+          "zh": "上线计划",
+          "example": "The launch plan is attached."
+        },
+        {
+          "en": "creative assets",
+          "zh": "创意素材",
+          "example": "Creative assets are due tomorrow."
+        },
+        {
+          "en": "banner copy",
+          "zh": "横幅文案",
+          "example": "The banner copy needs approval."
+        },
+        {
+          "en": "legal review",
+          "zh": "法务审核",
+          "example": "The claim needs legal review."
+        },
+        {
+          "en": "approval chain",
+          "zh": "审批链路",
+          "example": "The approval chain is too long."
+        },
+        {
+          "en": "urgent",
+          "zh": "紧急",
+          "example": "Mark it urgent only when necessary."
+        },
+        {
+          "en": "FYI",
+          "zh": "供参考",
+          "example": "FYI, the promotion is live."
+        },
+        {
+          "en": "ETA",
+          "zh": "预计完成时间",
+          "example": "What is the ETA for the fix?"
+        },
+        {
+          "en": "SLA",
+          "zh": "服务时限",
+          "example": "The SLA is twenty-four hours."
+        },
+        {
+          "en": "apology",
+          "zh": "道歉",
+          "example": "Start with a sincere apology."
+        },
+        {
+          "en": "resolution",
+          "zh": "解决方案",
+          "example": "The resolution is a replacement."
+        },
+        {
+          "en": "escalation",
+          "zh": "升级",
+          "example": "This requires escalation to logistics."
+        },
+        {
+          "en": "summary",
+          "zh": "摘要",
+          "example": "Add a short summary at the top."
+        },
+        {
+          "en": "bullet point",
+          "zh": "项目符号",
+          "example": "Use bullet points for clarity."
+        },
+        {
+          "en": "tone",
+          "zh": "语气",
+          "example": "The tone should be polite."
+        },
+        {
+          "en": "proofread",
+          "zh": "校对",
+          "example": "Please proofread before sending."
+        },
+        {
+          "en": "send",
+          "zh": "发送",
+          "example": "Do not send until finance approves."
+        }
+      ],
+      "sentenceScenes": [
+        "开头",
+        "更新",
+        "请求",
+        "澄清",
+        "附件",
+        "截止",
+        "订单",
+        "活动",
+        "道歉",
+        "结尾"
+      ],
+      "sentences": [
+        {
+          "en": "I hope you are doing well.",
+          "zh": "希望你一切顺利。",
+          "scene": "开头"
+        },
+        {
+          "en": "I am writing to share a quick campaign update.",
+          "zh": "我写信是想同步一个活动更新。",
+          "scene": "更新"
+        },
+        {
+          "en": "Could you approve the banner copy by noon?",
+          "zh": "你能在中午前审批横幅文案吗？",
+          "scene": "请求"
+        },
+        {
+          "en": "Could you clarify the final discount rate?",
+          "zh": "你能确认最终折扣率吗？",
+          "scene": "澄清"
+        },
+        {
+          "en": "Please find the launch plan attached.",
+          "zh": "请查收附件中的上线计划。",
+          "scene": "附件"
+        },
+        {
+          "en": "The creative assets are due tomorrow.",
+          "zh": "创意素材明天截止。",
+          "scene": "截止"
+        },
+        {
+          "en": "We are checking the order issue with logistics.",
+          "zh": "我们正在和物流核查订单问题。",
+          "scene": "订单"
+        },
+        {
+          "en": "The flash sale will go live at eight tonight.",
+          "zh": "限时抢购今晚八点上线。",
+          "scene": "活动"
+        },
+        {
+          "en": "We apologize for the delay in delivery.",
+          "zh": "我们为配送延误道歉。",
+          "scene": "道歉"
+        },
+        {
+          "en": "Thank you, and I look forward to your feedback.",
+          "zh": "谢谢，期待你的反馈。",
+          "scene": "结尾"
+        },
+        {
+          "en": "I wanted to follow up on the stock update.",
+          "zh": "我想跟进一下库存更新。",
+          "scene": "开头"
+        },
+        {
+          "en": "Here is the latest status from the seller team.",
+          "zh": "以下是商家团队的最新状态。",
+          "scene": "更新"
+        },
+        {
+          "en": "Could you send the tracking number?",
+          "zh": "你能发送物流单号吗？",
+          "scene": "请求"
+        },
+        {
+          "en": "Please confirm if the item is back in stock.",
+          "zh": "请确认该商品是否已补货。",
+          "scene": "澄清"
+        },
+        {
+          "en": "The report is attached for your review.",
+          "zh": "报告已附上，请你审阅。",
+          "scene": "附件"
+        },
+        {
+          "en": "Please reply by Friday noon.",
+          "zh": "请在周五中午前回复。",
+          "scene": "截止"
+        },
+        {
+          "en": "The customer requested a refund.",
+          "zh": "客户申请了退款。",
+          "scene": "订单"
+        },
+        {
+          "en": "The coupon code expires this Sunday.",
+          "zh": "优惠码本周日过期。",
+          "scene": "活动"
+        },
+        {
+          "en": "We are sorry for the inconvenience.",
+          "zh": "给你带来不便我们深感抱歉。",
+          "scene": "道歉"
+        },
+        {
+          "en": "Please let me know if you have any questions.",
+          "zh": "如有问题请告诉我。",
+          "scene": "结尾"
+        }
+      ],
+      "dialogue": [
+        {
+          "speaker": "A",
+          "en": "Let's discuss the email update for the e-commerce project.",
+          "zh": "我们讨论一下电商项目的邮件更新。"
+        },
+        {
+          "speaker": "B",
+          "en": "Sure. What is the main priority today?",
+          "zh": "好的。今天最重要的事项是什么？"
+        },
+        {
+          "speaker": "A",
+          "en": "I am writing to share a quick campaign update.",
+          "zh": "我写信是想同步一个活动更新。"
+        },
+        {
+          "speaker": "B",
+          "en": "That makes sense. Do we have any blockers?",
+          "zh": "有道理。我们有阻碍吗？"
+        },
+        {
+          "speaker": "A",
+          "en": "Please find the launch plan attached.",
+          "zh": "请查收附件中的上线计划。"
+        },
+        {
+          "speaker": "B",
+          "en": "I'll take the follow-up and share an update tomorrow.",
+          "zh": "我来跟进，并在明天同步更新。"
+        },
+        {
+          "speaker": "A",
+          "en": "Great. Let's document the next steps.",
+          "zh": "很好。我们把下一步记录下来。"
+        },
+        {
+          "speaker": "B",
+          "en": "Agreed. I will send a summary after this.",
+          "zh": "同意。我会在之后发送总结。"
+        }
+      ],
+      "quiz": [
+        {
+          "id": "邮件-1",
+          "question": "\"subject line\" 的中文意思是？",
+          "options": [
+            "邮件主题",
+            "开头",
+            "优惠码",
+            "审批链路"
+          ],
+          "answer": "邮件主题"
+        },
+        {
+          "id": "邮件-2",
+          "question": "\"recipient\" 的中文意思是？",
+          "options": [
+            "收件人",
+            "结尾",
+            "限时抢购",
+            "紧急"
+          ],
+          "answer": "收件人"
+        },
+        {
+          "id": "邮件-3",
+          "question": "\"cc\" 的中文意思是？",
+          "options": [
+            "抄送",
+            "签名",
+            "商家后台",
+            "供参考"
+          ],
+          "answer": "抄送"
+        },
+        {
+          "id": "邮件-4",
+          "question": "\"bcc\" 的中文意思是？",
+          "options": [
+            "密送",
+            "模板",
+            "订单问题",
+            "预计完成时间"
+          ],
+          "answer": "密送"
+        },
+        {
+          "id": "邮件-5",
+          "question": "\"attachment\" 的中文意思是？",
+          "options": [
+            "附件",
+            "更新",
+            "物流单号",
+            "服务时限"
+          ],
+          "answer": "附件"
+        },
+        {
+          "id": "邮件-6",
+          "question": "\"draft\" 的中文意思是？",
+          "options": [
+            "草稿",
+            "请求",
+            "退款申请",
+            "道歉"
+          ],
+          "answer": "草稿"
+        },
+        {
+          "id": "邮件-7",
+          "question": "\"reply\" 的中文意思是？",
+          "options": [
+            "回复",
+            "确认",
+            "退货标签",
+            "解决方案"
+          ],
+          "answer": "回复"
+        },
+        {
+          "id": "邮件-8",
+          "question": "\"forward\" 的中文意思是？",
+          "options": [
+            "转发",
+            "澄清",
+            "库存更新",
+            "升级"
+          ],
+          "answer": "转发"
+        },
+        {
+          "id": "邮件-9",
+          "question": "\"inbox\" 的中文意思是？",
+          "options": [
+            "收件箱",
+            "截止日期",
+            "缺货",
+            "摘要"
+          ],
+          "answer": "收件箱"
+        },
+        {
+          "id": "邮件-10",
+          "question": "\"thread\" 的中文意思是？",
+          "options": [
+            "邮件串",
+            "活动日历",
+            "补货日期",
+            "项目符号"
+          ],
+          "answer": "邮件串"
+        }
+      ]
+    },
+    "reporting": {
+      "id": "reporting",
+      "category": "work",
+      "title": "汇报",
+      "subtitle": "电商指标、复盘、趋势与行动建议",
+      "words": [
+        {
+          "en": "dashboard",
+          "zh": "数据看板",
+          "example": "The dashboard updates every hour."
+        },
+        {
+          "en": "metric",
+          "zh": "指标",
+          "example": "Conversion is our key metric."
+        },
+        {
+          "en": "KPI",
+          "zh": "关键绩效指标",
+          "example": "GMV is one of our KPIs."
+        },
+        {
+          "en": "GMV",
+          "zh": "成交总额",
+          "example": "GMV increased by twelve percent."
+        },
+        {
+          "en": "revenue",
+          "zh": "收入",
+          "example": "Revenue grew month over month."
+        },
+        {
+          "en": "gross margin",
+          "zh": "毛利率",
+          "example": "Gross margin improved after pricing changes."
+        },
+        {
+          "en": "order volume",
+          "zh": "订单量",
+          "example": "Order volume peaked on Friday."
+        },
+        {
+          "en": "average order value",
+          "zh": "客单价",
+          "example": "Average order value is rising."
+        },
+        {
+          "en": "conversion rate",
+          "zh": "转化率",
+          "example": "The conversion rate is below target."
+        },
+        {
+          "en": "click-through rate",
+          "zh": "点击率",
+          "example": "The click-through rate improved."
+        },
+        {
+          "en": "impression",
+          "zh": "曝光",
+          "example": "Impressions doubled after the campaign."
+        },
+        {
+          "en": "traffic source",
+          "zh": "流量来源",
+          "example": "Paid search is the top traffic source."
+        },
+        {
+          "en": "organic traffic",
+          "zh": "自然流量",
+          "example": "Organic traffic is stable."
+        },
+        {
+          "en": "paid traffic",
+          "zh": "付费流量",
+          "example": "Paid traffic became more expensive."
+        },
+        {
+          "en": "bounce rate",
+          "zh": "跳出率",
+          "example": "The bounce rate is too high."
+        },
+        {
+          "en": "retention",
+          "zh": "留存",
+          "example": "Retention is stronger among members."
+        },
+        {
+          "en": "repeat purchase",
+          "zh": "复购",
+          "example": "Repeat purchase grew this month."
+        },
+        {
+          "en": "refund rate",
+          "zh": "退款率",
+          "example": "The refund rate needs attention."
+        },
+        {
+          "en": "return rate",
+          "zh": "退货率",
+          "example": "Return rate is high for apparel."
+        },
+        {
+          "en": "fulfillment time",
+          "zh": "履约时长",
+          "example": "Fulfillment time dropped by one day."
+        },
+        {
+          "en": "on-time delivery",
+          "zh": "准时送达",
+          "example": "On-time delivery is ninety-five percent."
+        },
+        {
+          "en": "inventory turnover",
+          "zh": "库存周转",
+          "example": "Inventory turnover is faster now."
+        },
+        {
+          "en": "stockout",
+          "zh": "断货",
+          "example": "Stockouts hurt sales last week."
+        },
+        {
+          "en": "sell-through rate",
+          "zh": "售罄率",
+          "example": "Sell-through rate is above forecast."
+        },
+        {
+          "en": "forecast",
+          "zh": "预测",
+          "example": "The forecast assumes steady demand."
+        },
+        {
+          "en": "trend",
+          "zh": "趋势",
+          "example": "The trend is positive."
+        },
+        {
+          "en": "insight",
+          "zh": "洞察",
+          "example": "The main insight is price sensitivity."
+        },
+        {
+          "en": "driver",
+          "zh": "驱动因素",
+          "example": "Free shipping was a major driver."
+        },
+        {
+          "en": "root cause",
+          "zh": "根因",
+          "example": "The root cause is poor page loading."
+        },
+        {
+          "en": "variance",
+          "zh": "差异",
+          "example": "The variance comes from ad spend."
+        },
+        {
+          "en": "benchmark",
+          "zh": "基准",
+          "example": "We compare results with the benchmark."
+        },
+        {
+          "en": "target",
+          "zh": "目标",
+          "example": "The target is ten percent growth."
+        },
+        {
+          "en": "performance",
+          "zh": "表现",
+          "example": "Performance improved after optimization."
+        },
+        {
+          "en": "underperform",
+          "zh": "表现不佳",
+          "example": "This SKU continues to underperform."
+        },
+        {
+          "en": "overperform",
+          "zh": "表现超预期",
+          "example": "The gift set overperformed."
+        },
+        {
+          "en": "segment",
+          "zh": "细分人群",
+          "example": "The member segment buys more often."
+        },
+        {
+          "en": "cohort",
+          "zh": "同期群",
+          "example": "The May cohort retained better."
+        },
+        {
+          "en": "funnel",
+          "zh": "漏斗",
+          "example": "The funnel shows a checkout drop."
+        },
+        {
+          "en": "baseline",
+          "zh": "基线",
+          "example": "We need a baseline before testing."
+        },
+        {
+          "en": "sample size",
+          "zh": "样本量",
+          "example": "The sample size is still small."
+        },
+        {
+          "en": "statistical significance",
+          "zh": "统计显著性",
+          "example": "The result reached statistical significance."
+        },
+        {
+          "en": "month over month",
+          "zh": "环比",
+          "example": "Sales grew month over month."
+        },
+        {
+          "en": "year over year",
+          "zh": "同比",
+          "example": "Revenue is up year over year."
+        },
+        {
+          "en": "action plan",
+          "zh": "行动计划",
+          "example": "The action plan has three steps."
+        },
+        {
+          "en": "recommendation",
+          "zh": "建议",
+          "example": "My recommendation is to reduce shipping fees."
+        },
+        {
+          "en": "next quarter",
+          "zh": "下季度",
+          "example": "Next quarter focuses on retention."
+        },
+        {
+          "en": "summary slide",
+          "zh": "总结页",
+          "example": "The summary slide needs one key message."
+        },
+        {
+          "en": "appendix",
+          "zh": "附录",
+          "example": "Details are in the appendix."
+        },
+        {
+          "en": "data source",
+          "zh": "数据源",
+          "example": "The data source is the order table."
+        },
+        {
+          "en": "data quality",
+          "zh": "数据质量",
+          "example": "Data quality is reliable."
+        }
+      ],
+      "sentenceScenes": [
+        "开场",
+        "核心指标",
+        "趋势",
+        "问题",
+        "原因",
+        "细分",
+        "实验",
+        "建议",
+        "风险",
+        "收尾"
+      ],
+      "sentences": [
+        {
+          "en": "Today I will report on last week's store performance.",
+          "zh": "今天我汇报上周店铺表现。",
+          "scene": "开场"
+        },
+        {
+          "en": "GMV increased by twelve percent week over week.",
+          "zh": "GMV 周环比增长了 12%。",
+          "scene": "核心指标"
+        },
+        {
+          "en": "The main trend is stronger mobile traffic.",
+          "zh": "主要趋势是移动端流量更强。",
+          "scene": "趋势"
+        },
+        {
+          "en": "The biggest issue is a higher refund rate.",
+          "zh": "最大问题是退款率升高。",
+          "scene": "问题"
+        },
+        {
+          "en": "The root cause appears to be delayed shipping.",
+          "zh": "根因似乎是配送延迟。",
+          "scene": "原因"
+        },
+        {
+          "en": "Members showed a higher repeat purchase rate.",
+          "zh": "会员显示出更高的复购率。",
+          "scene": "细分"
+        },
+        {
+          "en": "The A/B test result is not significant yet.",
+          "zh": "A/B 测试结果还不显著。",
+          "scene": "实验"
+        },
+        {
+          "en": "My recommendation is to improve checkout speed.",
+          "zh": "我的建议是提升结账速度。",
+          "scene": "建议"
+        },
+        {
+          "en": "The main risk is another stockout.",
+          "zh": "主要风险是再次断货。",
+          "scene": "风险"
+        },
+        {
+          "en": "I will share the full dashboard after the meeting.",
+          "zh": "会后我会分享完整数据看板。",
+          "scene": "收尾"
+        },
+        {
+          "en": "The report has three parts.",
+          "zh": "这份汇报分为三部分。",
+          "scene": "开场"
+        },
+        {
+          "en": "Conversion rate missed the target by two points.",
+          "zh": "转化率比目标低两个百分点。",
+          "scene": "核心指标"
+        },
+        {
+          "en": "Paid traffic is becoming more expensive.",
+          "zh": "付费流量正在变贵。",
+          "scene": "趋势"
+        },
+        {
+          "en": "Cart abandonment rose on mobile devices.",
+          "zh": "移动端购物车放弃率上升了。",
+          "scene": "问题"
+        },
+        {
+          "en": "Free shipping was the biggest driver.",
+          "zh": "包邮是最大的驱动因素。",
+          "scene": "原因"
+        },
+        {
+          "en": "New customers spent less than members.",
+          "zh": "新客户消费低于会员。",
+          "scene": "细分"
+        },
+        {
+          "en": "We need a larger sample size before deciding.",
+          "zh": "决策前我们需要更大的样本量。",
+          "scene": "实验"
+        },
+        {
+          "en": "I suggest testing a lower shipping threshold.",
+          "zh": "我建议测试更低的包邮门槛。",
+          "scene": "建议"
+        },
+        {
+          "en": "Inventory is not enough for the next campaign.",
+          "zh": "库存不足以支撑下一次活动。",
+          "scene": "风险"
+        },
+        {
+          "en": "That concludes my update.",
+          "zh": "我的汇报到这里结束。",
+          "scene": "收尾"
+        }
+      ],
+      "dialogue": [
+        {
+          "speaker": "A",
+          "en": "Let's discuss the business report update for the e-commerce project.",
+          "zh": "我们讨论一下电商项目的汇报更新。"
+        },
+        {
+          "speaker": "B",
+          "en": "Sure. What is the main priority today?",
+          "zh": "好的。今天最重要的事项是什么？"
+        },
+        {
+          "speaker": "A",
+          "en": "GMV increased by twelve percent week over week.",
+          "zh": "GMV 周环比增长了 12%。"
+        },
+        {
+          "speaker": "B",
+          "en": "That makes sense. Do we have any blockers?",
+          "zh": "有道理。我们有阻碍吗？"
+        },
+        {
+          "speaker": "A",
+          "en": "The root cause appears to be delayed shipping.",
+          "zh": "根因似乎是配送延迟。"
+        },
+        {
+          "speaker": "B",
+          "en": "I'll take the follow-up and share an update tomorrow.",
+          "zh": "我来跟进，并在明天同步更新。"
+        },
+        {
+          "speaker": "A",
+          "en": "Great. Let's document the next steps.",
+          "zh": "很好。我们把下一步记录下来。"
+        },
+        {
+          "speaker": "B",
+          "en": "Agreed. I will send a summary after this.",
+          "zh": "同意。我会在之后发送总结。"
+        }
+      ],
+      "quiz": [
+        {
+          "id": "汇报-1",
+          "question": "\"dashboard\" 的中文意思是？",
+          "options": [
+            "数据看板",
+            "流量来源",
+            "售罄率",
+            "漏斗"
+          ],
+          "answer": "数据看板"
+        },
+        {
+          "id": "汇报-2",
+          "question": "\"metric\" 的中文意思是？",
+          "options": [
+            "指标",
+            "自然流量",
+            "预测",
+            "基线"
+          ],
+          "answer": "指标"
+        },
+        {
+          "id": "汇报-3",
+          "question": "\"KPI\" 的中文意思是？",
+          "options": [
+            "关键绩效指标",
+            "付费流量",
+            "趋势",
+            "样本量"
+          ],
+          "answer": "关键绩效指标"
+        },
+        {
+          "id": "汇报-4",
+          "question": "\"GMV\" 的中文意思是？",
+          "options": [
+            "成交总额",
+            "跳出率",
+            "洞察",
+            "统计显著性"
+          ],
+          "answer": "成交总额"
+        },
+        {
+          "id": "汇报-5",
+          "question": "\"revenue\" 的中文意思是？",
+          "options": [
+            "收入",
+            "留存",
+            "驱动因素",
+            "环比"
+          ],
+          "answer": "收入"
+        },
+        {
+          "id": "汇报-6",
+          "question": "\"gross margin\" 的中文意思是？",
+          "options": [
+            "毛利率",
+            "复购",
+            "根因",
+            "同比"
+          ],
+          "answer": "毛利率"
+        },
+        {
+          "id": "汇报-7",
+          "question": "\"order volume\" 的中文意思是？",
+          "options": [
+            "订单量",
+            "退款率",
+            "差异",
+            "行动计划"
+          ],
+          "answer": "订单量"
+        },
+        {
+          "id": "汇报-8",
+          "question": "\"average order value\" 的中文意思是？",
+          "options": [
+            "客单价",
+            "退货率",
+            "基准",
+            "建议"
+          ],
+          "answer": "客单价"
+        },
+        {
+          "id": "汇报-9",
+          "question": "\"conversion rate\" 的中文意思是？",
+          "options": [
+            "转化率",
+            "履约时长",
+            "目标",
+            "下季度"
+          ],
+          "answer": "转化率"
+        },
+        {
+          "id": "汇报-10",
+          "question": "\"click-through rate\" 的中文意思是？",
+          "options": [
+            "点击率",
+            "准时送达",
+            "表现",
+            "总结页"
+          ],
+          "answer": "点击率"
+        }
+      ]
+    },
+    "client": {
+      "id": "client",
+      "category": "work",
+      "title": "客户沟通",
+      "subtitle": "电商客户咨询、投诉、退款、物流与续单",
+      "words": [
+        {
+          "en": "customer",
+          "zh": "客户",
+          "example": "The customer asked about delivery."
+        },
+        {
+          "en": "client",
+          "zh": "客户",
+          "example": "This client buys in large volume."
+        },
+        {
+          "en": "inquiry",
+          "zh": "咨询",
+          "example": "We received a product inquiry."
+        },
+        {
+          "en": "complaint",
+          "zh": "投诉",
+          "example": "The complaint is about late delivery."
+        },
+        {
+          "en": "issue",
+          "zh": "问题",
+          "example": "We are investigating the issue."
+        },
+        {
+          "en": "case",
+          "zh": "工单",
+          "example": "The support case is open."
+        },
+        {
+          "en": "ticket",
+          "zh": "服务单",
+          "example": "Please update the support ticket."
+        },
+        {
+          "en": "response time",
+          "zh": "响应时间",
+          "example": "Response time affects satisfaction."
+        },
+        {
+          "en": "SLA",
+          "zh": "服务时限",
+          "example": "We must meet the SLA."
+        },
+        {
+          "en": "satisfaction",
+          "zh": "满意度",
+          "example": "Customer satisfaction improved."
+        },
+        {
+          "en": "expectation",
+          "zh": "期望",
+          "example": "Set clear expectations."
+        },
+        {
+          "en": "apology",
+          "zh": "道歉",
+          "example": "A sincere apology helps."
+        },
+        {
+          "en": "empathy",
+          "zh": "同理心",
+          "example": "Show empathy before explaining."
+        },
+        {
+          "en": "solution",
+          "zh": "解决方案",
+          "example": "Offer a practical solution."
+        },
+        {
+          "en": "compensation",
+          "zh": "补偿",
+          "example": "We can offer compensation."
+        },
+        {
+          "en": "refund",
+          "zh": "退款",
+          "example": "The refund will take three days."
+        },
+        {
+          "en": "replacement",
+          "zh": "换货",
+          "example": "We can send a replacement."
+        },
+        {
+          "en": "return",
+          "zh": "退货",
+          "example": "The return window is thirty days."
+        },
+        {
+          "en": "warranty",
+          "zh": "保修",
+          "example": "The warranty covers defects."
+        },
+        {
+          "en": "defect",
+          "zh": "缺陷",
+          "example": "The product has a defect."
+        },
+        {
+          "en": "damaged",
+          "zh": "损坏的",
+          "example": "The package arrived damaged."
+        },
+        {
+          "en": "missing item",
+          "zh": "漏发商品",
+          "example": "The order has a missing item."
+        },
+        {
+          "en": "wrong item",
+          "zh": "错发商品",
+          "example": "The customer received the wrong item."
+        },
+        {
+          "en": "order number",
+          "zh": "订单号",
+          "example": "May I have your order number?"
+        },
+        {
+          "en": "tracking number",
+          "zh": "物流单号",
+          "example": "The tracking number is in the email."
+        },
+        {
+          "en": "delivery status",
+          "zh": "配送状态",
+          "example": "I will check the delivery status."
+        },
+        {
+          "en": "estimated delivery",
+          "zh": "预计送达",
+          "example": "The estimated delivery is Friday."
+        },
+        {
+          "en": "shipping address",
+          "zh": "收货地址",
+          "example": "Please confirm the shipping address."
+        },
+        {
+          "en": "billing address",
+          "zh": "账单地址",
+          "example": "The billing address is different."
+        },
+        {
+          "en": "invoice",
+          "zh": "发票",
+          "example": "We can issue an invoice."
+        },
+        {
+          "en": "payment failure",
+          "zh": "支付失败",
+          "example": "The payment failure was temporary."
+        },
+        {
+          "en": "chargeback",
+          "zh": "拒付",
+          "example": "The bank opened a chargeback."
+        },
+        {
+          "en": "coupon",
+          "zh": "优惠券",
+          "example": "We can offer a coupon."
+        },
+        {
+          "en": "loyalty points",
+          "zh": "会员积分",
+          "example": "Loyalty points were added."
+        },
+        {
+          "en": "VIP customer",
+          "zh": "VIP 客户",
+          "example": "This is a VIP customer."
+        },
+        {
+          "en": "bulk order",
+          "zh": "批量订单",
+          "example": "The client wants a bulk order."
+        },
+        {
+          "en": "quotation",
+          "zh": "报价",
+          "example": "Please send a quotation."
+        },
+        {
+          "en": "purchase order",
+          "zh": "采购订单",
+          "example": "The purchase order is approved."
+        },
+        {
+          "en": "contract",
+          "zh": "合同",
+          "example": "The contract needs signature."
+        },
+        {
+          "en": "renewal",
+          "zh": "续约",
+          "example": "Renewal is due next month."
+        },
+        {
+          "en": "upsell",
+          "zh": "追加销售",
+          "example": "There is an upsell opportunity."
+        },
+        {
+          "en": "cross-sell",
+          "zh": "交叉销售",
+          "example": "We can cross-sell accessories."
+        },
+        {
+          "en": "feedback",
+          "zh": "反馈",
+          "example": "Customer feedback is valuable."
+        },
+        {
+          "en": "review",
+          "zh": "评价",
+          "example": "Please leave a review."
+        },
+        {
+          "en": "escalate",
+          "zh": "升级处理",
+          "example": "We should escalate this issue."
+        },
+        {
+          "en": "resolve",
+          "zh": "解决",
+          "example": "We need to resolve it today."
+        },
+        {
+          "en": "follow up",
+          "zh": "跟进",
+          "example": "I will follow up tomorrow."
+        },
+        {
+          "en": "confirm",
+          "zh": "确认",
+          "example": "Please confirm the address."
+        },
+        {
+          "en": "appreciate",
+          "zh": "感谢",
+          "example": "We appreciate your patience."
+        },
+        {
+          "en": "relationship",
+          "zh": "关系",
+          "example": "A good relationship builds trust."
+        }
+      ],
+      "sentenceScenes": [
+        "问候",
+        "核实",
+        "安抚",
+        "物流",
+        "退款",
+        "换货",
+        "报价",
+        "投诉",
+        "跟进",
+        "结束"
+      ],
+      "sentences": [
+        {
+          "en": "Thank you for contacting us.",
+          "zh": "感谢你联系我们。",
+          "scene": "问候"
+        },
+        {
+          "en": "May I have your order number, please?",
+          "zh": "请问可以提供订单号吗？",
+          "scene": "核实"
+        },
+        {
+          "en": "I understand how frustrating this must be.",
+          "zh": "我理解这一定很令人沮丧。",
+          "scene": "安抚"
+        },
+        {
+          "en": "Let me check the delivery status for you.",
+          "zh": "我帮你查询配送状态。",
+          "scene": "物流"
+        },
+        {
+          "en": "The refund will be processed within three business days.",
+          "zh": "退款将在三个工作日内处理。",
+          "scene": "退款"
+        },
+        {
+          "en": "We can send a replacement at no extra cost.",
+          "zh": "我们可以免费寄送换货。",
+          "scene": "换货"
+        },
+        {
+          "en": "I will send you a quotation today.",
+          "zh": "我今天会给你发送报价。",
+          "scene": "报价"
+        },
+        {
+          "en": "We are sorry that the item arrived damaged.",
+          "zh": "很抱歉商品送达时已损坏。",
+          "scene": "投诉"
+        },
+        {
+          "en": "I will follow up with logistics and update you.",
+          "zh": "我会跟进物流并更新你。",
+          "scene": "跟进"
+        },
+        {
+          "en": "Thank you for your patience and understanding.",
+          "zh": "感谢你的耐心和理解。",
+          "scene": "结束"
+        },
+        {
+          "en": "Could you confirm your shipping address?",
+          "zh": "你能确认一下收货地址吗？",
+          "scene": "问候"
+        },
+        {
+          "en": "I will open a support ticket for this case.",
+          "zh": "我会为这个问题创建服务单。",
+          "scene": "核实"
+        },
+        {
+          "en": "We appreciate your feedback.",
+          "zh": "我们感谢你的反馈。",
+          "scene": "安抚"
+        },
+        {
+          "en": "The package is expected to arrive on Friday.",
+          "zh": "包裹预计周五送达。",
+          "scene": "物流"
+        },
+        {
+          "en": "A coupon has been added to your account.",
+          "zh": "优惠券已经添加到你的账户。",
+          "scene": "退款"
+        },
+        {
+          "en": "Please return the item with the label provided.",
+          "zh": "请使用提供的标签退回商品。",
+          "scene": "换货"
+        },
+        {
+          "en": "For bulk orders, we can offer better pricing.",
+          "zh": "对于批量订单，我们可以提供更好的价格。",
+          "scene": "报价"
+        },
+        {
+          "en": "I have escalated the complaint to our manager.",
+          "zh": "我已将投诉升级给经理处理。",
+          "scene": "投诉"
+        },
+        {
+          "en": "I will update you before the end of the day.",
+          "zh": "我会在今天结束前更新你。",
+          "scene": "跟进"
+        },
+        {
+          "en": "Please let us know if anything else comes up.",
+          "zh": "如有其他问题请告诉我们。",
+          "scene": "结束"
+        }
+      ],
+      "dialogue": [
+        {
+          "speaker": "A",
+          "en": "Let's discuss the customer communication update for the e-commerce project.",
+          "zh": "我们讨论一下电商项目的客户沟通更新。"
+        },
+        {
+          "speaker": "B",
+          "en": "Sure. What is the main priority today?",
+          "zh": "好的。今天最重要的事项是什么？"
+        },
+        {
+          "speaker": "A",
+          "en": "May I have your order number, please?",
+          "zh": "请问可以提供订单号吗？"
+        },
+        {
+          "speaker": "B",
+          "en": "That makes sense. Do we have any blockers?",
+          "zh": "有道理。我们有阻碍吗？"
+        },
+        {
+          "speaker": "A",
+          "en": "The refund will be processed within three business days.",
+          "zh": "退款将在三个工作日内处理。"
+        },
+        {
+          "speaker": "B",
+          "en": "I'll take the follow-up and share an update tomorrow.",
+          "zh": "我来跟进，并在明天同步更新。"
+        },
+        {
+          "speaker": "A",
+          "en": "Great. Let's document the next steps.",
+          "zh": "很好。我们把下一步记录下来。"
+        },
+        {
+          "speaker": "B",
+          "en": "Agreed. I will send a summary after this.",
+          "zh": "同意。我会在之后发送总结。"
+        }
+      ],
+      "quiz": [
+        {
+          "id": "客户沟通-1",
+          "question": "\"customer\" 的中文意思是？",
+          "options": [
+            "客户",
+            "道歉",
+            "订单号",
+            "采购订单"
+          ],
+          "answer": "客户"
+        },
+        {
+          "id": "客户沟通-2",
+          "question": "\"client\" 的中文意思是？",
+          "options": [
+            "客户",
+            "同理心",
+            "物流单号",
+            "合同"
+          ],
+          "answer": "客户"
+        },
+        {
+          "id": "客户沟通-3",
+          "question": "\"inquiry\" 的中文意思是？",
+          "options": [
+            "咨询",
+            "解决方案",
+            "配送状态",
+            "续约"
+          ],
+          "answer": "咨询"
+        },
+        {
+          "id": "客户沟通-4",
+          "question": "\"complaint\" 的中文意思是？",
+          "options": [
+            "投诉",
+            "补偿",
+            "预计送达",
+            "追加销售"
+          ],
+          "answer": "投诉"
+        },
+        {
+          "id": "客户沟通-5",
+          "question": "\"issue\" 的中文意思是？",
+          "options": [
+            "问题",
+            "退款",
+            "收货地址",
+            "交叉销售"
+          ],
+          "answer": "问题"
+        },
+        {
+          "id": "客户沟通-6",
+          "question": "\"case\" 的中文意思是？",
+          "options": [
+            "工单",
+            "换货",
+            "账单地址",
+            "反馈"
+          ],
+          "answer": "工单"
+        },
+        {
+          "id": "客户沟通-7",
+          "question": "\"ticket\" 的中文意思是？",
+          "options": [
+            "服务单",
+            "退货",
+            "发票",
+            "评价"
+          ],
+          "answer": "服务单"
+        },
+        {
+          "id": "客户沟通-8",
+          "question": "\"response time\" 的中文意思是？",
+          "options": [
+            "响应时间",
+            "保修",
+            "支付失败",
+            "升级处理"
+          ],
+          "answer": "响应时间"
+        },
+        {
+          "id": "客户沟通-9",
+          "question": "\"SLA\" 的中文意思是？",
+          "options": [
+            "服务时限",
+            "缺陷",
+            "拒付",
+            "解决"
+          ],
+          "answer": "服务时限"
+        },
+        {
+          "id": "客户沟通-10",
+          "question": "\"satisfaction\" 的中文意思是？",
+          "options": [
+            "满意度",
+            "损坏的",
+            "优惠券",
+            "跟进"
+          ],
+          "answer": "满意度"
+        }
+      ]
+    }
+  }
+}
