@@ -1,14 +1,9 @@
-const CACHE_NAME = "daily-scene-english-v1";
+const CACHE_NAME = "daily-scene-english-v2";
 const SCOPE_URL = self.registration.scope;
 const APP_SHELL = [
-  "./",
-  "./assessment/",
-  "./weekly/",
-  "./favorites/",
-  "./scenes/travel/",
-  "./scenes/work/",
   "./manifest.webmanifest",
-  "./icons/icon.svg"
+  "./icons/icon-192.png",
+  "./icons/icon-512.png"
 ].map((path) => new URL(path, SCOPE_URL).toString());
 
 self.addEventListener("install", (event) => {
@@ -31,19 +26,34 @@ self.addEventListener("fetch", (event) => {
     return;
   }
 
+  if (event.request.mode === "navigate") {
+    event.respondWith(
+      fetch(event.request)
+        .then((response) => {
+          const copy = response.clone();
+          caches.open(CACHE_NAME).then((cache) => cache.put(event.request, copy));
+          return response;
+        })
+        .catch(() => caches.match(event.request).then((cached) => cached || caches.match(new URL("./", SCOPE_URL).toString())))
+    );
+    return;
+  }
+
   event.respondWith(
     caches.match(event.request).then((cached) => {
       if (cached) {
         return cached;
       }
 
-      return fetch(event.request)
+      return fetch(event.request, { cache: "no-store" })
         .then((response) => {
-          const copy = response.clone();
-          caches.open(CACHE_NAME).then((cache) => cache.put(event.request, copy));
+          if (response.ok) {
+            const copy = response.clone();
+            caches.open(CACHE_NAME).then((cache) => cache.put(event.request, copy));
+          }
           return response;
         })
-        .catch(() => caches.match(new URL("./", SCOPE_URL).toString()));
+        .catch(() => cached);
     })
   );
 });
