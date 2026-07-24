@@ -1,4 +1,4 @@
-const CACHE_NAME = "daily-scene-english-v2";
+const CACHE_NAME = "daily-scene-english-v3";
 const SCOPE_URL = self.registration.scope;
 const APP_SHELL = [
   "./manifest.webmanifest",
