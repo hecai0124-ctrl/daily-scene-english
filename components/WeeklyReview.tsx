@@ -30,43 +30,76 @@ export function WeeklyReview() {
           <span />
         </header>
 
-        <Card className="mt-8 p-5">
+        <Card className="mt-5 p-4">
           <div className="flex items-center justify-between">
-            <h2 className="text-xl font-black">本周学习总结</h2>
-            <span className="text-sm font-bold text-slate-400">{weekSummary.range}</span>
+            <div>
+              <h2 className="text-lg font-black">本周学习总结</h2>
+              <p className="mt-1 text-xs font-bold text-slate-400">
+                {weekSummary.days.length > 0 ? weekSummary.days.map((day) => `Day ${day}`).join("、") : "完成打卡后自动计入"}
+              </p>
+            </div>
+            <span className="shrink-0 text-xs font-bold text-slate-400">{weekSummary.range}</span>
           </div>
-          <p className="mt-2 text-sm font-semibold leading-6 text-slate-500">
-            本周已完成 {weekSummary.days.length} 天打卡
-            {weekSummary.days.length > 0 ? `：${weekSummary.days.map((day) => `Day ${day}`).join("、")}` : "，完成打卡后会自动计入这里"}。
-          </p>
-          <div className="mt-5 grid grid-cols-2 gap-3">
+          <div className="mt-4 grid grid-cols-4 gap-2">
             <SummaryTile icon={<WholeWord className="h-5 w-5" />} label="单词" value={`${weekSummary.words} 个`} />
             <SummaryTile icon={<MessageSquareText className="h-5 w-5" />} label="句子" value={`${weekSummary.sentences} 句`} />
             <SummaryTile icon={<BookOpen className="h-5 w-5" />} label="对话" value={`${weekSummary.dialogueLines} 句`} />
             <SummaryTile icon={<NotebookText className="h-5 w-5" />} label="阅读" value={`${weekSummary.readings} 篇`} />
           </div>
-          <div className="mt-3 rounded-2xl bg-[#f4fbfb] p-4">
-            <div className="flex items-center justify-between">
-              <span className="text-sm font-black text-[#06999a]">测验</span>
-              <span className="text-xl font-black">
-                {weekSummary.quizQuestions}<span className="text-sm text-slate-400"> 题</span>
-              </span>
+          <div className="mt-3 grid grid-cols-[1fr_1fr_auto] items-center gap-2 rounded-2xl bg-[#f4fbfb] p-3">
+            <div>
+              <p className="text-xs font-bold text-slate-400">答对题目</p>
+              <p className="text-lg font-black text-[#173c76]">{weekSummary.quizCorrect}</p>
             </div>
-            <div className="mt-3 grid grid-cols-2 gap-2">
-              <div className="rounded-xl bg-white px-3 py-2">
-                <p className="text-xs font-bold text-slate-400">答对题目</p>
-                <p className="mt-1 text-xl font-black text-[#173c76]">{weekSummary.quizCorrect}</p>
-              </div>
-              <div className="rounded-xl bg-white px-3 py-2">
-                <p className="text-xs font-bold text-slate-400">回答题目</p>
-                <p className="mt-1 text-xl font-black text-[#173c76]">{weekSummary.quizAnswered}</p>
-              </div>
+            <div>
+              <p className="text-xs font-bold text-slate-400">回答题目</p>
+              <p className="text-lg font-black text-[#173c76]">{weekSummary.quizAnswered}</p>
             </div>
-            <p className="mt-2 text-xs font-semibold leading-5 text-slate-500">
-              只有完成打卡的学习日会计入本周总结；测验评分来自你保存过的场景测验成绩。
-            </p>
+            <div className="rounded-full bg-white px-3 py-1 text-xs font-black text-[#06999a]">
+              测验 {weekSummary.quizQuestions} 题
+            </div>
           </div>
         </Card>
+
+        <ReviewActionCard
+          tone="danger"
+          title="错题复习"
+          description={mistakes.length > 0 ? "来自你提交过的场景测验" : "完成测验后，答错的题会自动进入这里"}
+          metric={`共 ${mistakes.length} 道错题待复习`}
+          icon={<FileSearch className="h-8 w-8" />}
+          actionLabel="开始复习"
+          disabled={mistakes.length === 0}
+          onClick={() => setReviewingMistakes(true)}
+        />
+
+        {reviewingMistakes && (
+          <section className="mt-5 space-y-3">
+            <div className="flex items-center justify-between">
+              <h2 className="text-xl font-black">错题记录</h2>
+              <button type="button" onClick={() => setReviewingMistakes(false)} className="text-sm font-black text-[#06999a]">
+                收起
+              </button>
+            </div>
+            {mistakes.map((item) => (
+              <Card key={item.id} className="p-4">
+                <p className="text-xs font-black text-[#ff624f]">{item.source}</p>
+                <h3 className="mt-2 font-black leading-7">{item.question}</h3>
+                {item.userAnswer && <p className="mt-2 text-sm font-bold text-slate-400">你的答案：{item.userAnswer}</p>}
+                <p className="mt-1 text-sm font-bold text-[#06999a]">正确答案：{item.answer}</p>
+              </Card>
+            ))}
+          </section>
+        )}
+
+        <ReviewActionCard
+          tone="warm"
+          title="收藏复习"
+          description="复习你收藏过的高频单词、句子和阅读"
+          metric={`单词 ${progress.favoriteWords.length} 个 · 句子 ${progress.favoriteSentences.length} 句 · 阅读 ${progress.favoriteReadings.length} 篇`}
+          icon={<Star className="h-8 w-8 fill-[#f6b73c]" />}
+          actionLabel="查看收藏"
+          href="/favorites"
+        />
 
         <Card className="mt-5 bg-[#f4fbfb] p-5">
           <div className="flex items-start justify-between gap-4">
@@ -152,46 +185,6 @@ export function WeeklyReview() {
           {!isCloudSyncConfigured() && <p className="mt-3 text-xs font-bold text-[#ff624f]">腾讯云同步接口部署后可用。</p>}
           {syncMessage && <p className="mt-3 text-xs font-bold text-slate-500">{syncMessage}</p>}
         </Card>
-
-        <ReviewActionCard
-          tone="danger"
-          title="错题复习"
-          description={mistakes.length > 0 ? "来自你提交过的场景测验" : "完成测验后，答错的题会自动进入这里"}
-          metric={`共 ${mistakes.length} 道错题待复习`}
-          icon={<FileSearch className="h-8 w-8" />}
-          actionLabel="开始复习"
-          disabled={mistakes.length === 0}
-          onClick={() => setReviewingMistakes(true)}
-        />
-
-        {reviewingMistakes && (
-          <section className="mt-5 space-y-3">
-            <div className="flex items-center justify-between">
-              <h2 className="text-xl font-black">错题记录</h2>
-              <button type="button" onClick={() => setReviewingMistakes(false)} className="text-sm font-black text-[#06999a]">
-                收起
-              </button>
-            </div>
-            {mistakes.map((item) => (
-              <Card key={item.id} className="p-4">
-                <p className="text-xs font-black text-[#ff624f]">{item.source}</p>
-                <h3 className="mt-2 font-black leading-7">{item.question}</h3>
-                {item.userAnswer && <p className="mt-2 text-sm font-bold text-slate-400">你的答案：{item.userAnswer}</p>}
-                <p className="mt-1 text-sm font-bold text-[#06999a]">正确答案：{item.answer}</p>
-              </Card>
-            ))}
-          </section>
-        )}
-
-        <ReviewActionCard
-          tone="warm"
-          title="收藏复习"
-          description="复习你收藏过的高频单词、句子和阅读"
-          metric={`单词 ${progress.favoriteWords.length} 个 · 句子 ${progress.favoriteSentences.length} 句 · 阅读 ${progress.favoriteReadings.length} 篇`}
-          icon={<Star className="h-8 w-8 fill-[#f6b73c]" />}
-          actionLabel="查看收藏"
-          href="/favorites"
-        />
       </div>
       <BottomNav active="review" />
     </PhoneShell>
@@ -200,12 +193,12 @@ export function WeeklyReview() {
 
 function SummaryTile({ icon, label, value }: { icon: React.ReactNode; label: string; value: string }) {
   return (
-    <div className="rounded-2xl bg-slate-50 p-4">
-      <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-white text-[#06999a] shadow-sm">
+    <div className="rounded-xl bg-slate-50 p-2.5">
+      <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-white text-[#06999a] shadow-sm">
         {icon}
       </span>
-      <p className="mt-3 text-xs font-bold text-slate-400">{label}</p>
-      <p className="mt-1 text-xl font-black">{value}</p>
+      <p className="mt-2 text-[11px] font-bold text-slate-400">{label}</p>
+      <p className="mt-0.5 text-sm font-black">{value}</p>
     </div>
   );
 }
