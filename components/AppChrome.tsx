@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { BookOpen, ClipboardList, Home } from "lucide-react";
+import { ClipboardList, Home } from "lucide-react";
 
 export function PhoneShell({ children }: { children: React.ReactNode }) {
   return (
@@ -24,13 +24,12 @@ export function PhoneShell({ children }: { children: React.ReactNode }) {
 export function BottomNav({ active }: { active: "home" | "study" | "review" }) {
   const items = [
     { key: "home", label: "首页", href: "/", icon: <Home className="h-6 w-6" /> },
-    { key: "study", label: "学习", href: "/scenes/travel", icon: <BookOpen className="h-6 w-6" /> },
     { key: "review", label: "复盘", href: "/weekly", icon: <ClipboardList className="h-6 w-6" /> }
   ] as const;
 
   return (
     <nav className="z-20 shrink-0 border-t border-slate-100 bg-white/95 px-6 pb-6 pt-3 backdrop-blur">
-      <div className="grid grid-cols-3">
+      <div className="grid grid-cols-2">
         {items.map((item) => {
           const selected = active === item.key;
           return (

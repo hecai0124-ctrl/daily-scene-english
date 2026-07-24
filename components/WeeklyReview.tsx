@@ -2,39 +2,22 @@
 
 import Link from "next/link";
 import { useState } from "react";
-import { ArrowLeft, BookOpen, CalendarDays, Check, FileSearch, Headphones, Mic, Star } from "lucide-react";
+import { ArrowLeft, BookOpen, Cloud, Download, FileSearch, MessageSquareText, NotebookText, Star, Upload, WholeWord } from "lucide-react";
 import { BottomNav, Card, PhoneShell } from "@/components/AppChrome";
-import { content } from "@/lib/content";
+import { getScenario } from "@/lib/content";
 import { useLearningProgress } from "@/lib/progress";
-
-const weeklyQuestions = [
-  { skill: "听力", question: "听到 “Where is the nearest subway station?”，对方在问什么？", options: ["最近的地铁站在哪里", "最近的酒店在哪里", "哪里可以点餐", "哪里可以退货"], answer: "最近的地铁站在哪里" },
-  { skill: "阅读", question: "“Please find the launch plan attached.” 适合用在哪类工作场景？", options: ["邮件发送附件", "机场登机", "餐厅结账", "酒店退房"], answer: "邮件发送附件" },
-  { skill: "口语", question: "如果客户说商品损坏，你最适合先说哪一句？", options: ["We are sorry that the item arrived damaged.", "This is not my problem.", "You should wait.", "The product is expensive."], answer: "We are sorry that the item arrived damaged." }
-];
+import { createSyncCode, isCloudSyncConfigured, normalizeSyncCode, pullCloudProgress, pushCloudProgress } from "@/lib/cloudSync";
+import { getWorkPlanDay, workPlanDays } from "@/lib/workPlan";
 
 export function WeeklyReview() {
-  const [started, setStarted] = useState(false);
   const [reviewingMistakes, setReviewingMistakes] = useState(false);
-  const [answers, setAnswers] = useState<Record<number, string>>({});
+  const [syncInput, setSyncInput] = useState("");
+  const [syncMessage, setSyncMessage] = useState("");
+  const [syncBusy, setSyncBusy] = useState(false);
   const { progress, actions } = useLearningProgress();
-  const score = weeklyQuestions.reduce((total, item, index) => total + (answers[index] === item.answer ? 1 : 0), 0);
-  const scorePercent = Math.round((score / weeklyQuestions.length) * 100);
-  const allAnswered = weeklyQuestions.every((_, index) => answers[index]);
   const mistakes = progress.mistakes ?? [];
-
-  function submit() {
-    const wrongItems = weeklyQuestions
-      .filter((item, index) => answers[index] !== item.answer)
-      .map((item, index) => ({
-        id: `weekly:${index}`,
-        source: `周测 · ${item.skill}`,
-        question: item.question,
-        answer: item.answer,
-        userAnswer: answers[index]
-      }));
-    actions.saveWeeklyScore(scorePercent, wrongItems);
-  }
+  const weekSummary = getCurrentWeekSummary(progress.checkInDates, progress.quizScores);
+  const syncCode = progress.syncCode ?? "";
 
   return (
     <PhoneShell>
@@ -50,40 +33,136 @@ export function WeeklyReview() {
         <Card className="mt-8 p-5">
           <div className="flex items-center justify-between">
             <h2 className="text-xl font-black">本周学习总结</h2>
-            <span className="text-sm font-bold text-slate-400">5.12 - 5.18</span>
+            <span className="text-sm font-bold text-slate-400">{weekSummary.range}</span>
           </div>
-          <div className="mt-6 space-y-6">
-            <ScoreRow icon={<Headphones className="h-7 w-7" />} color="#06999a" bg="bg-[#f4f2ff]" label="听力理解" value={85} />
-            <ScoreRow icon={<BookOpen className="h-7 w-7" />} color="#ff624f" bg="bg-[#fff0ed]" label="阅读理解" value={78} />
-            <ScoreRow icon={<Mic className="h-7 w-7" />} color="#173c76" bg="bg-[#eef4ff]" label="口读表达" value={72} />
+          <p className="mt-2 text-sm font-semibold leading-6 text-slate-500">
+            本周已完成 {weekSummary.days.length} 天打卡
+            {weekSummary.days.length > 0 ? `：${weekSummary.days.map((day) => `Day ${day}`).join("、")}` : "，完成打卡后会自动计入这里"}。
+          </p>
+          <div className="mt-5 grid grid-cols-2 gap-3">
+            <SummaryTile icon={<WholeWord className="h-5 w-5" />} label="单词" value={`${weekSummary.words} 个`} />
+            <SummaryTile icon={<MessageSquareText className="h-5 w-5" />} label="句子" value={`${weekSummary.sentences} 句`} />
+            <SummaryTile icon={<BookOpen className="h-5 w-5" />} label="对话" value={`${weekSummary.dialogueLines} 句`} />
+            <SummaryTile icon={<NotebookText className="h-5 w-5" />} label="阅读" value={`${weekSummary.readings} 篇`} />
+          </div>
+          <div className="mt-3 rounded-2xl bg-[#f4fbfb] p-4">
+            <div className="flex items-center justify-between">
+              <span className="text-sm font-black text-[#06999a]">测验</span>
+              <span className="text-xl font-black">
+                {weekSummary.quizQuestions}<span className="text-sm text-slate-400"> 题</span>
+              </span>
+            </div>
+            <div className="mt-3 grid grid-cols-2 gap-2">
+              <div className="rounded-xl bg-white px-3 py-2">
+                <p className="text-xs font-bold text-slate-400">答对题目</p>
+                <p className="mt-1 text-xl font-black text-[#173c76]">{weekSummary.quizCorrect}</p>
+              </div>
+              <div className="rounded-xl bg-white px-3 py-2">
+                <p className="text-xs font-bold text-slate-400">回答题目</p>
+                <p className="mt-1 text-xl font-black text-[#173c76]">{weekSummary.quizAnswered}</p>
+              </div>
+            </div>
+            <p className="mt-2 text-xs font-semibold leading-5 text-slate-500">
+              只有完成打卡的学习日会计入本周总结；测验评分来自你保存过的场景测验成绩。
+            </p>
           </div>
         </Card>
 
-        <Card className="mt-5 bg-[#fff7f4] p-5">
-          <div className="grid grid-cols-[1fr_90px] gap-4">
+        <Card className="mt-5 bg-[#f4fbfb] p-5">
+          <div className="flex items-start justify-between gap-4">
             <div>
-              <h2 className="text-xl font-black">错题复习</h2>
-              <p className="mt-2 text-sm font-semibold text-slate-500">
-                共 {mistakes.length} 道错题待复习
+              <p className="text-xs font-black text-[#06999a]">手机电脑同步</p>
+              <h2 className="mt-1 text-xl font-black">同步码数据同步</h2>
+              <p className="mt-2 text-sm font-semibold leading-6 text-slate-500">
+                两台设备输入同一个同步码，再上传或拉取数据，就能共用打卡、收藏、错题和测验记录。
               </p>
-              <p className="mt-2 text-sm font-semibold text-slate-500">
-                {mistakes.length > 0 ? "来自你提交过的场景测验和周测" : "完成测验后，答错的题会自动进入这里"}
-              </p>
-              <button
-                type="button"
-                disabled={mistakes.length === 0}
-                onClick={() => setReviewingMistakes(true)}
-                className="mt-5 rounded-lg bg-[#ff624f] px-8 py-3 text-base font-black text-white disabled:bg-slate-300"
-              >
-                开始复习
-              </button>
             </div>
-            <div className="relative">
-              <div className="absolute right-0 top-6 h-24 w-20 rounded-2xl bg-slate-100" />
-              <FileSearch className="absolute right-0 top-14 h-14 w-14 text-[#173c76]" />
-            </div>
+            <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-white text-[#06999a] shadow-sm">
+              <Cloud className="h-7 w-7" />
+            </span>
           </div>
+          <div className="mt-4 grid grid-cols-[1fr_auto] gap-2">
+            <input
+              value={syncInput}
+              onChange={(event) => setSyncInput(event.target.value)}
+              placeholder={syncCode || "输入同步码"}
+              className="h-12 rounded-xl bg-white px-3 text-sm font-black uppercase text-slate-700 outline-none ring-1 ring-slate-100 placeholder:text-slate-300"
+            />
+            <button
+              type="button"
+              onClick={() => {
+                const nextCode = normalizeSyncCode(syncInput || createSyncCode());
+                actions.setSyncCode(nextCode);
+                setSyncInput("");
+                setSyncMessage(`当前同步码：${nextCode}`);
+              }}
+              className="h-12 rounded-xl bg-[#173c76] px-4 text-sm font-black text-white"
+            >
+              {syncCode ? "更换" : "生成"}
+            </button>
+          </div>
+          {syncCode && <p className="mt-2 text-sm font-black text-[#173c76]">当前同步码：{syncCode}</p>}
+          <div className="mt-4 grid grid-cols-2 gap-3">
+            <button
+              type="button"
+              disabled={syncBusy || !syncCode || !isCloudSyncConfigured()}
+              onClick={async () => {
+                setSyncBusy(true);
+                setSyncMessage("");
+                try {
+                  await pushCloudProgress(syncCode, progress);
+                  setSyncMessage("已上传本机学习数据");
+                } catch (error) {
+                  setSyncMessage(error instanceof Error ? error.message : "上传失败");
+                } finally {
+                  setSyncBusy(false);
+                }
+              }}
+              className="flex h-12 items-center justify-center gap-2 rounded-xl bg-[#06999a] text-sm font-black text-white disabled:bg-slate-300"
+            >
+              <Upload className="h-4 w-4" />
+              上传
+            </button>
+            <button
+              type="button"
+              disabled={syncBusy || !syncCode || !isCloudSyncConfigured()}
+              onClick={async () => {
+                setSyncBusy(true);
+                setSyncMessage("");
+                try {
+                  const result = await pullCloudProgress(syncCode);
+                  if (!result.progress) {
+                    setSyncMessage("云端还没有这个同步码的数据");
+                    return;
+                  }
+                  actions.replaceProgress({ ...result.progress, syncCode });
+                  setSyncMessage("已拉取云端学习数据");
+                } catch (error) {
+                  setSyncMessage(error instanceof Error ? error.message : "拉取失败");
+                } finally {
+                  setSyncBusy(false);
+                }
+              }}
+              className="flex h-12 items-center justify-center gap-2 rounded-xl bg-white text-sm font-black text-[#06999a] ring-1 ring-[#d6eeee] disabled:bg-slate-100 disabled:text-slate-300"
+            >
+              <Download className="h-4 w-4" />
+              拉取
+            </button>
+          </div>
+          {!isCloudSyncConfigured() && <p className="mt-3 text-xs font-bold text-[#ff624f]">腾讯云同步接口部署后可用。</p>}
+          {syncMessage && <p className="mt-3 text-xs font-bold text-slate-500">{syncMessage}</p>}
         </Card>
+
+        <ReviewActionCard
+          tone="danger"
+          title="错题复习"
+          description={mistakes.length > 0 ? "来自你提交过的场景测验" : "完成测验后，答错的题会自动进入这里"}
+          metric={`共 ${mistakes.length} 道错题待复习`}
+          icon={<FileSearch className="h-8 w-8" />}
+          actionLabel="开始复习"
+          disabled={mistakes.length === 0}
+          onClick={() => setReviewingMistakes(true)}
+        />
 
         {reviewingMistakes && (
           <section className="mt-5 space-y-3">
@@ -104,105 +183,148 @@ export function WeeklyReview() {
           </section>
         )}
 
-        <Link href="/favorites">
-          <Card className="mt-5 bg-[#fff9ed] p-5">
-            <div className="flex items-center justify-between gap-4">
-              <div>
-                <h2 className="text-xl font-black">收藏复习</h2>
-                <p className="mt-2 text-sm font-semibold text-slate-500">
-                  单词 {progress.favoriteWords.length} 个 · 句子 {progress.favoriteSentences.length} 句
-                </p>
-              </div>
-              <span className="flex h-14 w-14 items-center justify-center rounded-2xl bg-white text-[#f6b73c] shadow-sm">
-                <Star className="h-8 w-8 fill-[#f6b73c]" />
-              </span>
-            </div>
-          </Card>
-        </Link>
-
-        <Card className="mt-5 p-5">
-          <div className="flex items-center justify-between">
-            <h2 className="text-xl font-black">下周学习计划</h2>
-            <span className="text-sm font-bold text-slate-400">5.19 - 5.25</span>
-          </div>
-          <div className="mt-5 space-y-4">
-            <PlanRow icon={<BookOpen className="h-5 w-5" />} label="完成 5 个场景学习" value="0/5" />
-            <PlanRow icon={<span className="text-sm font-black">Aa</span>} label="学习词汇 100 个" value="0/100" />
-            <PlanRow icon={<Mic className="h-5 w-5" />} label="跟读练习 15 分钟" value="0/15min" />
-            <PlanRow icon={<CalendarDays className="h-5 w-5" />} label="完成周测" value="0/1" />
-          </div>
-        </Card>
-
-        {!started ? (
-          <button onClick={() => setStarted(true)} className="mt-5 h-14 w-full rounded-xl bg-[#06999a] text-lg font-black text-white">
-            开始本周抽查
-          </button>
-        ) : (
-          <section className="mt-5 space-y-4">
-            {weeklyQuestions.map((item, index) => (
-              <Card key={item.question} className="p-4">
-                <p className="text-xs font-black text-[#06999a]">{item.skill}</p>
-                <h3 className="mt-2 font-black leading-7">{index + 1}. {item.question}</h3>
-                <div className="mt-3 space-y-2">
-                  {item.options.map((option) => {
-                    const selected = answers[index] === option;
-                    return (
-                      <button
-                        key={option}
-                        onClick={() => setAnswers((current) => ({ ...current, [index]: option }))}
-                        className={`flex min-h-11 w-full items-center justify-between rounded-xl px-3 text-left text-sm font-bold ${
-                          selected ? "bg-[#e9f7f7] text-[#06999a]" : "bg-slate-50 text-slate-600"
-                        }`}
-                      >
-                        {option}
-                        {selected && <Check className="h-4 w-4" />}
-                      </button>
-                    );
-                  })}
-                </div>
-              </Card>
-            ))}
-            <button
-              disabled={!allAnswered}
-              onClick={submit}
-              className="h-14 w-full rounded-xl bg-[#06999a] text-lg font-black text-white disabled:bg-slate-300"
-            >
-              提交周测
-            </button>
-            {!allAnswered && <p className="text-center text-xs font-bold text-slate-400">答完全部题目后才能提交周测</p>}
-          </section>
-        )}
+        <ReviewActionCard
+          tone="warm"
+          title="收藏复习"
+          description="复习你收藏过的高频单词、句子和阅读"
+          metric={`单词 ${progress.favoriteWords.length} 个 · 句子 ${progress.favoriteSentences.length} 句 · 阅读 ${progress.favoriteReadings.length} 篇`}
+          icon={<Star className="h-8 w-8 fill-[#f6b73c]" />}
+          actionLabel="查看收藏"
+          href="/favorites"
+        />
       </div>
       <BottomNav active="review" />
     </PhoneShell>
   );
 }
 
-function ScoreRow({ icon, bg, color, label, value }: { icon: React.ReactNode; bg: string; color: string; label: string; value: number }) {
+function SummaryTile({ icon, label, value }: { icon: React.ReactNode; label: string; value: string }) {
   return (
-    <div className="grid grid-cols-[54px_1fr_64px] items-center gap-4">
-      <span className={`flex h-12 w-12 items-center justify-center rounded-xl ${bg}`} style={{ color }}>
+    <div className="rounded-2xl bg-slate-50 p-4">
+      <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-white text-[#06999a] shadow-sm">
         {icon}
       </span>
-      <div>
-        <p className="font-black">{label}</p>
-        <div className="mt-2 h-2.5 overflow-hidden rounded-full bg-slate-100">
-          <div className="h-full rounded-full" style={{ width: `${value}%`, backgroundColor: color }} />
-        </div>
-      </div>
-      <p className="text-right text-xl font-black" style={{ color }}>
-        {value}<span className="text-sm text-slate-400"> /100</span>
-      </p>
+      <p className="mt-3 text-xs font-bold text-slate-400">{label}</p>
+      <p className="mt-1 text-xl font-black">{value}</p>
     </div>
   );
 }
 
-function PlanRow({ icon, label, value }: { icon: React.ReactNode; label: string; value: string }) {
-  return (
-    <div className="flex items-center gap-3">
-      <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-[#e9f7f7] text-[#06999a]">{icon}</span>
-      <span className="flex-1 font-bold text-slate-700">{label}</span>
-      <span className="font-bold text-slate-400">{value}</span>
-    </div>
+function ReviewActionCard({
+  tone,
+  title,
+  description,
+  metric,
+  icon,
+  actionLabel,
+  disabled,
+  href,
+  onClick
+}: {
+  tone: "danger" | "warm";
+  title: string;
+  description: string;
+  metric: string;
+  icon: React.ReactNode;
+  actionLabel: string;
+  disabled?: boolean;
+  href?: string;
+  onClick?: () => void;
+}) {
+  const danger = tone === "danger";
+  const content = (
+    <Card className={`mt-5 p-5 ${danger ? "bg-[#fff7f4]" : "bg-[#fff9ed]"}`}>
+      <div className="flex items-start justify-between gap-4">
+        <div className="min-w-0 flex-1">
+          <h2 className="text-xl font-black">{title}</h2>
+          <p className="mt-2 text-sm font-semibold text-slate-500">{metric}</p>
+          <p className="mt-2 text-sm font-semibold leading-6 text-slate-500">{description}</p>
+          {href ? (
+            <span className={`mt-5 inline-flex rounded-lg px-8 py-3 text-base font-black text-white ${danger ? "bg-[#ff624f]" : "bg-[#f6b73c]"}`}>
+              {actionLabel}
+            </span>
+          ) : (
+            <button
+              type="button"
+              disabled={disabled}
+              onClick={onClick}
+              className={`mt-5 rounded-lg px-8 py-3 text-base font-black text-white disabled:bg-slate-300 ${danger ? "bg-[#ff624f]" : "bg-[#f6b73c]"}`}
+            >
+              {actionLabel}
+            </button>
+          )}
+        </div>
+        <span className={`flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-white shadow-sm ${danger ? "text-[#ff624f]" : "text-[#f6b73c]"}`}>
+          {icon}
+        </span>
+      </div>
+    </Card>
   );
+
+  return href ? <Link href={href}>{content}</Link> : content;
+}
+
+function getCurrentWeekSummary(checkInDates: Record<string, number>, quizScores: Record<string, number>) {
+  const today = new Date();
+  const weekStart = getMonday(today);
+  const weekDates = Array.from({ length: 7 }, (_, index) => addDays(weekStart, index));
+  const weekKeys = new Set(weekDates.map(toDateKey));
+  const days = Array.from(new Set(
+    Object.entries(checkInDates)
+      .filter(([date]) => weekKeys.has(date))
+      .map(([, day]) => day)
+      .filter((day) => day >= 1 && day <= workPlanDays.length)
+  )).sort((a, b) => a - b);
+
+  const totals = days.reduce(
+    (current, day) => {
+      const plan = getWorkPlanDay(day);
+      const travel = getScenario(plan.travelScenario);
+      const work = getScenario(plan.scenario);
+      const scoredQuizzes = [travel, work]
+        .map((scenario) => ({
+          score: quizScores[scenario.id],
+          total: scenario.quiz.length
+        }))
+        .filter((item) => typeof item.score === "number");
+      return {
+        words: current.words + Math.min(10, travel.words.length) + Math.min(10, work.words.length),
+        sentences: current.sentences + Math.min(6, travel.sentences.length) + Math.min(6, work.sentences.length),
+        dialogueLines: current.dialogueLines + travel.dialogue.length + work.dialogue.length,
+        readings: current.readings + 2,
+        quizQuestions: current.quizQuestions + travel.quiz.length + work.quiz.length,
+        quizCorrect: current.quizCorrect + scoredQuizzes.reduce((total, item) => total + item.score, 0),
+        quizAnswered: current.quizAnswered + scoredQuizzes.reduce((total, item) => total + item.total, 0)
+      };
+    },
+    { words: 0, sentences: 0, dialogueLines: 0, readings: 0, quizQuestions: 0, quizCorrect: 0, quizAnswered: 0 }
+  );
+
+  return {
+    ...totals,
+    days,
+    range: `${formatMonthDay(weekDates[0])} - ${formatMonthDay(weekDates[6])}`
+  };
+}
+
+function getMonday(date: Date) {
+  const day = date.getDay() === 0 ? 7 : date.getDay();
+  return addDays(new Date(date.getFullYear(), date.getMonth(), date.getDate()), 1 - day);
+}
+
+function addDays(date: Date, days: number) {
+  const next = new Date(date);
+  next.setDate(next.getDate() + days);
+  return next;
+}
+
+function formatMonthDay(date: Date) {
+  return `${date.getMonth() + 1}.${date.getDate()}`;
+}
+
+function toDateKey(date: Date) {
+  const year = date.getFullYear();
+  const month = `${date.getMonth() + 1}`.padStart(2, "0");
+  const day = `${date.getDate()}`.padStart(2, "0");
+  return `${year}-${month}-${day}`;
 }

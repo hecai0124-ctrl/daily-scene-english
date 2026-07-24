@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { RegisterServiceWorker } from "@/components/RegisterServiceWorker";
 import "./globals.css";
 
@@ -16,7 +16,6 @@ export const metadata: Metadata = {
   formatDetection: {
     telephone: false
   },
-  themeColor: "#06999a",
   icons: {
     icon: [
       { url: `${basePath}/icons/icon-192.png`, sizes: "192x192", type: "image/png" },
@@ -24,6 +23,10 @@ export const metadata: Metadata = {
     ],
     apple: `${basePath}/icons/icon-192.png`
   }
+};
+
+export const viewport: Viewport = {
+  themeColor: "#06999a"
 };
 
 export default function RootLayout({

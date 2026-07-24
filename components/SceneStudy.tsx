@@ -6,31 +6,43 @@ import { ArrowLeft, Check, Languages, Star, Volume2 } from "lucide-react";
 import { BottomNav, Card, PhoneShell } from "@/components/AppChrome";
 import { type Category, type Scenario } from "@/lib/content";
 import { useLearningProgress } from "@/lib/progress";
+import { getLongReading } from "@/lib/readings";
 import { speakEnglish, speakEnglishDialogue } from "@/lib/speech";
+import { getWorkPlanDay, workPlanDays } from "@/lib/workPlan";
 
 type SceneStudyProps = {
   category: Category;
   scenarios: Scenario[];
 };
 
-type Tab = "words" | "sentences" | "dialogue" | "quiz";
+type Tab = "words" | "sentences" | "dialogue" | "reading" | "quiz";
 
 const tabs: Array<{ id: Tab; label: string }> = [
   { id: "words", label: "单词" },
   { id: "sentences", label: "句子" },
   { id: "dialogue", label: "对话" },
+  { id: "reading", label: "阅读" },
   { id: "quiz", label: "测验" }
 ];
 
-export function SceneStudy({ scenarios }: SceneStudyProps) {
-  const [activeId, setActiveId] = useState(scenarios[0]?.id);
+export function SceneStudy({ category, scenarios }: SceneStudyProps) {
+  const { progress, actions } = useLearningProgress();
+  const completedPlanDays = getCompletedPlanDays(progress.checkedDays, progress.completedWorkPlanDays, workPlanDays.length);
+  const completedStreak = getCheckInStreak(completedPlanDays, workPlanDays.length);
+  const currentDay = Math.min(completedStreak + 1, workPlanDays.length);
+  const currentPlan = getWorkPlanDay(currentDay);
+  const defaultScenarioId = category === "travel" ? currentPlan.travelScenario : currentPlan.scenario;
+  const [activeId, setActiveId] = useState<string>(defaultScenarioId);
   const [tab, setTab] = useState<Tab>("sentences");
   const [showZh, setShowZh] = useState(true);
   const [answers, setAnswers] = useState<Record<string, string>>({});
-  const { progress, actions } = useLearningProgress();
+  const [savedScore, setSavedScore] = useState<number | null>(null);
   const active = scenarios.find((scenario) => scenario.id === activeId) ?? scenarios[0];
   const score = active.quiz.filter((item) => answers[item.id] === item.answer).length;
   const allAnswered = active.quiz.every((item) => answers[item.id]);
+  const reading = getLongReading(active);
+  const dailyWords = getDailyItems(active.words, currentDay, 10, 5);
+  const dailySentences = getDailyItems(active.sentences, currentDay, 6, 3);
 
   function speak(text: string) {
     speakEnglish(text);
@@ -66,6 +78,7 @@ export function SceneStudy({ scenarios }: SceneStudyProps) {
               onClick={() => {
                 setActiveId(scenario.id);
                 setAnswers({});
+                setSavedScore(null);
               }}
               className={`shrink-0 rounded-full px-4 py-2 text-sm font-black ${
                 active.id === scenario.id ? "bg-[#06999a] text-white" : "bg-slate-100 text-slate-500"
@@ -76,7 +89,7 @@ export function SceneStudy({ scenarios }: SceneStudyProps) {
           ))}
         </div>
 
-        <nav className="mt-3 grid grid-cols-4 border-b border-slate-100 px-5">
+        <nav className="mt-3 grid grid-cols-5 border-b border-slate-100 px-5">
           {tabs.map((item) => (
             <button
               key={item.id}
@@ -94,17 +107,17 @@ export function SceneStudy({ scenarios }: SceneStudyProps) {
           {tab === "sentences" && (
             <>
               <div className="mt-5 space-y-4">
-                {active.sentences.slice(0, 8).map((sentence, index) => {
-                  const id = `sentence:${active.id}:${index}`;
-                  const legacyId = `${active.id}-${index}`;
+                {dailySentences.map((sentence) => {
+                  const id = `sentence:${active.id}:${sentence.index}`;
+                  const legacyId = `${active.id}-${sentence.index}`;
                   const favorited = progress.favoriteSentences.includes(id) || progress.favoriteSentences.includes(legacyId);
                   return (
                     <SentenceCard
                       key={id}
-                      en={sentence.en}
-                      zh={sentence.zh}
+                      en={sentence.item.en}
+                      zh={sentence.item.zh}
                       showZh={showZh}
-                      onSpeak={() => speak(sentence.en)}
+                      onSpeak={() => speak(sentence.item.en)}
                       favorited={favorited}
                       onFavorite={() => actions.toggleFavorite(id)}
                     />
@@ -116,17 +129,17 @@ export function SceneStudy({ scenarios }: SceneStudyProps) {
 
           {tab === "words" && (
             <div className="mt-5 space-y-3">
-              {active.words.slice(0, 20).map((word, index) => {
-                const wordId = `word:${active.id}:${index}`;
+              {dailyWords.map((word) => {
+                const wordId = `word:${active.id}:${word.index}`;
                 const favorited = progress.favoriteWords.includes(wordId);
                 return (
-                <Card key={word.en} className="flex items-center justify-between gap-3 p-4">
+                <Card key={`${active.id}-${word.index}`} className="flex items-center justify-between gap-3 p-4">
                     <div className="min-w-0">
-                      <h2 className="text-lg font-black">{word.en}</h2>
-                      {showZh && <p className="mt-1 text-sm font-bold text-slate-400">{word.zh}</p>}
+                      <h2 className="text-lg font-black">{word.item.en}</h2>
+                      {showZh && <p className="mt-1 text-sm font-bold text-slate-400">{word.item.zh}</p>}
                     </div>
                     <div className="flex shrink-0 items-center gap-3">
-                      <button onClick={() => speakEnglish(word.en, "word")} className="flex h-10 w-10 items-center justify-center rounded-full bg-[#e9f7f7] text-[#06999a]">
+                      <button onClick={() => speakEnglish(word.item.en, "word")} className="flex h-10 w-10 items-center justify-center rounded-full bg-[#e9f7f7] text-[#06999a]">
                         <Volume2 className="h-5 w-5" />
                       </button>
                       <button onClick={() => actions.toggleFavoriteWord(wordId)} className="text-slate-400">
@@ -175,11 +188,24 @@ export function SceneStudy({ scenarios }: SceneStudyProps) {
             </div>
           )}
 
+          {tab === "reading" && (
+            <ReadingCard
+              title={`${active.title}长篇阅读`}
+              en={reading.en}
+              zh={reading.zh}
+              showZh={showZh}
+              favorited={progress.favoriteReadings.includes(`reading:${active.id}`)}
+              onFavorite={() => actions.toggleFavoriteReading(`reading:${active.id}`)}
+              onSpeak={() => speakEnglish(reading.en, "dialogue")}
+            />
+          )}
+
           {tab === "quiz" && (
             <div className="mt-5 space-y-4">
               <Card className="bg-[#f4fbfb] p-5">
                 <p className="text-sm font-bold text-[#06999a]">当前得分</p>
                 <h2 className="mt-1 text-3xl font-black">{score}/{active.quiz.length}</h2>
+                {savedScore !== null && <p className="mt-2 text-sm font-black text-[#06999a]">已保存，本次 {savedScore}/{active.quiz.length} 分</p>}
               </Card>
               {active.quiz.map((item, index) => (
                 <Card key={item.id} className="p-4">
@@ -190,7 +216,10 @@ export function SceneStudy({ scenarios }: SceneStudyProps) {
                       return (
                         <button
                           key={option}
-                          onClick={() => setAnswers((current) => ({ ...current, [item.id]: option }))}
+                          onClick={() => {
+                            setAnswers((current) => ({ ...current, [item.id]: option }));
+                            setSavedScore(null);
+                          }}
                           className={`flex min-h-11 w-full items-center justify-between rounded-xl px-3 text-left text-sm font-bold ${
                             selected ? "bg-[#e9f7f7] text-[#06999a]" : "bg-slate-50 text-slate-600"
                           }`}
@@ -216,6 +245,7 @@ export function SceneStudy({ scenarios }: SceneStudyProps) {
                       userAnswer: answers[item.id]
                     }));
                   actions.saveQuizScore(active.id, score, mistakes);
+                  setSavedScore(score);
                 }}
                 className="h-14 w-full rounded-xl bg-[#06999a] text-lg font-black text-white disabled:bg-slate-300"
               >
@@ -229,6 +259,62 @@ export function SceneStudy({ scenarios }: SceneStudyProps) {
       <BottomNav active="study" />
     </PhoneShell>
   );
+}
+
+function ReadingCard({
+  title,
+  en,
+  zh,
+  showZh,
+  favorited,
+  onFavorite,
+  onSpeak
+}: {
+  title: string;
+  en: string;
+  zh: string;
+  showZh: boolean;
+  favorited: boolean;
+  onFavorite: () => void;
+  onSpeak: () => void;
+}) {
+  return (
+    <Card className="mt-5 p-5">
+      <div className="flex items-start justify-between gap-3">
+        <div>
+          <p className="text-xs font-black text-[#06999a]">长篇阅读</p>
+          <h3 className="mt-1 text-lg font-black">{title}</h3>
+        </div>
+        <div className="flex shrink-0 gap-2">
+          <button
+            type="button"
+            onClick={onSpeak}
+            className="flex h-10 w-10 items-center justify-center rounded-full bg-[#e9f7f7] text-[#06999a]"
+            aria-label="朗读长篇阅读"
+          >
+            <Volume2 className="h-5 w-5" />
+          </button>
+          <button type="button" onClick={onFavorite} className="text-slate-400" aria-label="收藏阅读">
+            <Star className={`h-9 w-9 ${favorited ? "fill-[#f6b73c] text-[#f6b73c]" : ""}`} />
+          </button>
+        </div>
+      </div>
+      <p className="mt-4 whitespace-pre-line text-base font-semibold leading-8 text-slate-800">{en}</p>
+      {showZh && <p className="mt-4 whitespace-pre-line rounded-2xl bg-slate-50 p-4 text-sm font-semibold leading-7 text-slate-500">{zh}</p>}
+    </Card>
+  );
+}
+
+function getDailyItems<T>(items: T[], currentDay: number, count: number, step: number) {
+  if (items.length === 0) {
+    return [];
+  }
+
+  const start = ((currentDay - 1) * step) % items.length;
+  return Array.from({ length: Math.min(count, items.length) }, (_, offset) => {
+    const index = (start + offset) % items.length;
+    return { item: items[index], index };
+  });
 }
 
 function SentenceCard({
@@ -264,4 +350,19 @@ function SentenceCard({
       </div>
     </Card>
   );
+}
+
+function getCompletedPlanDays(checkedDays: number[], completedWorkPlanDays: number[], totalDays: number) {
+  return Array.from(new Set([...checkedDays, ...completedWorkPlanDays].filter((day) => day >= 1 && day <= totalDays))).sort((a, b) => a - b);
+}
+
+function getCheckInStreak(checkedDays: number[], totalDays: number) {
+  const sorted = Array.from(new Set(checkedDays.filter((day) => day >= 1 && day <= totalDays))).sort((a, b) => a - b);
+  let streak = 0;
+  for (const day of sorted) {
+    if (day === streak + 1) {
+      streak = day;
+    }
+  }
+  return streak;
 }

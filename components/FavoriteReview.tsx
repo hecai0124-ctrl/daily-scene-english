@@ -5,12 +5,14 @@ import { ArrowLeft, Star, Volume2 } from "lucide-react";
 import { BottomNav, Card, PhoneShell } from "@/components/AppChrome";
 import { content } from "@/lib/content";
 import { useLearningProgress } from "@/lib/progress";
+import { getLongReading } from "@/lib/readings";
 import { speakEnglish } from "@/lib/speech";
 
 export function FavoriteReview() {
   const { progress } = useLearningProgress();
   const words = getFavoriteWords(progress.favoriteWords);
   const sentences = getFavoriteSentences(progress.favoriteSentences);
+  const readings = getFavoriteReadings(progress.favoriteReadings);
 
   function speak(text: string) {
     speakEnglish(text);
@@ -29,8 +31,8 @@ export function FavoriteReview() {
 
         <Card className="mt-8 bg-[#fff9ed] p-5">
           <p className="text-sm font-bold text-[#b98512]">收藏内容</p>
-          <h2 className="mt-1 text-2xl font-black">{words.length + sentences.length} 个待复习</h2>
-          <p className="mt-2 text-sm font-semibold text-slate-500">包含单词 {words.length} 个，句子 {sentences.length} 句</p>
+          <h2 className="mt-1 text-2xl font-black">{words.length + sentences.length + readings.length} 个待复习</h2>
+          <p className="mt-2 text-sm font-semibold text-slate-500">单词 {words.length} 个 · 句子 {sentences.length} 句 · 阅读 {readings.length} 篇</p>
         </Card>
 
         <section className="mt-6">
@@ -72,6 +74,27 @@ export function FavoriteReview() {
             ))}
           </div>
         </section>
+
+        <section className="mt-7">
+          <h2 className="text-xl font-black">收藏阅读</h2>
+          <div className="mt-4 space-y-3">
+            {readings.length === 0 && <Empty text="还没有收藏阅读" />}
+            {readings.map((reading) => (
+              <Card key={reading.id} className="p-4">
+                <div className="flex items-start justify-between gap-3">
+                  <div>
+                    <p className="text-xs font-black text-[#06999a]">{reading.scenario}</p>
+                    <h3 className="mt-2 text-lg font-black leading-7">{reading.title}</h3>
+                    <p className="mt-2 line-clamp-3 text-sm font-semibold leading-6 text-slate-500">{reading.en}</p>
+                  </div>
+                  <button onClick={() => speak(reading.en)} className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-[#e9f7f7] text-[#06999a]">
+                    <Volume2 className="h-5 w-5" />
+                  </button>
+                </div>
+              </Card>
+            ))}
+          </div>
+        </section>
       </div>
       <BottomNav active="review" />
     </PhoneShell>
@@ -100,5 +123,17 @@ function getFavoriteSentences(ids: string[]) {
     const index = Number(indexValue);
     const sentence = scenario?.sentences[index];
     return sentence ? [{ id, scenario: scenario.title, ...sentence }] : [];
+  });
+}
+
+function getFavoriteReadings(ids: string[]) {
+  return ids.flatMap((id) => {
+    const [, scenarioId] = id.split(":");
+    const scenario = content.scenarios[scenarioId];
+    if (!scenario) {
+      return [];
+    }
+    const reading = getLongReading(scenario);
+    return [{ id, scenario: scenario.title, title: `${scenario.title}长篇阅读`, ...reading }];
   });
 }

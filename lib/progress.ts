@@ -3,9 +3,12 @@
 import { useEffect, useMemo, useState } from "react";
 
 export type LearningProgress = {
+  syncCode?: string;
+  cloudUpdatedAt?: string;
   checkedDays: number[];
   favoriteWords: string[];
   favoriteSentences: string[];
+  favoriteReadings: string[];
   mistakes: MistakeItem[];
   quizScores: Record<string, number>;
   completedScenarios: string[];
@@ -13,7 +16,9 @@ export type LearningProgress = {
   assessmentScore?: number;
   assessmentDate?: string;
   dailyChecks: Record<string, number>;
-  weeklyScore?: number;
+  checkInDates: Record<string, number>;
+  workPlanStartDate?: string;
+  completedWorkPlanDays: number[];
 };
 
 export type MistakeItem = {
@@ -30,10 +35,13 @@ const initialProgress: LearningProgress = {
   checkedDays: [],
   favoriteWords: [],
   favoriteSentences: [],
+  favoriteReadings: [],
   mistakes: [],
   quizScores: {},
   completedScenarios: [],
-  dailyChecks: {}
+  dailyChecks: {},
+  checkInDates: {},
+  completedWorkPlanDays: []
 };
 
 function readProgress(): LearningProgress {
@@ -67,12 +75,29 @@ export function useLearningProgress() {
   const actions = useMemo(
     () => ({
       toggleCheckIn(day: number) {
-        setProgress((current) => ({
-          ...current,
-          checkedDays: current.checkedDays.includes(day)
-            ? current.checkedDays.filter((item) => item !== day)
-            : [...current.checkedDays, day].sort((a, b) => a - b)
-        }));
+        setProgress((current) => {
+          const checked = current.checkedDays.includes(day);
+          const todayKey = toDateKey(new Date());
+          const nextCheckInDates = { ...current.checkInDates };
+
+          if (checked) {
+            Object.entries(nextCheckInDates).forEach(([date, checkedDay]) => {
+              if (checkedDay === day) {
+                delete nextCheckInDates[date];
+              }
+            });
+          } else {
+            nextCheckInDates[todayKey] = day;
+          }
+
+          return {
+            ...current,
+            checkedDays: checked
+              ? current.checkedDays.filter((item) => item !== day)
+              : [...current.checkedDays, day].sort((a, b) => a - b),
+            checkInDates: nextCheckInDates
+          };
+        });
       },
       toggleFavorite(sentenceId: string) {
         setProgress((current) => ({
@@ -88,6 +113,14 @@ export function useLearningProgress() {
           favoriteWords: current.favoriteWords.includes(wordId)
             ? current.favoriteWords.filter((item) => item !== wordId)
             : [...current.favoriteWords, wordId]
+        }));
+      },
+      toggleFavoriteReading(readingId: string) {
+        setProgress((current) => ({
+          ...current,
+          favoriteReadings: current.favoriteReadings.includes(readingId)
+            ? current.favoriteReadings.filter((item) => item !== readingId)
+            : [...current.favoriteReadings, readingId]
         }));
       },
       saveQuizScore(scenarioId: string, score: number, mistakes: MistakeItem[] = []) {
@@ -115,13 +148,24 @@ export function useLearningProgress() {
           dailyChecks: { ...current.dailyChecks, [day]: score }
         }));
       },
-      saveWeeklyScore(score: number, mistakes: MistakeItem[] = []) {
+      startWorkPlan(date: string) {
         setProgress((current) => ({
           ...current,
-          weeklyScore: score,
-          mistakes: mergeMistakes(current.mistakes, "weekly", mistakes)
+          workPlanStartDate: current.workPlanStartDate ?? date
         }));
-      }
+      },
+      setSyncCode(syncCode: string) {
+        setProgress((current) => ({
+          ...current,
+          syncCode
+        }));
+      },
+      replaceProgress(nextProgress: LearningProgress) {
+        setProgress({
+          ...initialProgress,
+          ...nextProgress
+        });
+      },
     }),
     []
   );
@@ -134,4 +178,11 @@ function mergeMistakes(current: MistakeItem[], sourcePrefix: string, next: Mista
     ...current.filter((item) => !item.id.startsWith(`${sourcePrefix}:`)),
     ...next
   ];
+}
+
+function toDateKey(date: Date) {
+  const year = date.getFullYear();
+  const month = `${date.getMonth() + 1}`.padStart(2, "0");
+  const day = `${date.getDate()}`.padStart(2, "0");
+  return `${year}-${month}-${day}`;
 }

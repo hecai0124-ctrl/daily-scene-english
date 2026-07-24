@@ -1,89 +1,45 @@
 "use client";
 
-import Link from "next/link";
 import {
-  BookOpenText,
+  Check,
   CheckCircle2,
-  Headphones,
-  Mic,
-  Plane,
   Bell,
-  BriefcaseBusiness,
-  ArrowRight
+  ChevronLeft,
+  ChevronRight,
+  Languages,
+  Star,
+  Volume2
 } from "lucide-react";
 import { BottomNav, Card, PhoneShell } from "@/components/AppChrome";
-import { content, getScenario, type DayPlan } from "@/lib/content";
+import { useEffect, useState } from "react";
+import { getScenariosByCategory, type Category, type DayPlan, type Scenario } from "@/lib/content";
 import { useLearningProgress } from "@/lib/progress";
+import { getLongReading } from "@/lib/readings";
+import { speakEnglish, speakEnglishDialogue } from "@/lib/speech";
+import { getWorkPlanDay, workPlanDays, type WorkPlanDay } from "@/lib/workPlan";
 
 type HomeDashboardProps = {
   today: DayPlan;
 };
 
 export function HomeDashboard({ today }: HomeDashboardProps) {
-  const { progress } = useLearningProgress();
-  const travel = getScenario(today.travel);
-  const work = getScenario(today.work);
-  const level = progress.assessmentDate ? progress.level : undefined;
-  const travelScore = progress.quizScores[today.travel];
-  const workScore = progress.quizScores[today.work];
-  const travelDone = typeof travelScore === "number";
-  const workDone = typeof workScore === "number";
-  const streak = getLearningStreakFromProgress(progress.completedScenarios);
-  const totalWords = travel.words.length + work.words.length;
-  const totalSentences = travel.sentences.length + work.sentences.length;
-  const totalDialogueLines = travel.dialogue.length + work.dialogue.length;
-  const totalQuiz = travel.quiz.length + work.quiz.length;
-  const totalListening = totalSentences + totalDialogueLines;
-  const learnedWords = (travelDone ? travel.words.length : 0) + (workDone ? work.words.length : 0);
-  const learnedSentences = (travelDone ? travel.sentences.length : 0) + (workDone ? work.sentences.length : 0);
-  const learnedListening = (travelDone ? travel.sentences.length + travel.dialogue.length : 0) + (workDone ? work.sentences.length + work.dialogue.length : 0);
-  const learnedQuiz = (travelDone ? travel.quiz.length : 0) + (workDone ? work.quiz.length : 0);
-  const totalUnits = totalWords + totalSentences + totalListening + totalSentences + totalQuiz;
-  const learnedUnits = learnedWords + learnedSentences + learnedListening + learnedSentences + learnedQuiz;
-  const taskProgress = Math.round((learnedUnits / totalUnits) * 100);
+  const { progress, actions } = useLearningProgress();
+  const totalDays = workPlanDays.length;
+  const completedPlanDays = getCompletedPlanDays(progress.checkedDays, progress.completedWorkPlanDays, totalDays);
+  const completedDays = completedPlanDays.length;
+  const streak = getCheckInStreak(completedPlanDays, totalDays);
+  const allDone = streak >= totalDays;
+  const currentDay = allDone ? totalDays : streak + 1;
+  const [selectedDay, setSelectedDay] = useState(currentDay);
+  const progressRate = Math.round((completedDays / totalDays) * 100);
+  const currentPlan = getWorkPlanDay(selectedDay);
+  const [visibleWeekStart, setVisibleWeekStart] = useState(getWeekStart(currentDay));
+  const visibleDays = getVisibleDays(visibleWeekStart, totalDays);
 
-  if (!level) {
-    return (
-      <PhoneShell>
-        <div className="flex-1 overflow-y-auto bg-white px-5 pb-4">
-          <header className="flex items-start justify-between pt-4">
-            <div>
-              <h1 className="text-2xl font-black tracking-tight">每日场景英语</h1>
-              <p className="mt-1 text-sm font-semibold text-slate-400">先测水平，再生成任务</p>
-            </div>
-            <button className="flex h-11 w-11 items-center justify-center rounded-full bg-white text-slate-700 shadow-sm ring-1 ring-slate-100" title="通知">
-              <Bell className="h-6 w-6" />
-            </button>
-          </header>
-
-          <Card className="mt-6 overflow-hidden p-0">
-            <div className="bg-[#06999a] p-6 text-white">
-              <p className="text-sm font-bold text-white/75">Start here</p>
-              <h2 className="mt-2 text-3xl font-black leading-tight">先完成水平测评</h2>
-              <p className="mt-3 text-sm font-semibold leading-6 text-white/80">
-                我会根据你的测评结果判断 A1/A2/B1/B2 难度，再生成旅行 + 工作英语的每日学习任务。
-              </p>
-            </div>
-            <div className="space-y-3 p-5">
-              <GuideRow label="1" title="评估词汇、听力、句子和口语" />
-              <GuideRow label="2" title="确定适合你的学习难度" />
-              <GuideRow label="3" title="生成今日旅行 + 工作英语任务" />
-              <Link href="/assessment" className="mt-5 flex h-14 items-center justify-center gap-2 rounded-xl bg-[#06999a] text-lg font-black text-white">
-                开始测评
-                <ArrowRight className="h-5 w-5" />
-              </Link>
-            </div>
-          </Card>
-
-          <section className="mt-6 grid grid-cols-2 gap-3">
-            <PreviewCard title="旅行英语" desc="机场、酒店、点餐、问路" />
-            <PreviewCard title="工作英语" desc="会议、邮件、汇报、客户沟通" />
-          </section>
-        </div>
-        <BottomNav active="home" />
-      </PhoneShell>
-    );
-  }
+  useEffect(() => {
+    setSelectedDay(currentDay);
+    setVisibleWeekStart(getWeekStart(currentDay));
+  }, [currentDay]);
 
   return (
     <PhoneShell>
@@ -91,202 +47,504 @@ export function HomeDashboard({ today }: HomeDashboardProps) {
         <header className="flex items-start justify-between pt-4">
           <div>
             <h1 className="text-[26px] font-black tracking-tight">每日场景英语</h1>
-            <p className="text-xs font-semibold text-slate-400">每天进步一点点</p>
+            <p className="text-xs font-semibold text-slate-400">三个月打卡 · 旅行 + 工作</p>
           </div>
           <button className="flex h-10 w-10 items-center justify-center rounded-full bg-white text-slate-700 shadow-sm ring-1 ring-slate-100" title="通知">
             <Bell className="h-5 w-5" />
           </button>
         </header>
 
-        <Card className="mt-4 p-4">
-          <div className="flex items-center justify-between gap-3">
-            <h2 className="text-lg font-black">今日学习任务</h2>
-            <span className="shrink-0 rounded-full bg-[#f4fbfb] px-3 py-1.5 text-xs font-black text-[#06999a]">
-              连续 {streak} 天
-            </span>
-          </div>
-          <div className="mt-3 grid grid-cols-[116px_1fr] items-center gap-3">
-            <ProgressDonut value={taskProgress} />
-            <div className="space-y-2">
-              <TaskMini icon={<BookOpenText className="h-4 w-4" />} label="词汇学习" value={`${learnedWords}/${totalWords}`} done={learnedWords === totalWords} />
-              <TaskMini icon={<BookOpenText className="h-4 w-4" />} label="句子学习" value={`${learnedSentences}/${totalSentences}`} done={learnedSentences === totalSentences} />
-              <TaskMini icon={<Headphones className="h-4 w-4" />} label="听力练习" value={`${learnedListening}/${totalListening}`} done={learnedListening === totalListening} />
-              <TaskMini icon={<Mic className="h-4 w-4" />} label="跟读练习" value={`${learnedSentences}/${totalSentences}`} done={learnedSentences === totalSentences} />
-              <TaskMini icon={<CheckCircle2 className="h-4 w-4" />} label="小测验" value={`${learnedQuiz}/${totalQuiz}`} done={learnedQuiz === totalQuiz} />
+        <Card className="mt-4 overflow-hidden p-0">
+          <div className="bg-[#06999a] p-5 text-white">
+            <div className="flex items-center justify-between">
+              <p className="text-sm font-bold text-white/75">三个月打卡</p>
+              <span className="rounded-full bg-white/15 px-3 py-1 text-xs font-black">连续 {streak} 天</span>
+            </div>
+            <div className="mt-4 flex items-end justify-between gap-4">
+              <div>
+                <h2 className="text-4xl font-black">{completedDays}<span className="text-xl text-white/60">/{totalDays}</span></h2>
+                <p className="mt-1 text-sm font-semibold text-white/75">今天完成 Day {allDone ? totalDays : currentDay}</p>
+              </div>
+              <ProgressDonut value={progressRate} />
+            </div>
+            <button
+              type="button"
+              disabled={allDone}
+              onClick={() => actions.toggleCheckIn(currentDay)}
+              className="mt-5 flex h-14 w-full items-center justify-center gap-2 rounded-xl bg-white px-4 text-base font-black text-[#06999a] disabled:bg-white/35 disabled:text-white"
+            >
+              <CheckCircle2 className="h-5 w-5" />
+              {allDone ? "三个月已完成" : `完成今日打卡`}
+            </button>
+            <div className="mt-4">
+              <div className="flex items-center justify-between">
+                <p className="text-[11px] font-bold text-white/65">查看学习内容</p>
+                <p className="text-[11px] font-black text-white/75">Day {visibleWeekStart}-{Math.min(visibleWeekStart + 6, totalDays)}</p>
+              </div>
+              <div className="mt-2 grid grid-cols-[28px_1fr_28px] items-center gap-2">
+                <button
+                  type="button"
+                  onClick={() => setVisibleWeekStart((start) => Math.max(1, start - 7))}
+                  disabled={visibleWeekStart <= 1}
+                  className="flex h-9 items-center justify-center rounded-lg bg-white/12 text-white disabled:text-white/30"
+                  aria-label="上一周"
+                >
+                  <ChevronLeft className="h-4 w-4" />
+                </button>
+                <div className="grid grid-cols-7 gap-1.5">
+                  {visibleDays.map((day) => {
+                    const selected = selectedDay === day;
+                    const finished = completedPlanDays.includes(day);
+                    const today = currentDay === day;
+                    return (
+                      <button
+                        key={day}
+                        type="button"
+                        onClick={() => setSelectedDay(day)}
+                        className={`flex h-9 items-center justify-center rounded-lg text-xs font-black ${
+                          selected
+                            ? "bg-white text-[#06999a]"
+                            : finished
+                              ? "bg-white/25 text-white"
+                              : today
+                                ? "bg-[#173c76] text-white"
+                                : "bg-white/12 text-white/70"
+                        }`}
+                        aria-pressed={selected}
+                        title={`查看 Day ${day}`}
+                      >
+                        {day}
+                      </button>
+                    );
+                  })}
+                </div>
+                <button
+                  type="button"
+                  onClick={() => setVisibleWeekStart((start) => Math.min(getWeekStart(totalDays), start + 7))}
+                  disabled={visibleWeekStart >= getWeekStart(totalDays)}
+                  className="flex h-9 items-center justify-center rounded-lg bg-white/12 text-white disabled:text-white/30"
+                  aria-label="下一周"
+                >
+                  <ChevronRight className="h-4 w-4" />
+                </button>
+              </div>
             </div>
           </div>
         </Card>
 
-        <section className="mt-5">
-          <div className="flex items-center justify-between">
-            <h2 className="text-lg font-black">场景学习入口</h2>
-            <Link href="/scenes/travel" className="text-sm font-bold text-slate-400">
-              全部场景 ›
-            </Link>
-          </div>
-          <div className="mt-3 space-y-3">
-            <SceneEntry
-              href="/scenes/travel"
-              variant="travel"
-              title="旅行英语"
-              subtitle="出发 · 机场 · 酒店 · 观光"
-              progress="35%"
-              scene={travel.title}
-            />
-            <SceneEntry
-              href="/scenes/work"
-              variant="work"
-              title="工作英语"
-              subtitle="会议 · 邮件 · 汇报 · 社交"
-              progress="20%"
-              scene={work.title}
-            />
-          </div>
-        </section>
+        <LearningModule currentDay={selectedDay} currentPlan={currentPlan} />
       </div>
       <BottomNav active="home" />
     </PhoneShell>
   );
 }
 
-function getLearningStreakFromProgress(completedScenarios: string[]) {
-  if (completedScenarios.length === 0) {
-    return 0;
-  }
-  const completedDays = content.days
-    .filter((day) => completedScenarios.includes(day.travel) || completedScenarios.includes(day.work))
-    .map((day) => day.day);
-  if (completedDays.length === 0) {
-    return 0;
-  }
-  const uniqueDays = Array.from(new Set(completedDays)).sort((a, b) => a - b);
-  let longest = 1;
-  let current = 1;
-  for (let index = 1; index < uniqueDays.length; index += 1) {
-    if (uniqueDays[index] === uniqueDays[index - 1] + 1) {
-      current += 1;
-      longest = Math.max(longest, current);
-    } else {
-      current = 1;
+function getCompletedPlanDays(checkedDays: number[], completedWorkPlanDays: number[], totalDays: number) {
+  return Array.from(new Set([...checkedDays, ...completedWorkPlanDays].filter((day) => day >= 1 && day <= totalDays))).sort((a, b) => a - b);
+}
+
+function getCheckInStreak(checkedDays: number[], totalDays: number) {
+  const sorted = Array.from(new Set(checkedDays.filter((day) => day >= 1 && day <= totalDays))).sort((a, b) => a - b);
+  let streak = 0;
+  for (const day of sorted) {
+    if (day === streak + 1) {
+      streak = day;
     }
   }
-  return longest;
-}
-
-function GuideRow({ label, title }: { label: string; title: string }) {
-  return (
-    <div className="flex items-center gap-3 rounded-xl bg-slate-50 p-3">
-      <span className="flex h-8 w-8 items-center justify-center rounded-full bg-[#06999a] text-sm font-black text-white">{label}</span>
-      <span className="font-bold text-slate-700">{title}</span>
-    </div>
-  );
-}
-
-function PreviewCard({ title, desc }: { title: string; desc: string }) {
-  return (
-    <div className="rounded-2xl bg-slate-50 p-4">
-      <p className="font-black">{title}</p>
-      <p className="mt-2 text-xs font-semibold leading-5 text-slate-400">{desc}</p>
-    </div>
-  );
+  return streak;
 }
 
 function ProgressDonut({ value }: { value: number }) {
   return (
-    <div className="flex h-28 w-28 items-center justify-center rounded-full bg-[#eaf8f8]">
+    <div className="flex h-24 w-24 shrink-0 items-center justify-center rounded-full bg-white/15">
       <div
-        className="flex h-24 w-24 items-center justify-center rounded-full"
-        style={{ background: `conic-gradient(#06999a ${value * 3.6}deg, #e8eeee 0deg)` }}
+        className="flex h-20 w-20 items-center justify-center rounded-full"
+        style={{ background: `conic-gradient(#ffffff ${value * 3.6}deg, rgba(255,255,255,0.22) 0deg)` }}
       >
-        <div className="flex h-[76%] w-[76%] flex-col items-center justify-center rounded-full bg-white">
-          <span className="text-3xl font-black">{value}%</span>
-          <span className="text-xs font-bold text-slate-400">已完成</span>
+        <div className="flex h-[76%] w-[76%] flex-col items-center justify-center rounded-full bg-[#06999a]">
+          <span className="text-xl font-black text-white">{value}%</span>
+          <span className="text-[10px] font-bold text-white/70">完成</span>
         </div>
       </div>
     </div>
   );
 }
 
-function TaskMini({ icon, label, value, done }: { icon: React.ReactNode; label: string; value: string; done?: boolean }) {
+function getWeekStart(day: number) {
+  return Math.floor((day - 1) / 7) * 7 + 1;
+}
+
+function getVisibleDays(weekStart: number, totalDays: number) {
+  const windowSize = 7;
+  const start = Math.min(Math.max(1, weekStart), Math.max(1, totalDays - windowSize + 1));
+  return Array.from({ length: Math.min(windowSize, totalDays) }, (_, index) => start + index);
+}
+
+type Tab = "words" | "sentences" | "dialogue" | "reading" | "quiz";
+
+const tabs: Array<{ id: Tab; label: string }> = [
+  { id: "words", label: "单词" },
+  { id: "sentences", label: "句子" },
+  { id: "dialogue", label: "对话" },
+  { id: "reading", label: "阅读" },
+  { id: "quiz", label: "测验" }
+];
+
+function LearningModule({ currentDay, currentPlan }: { currentDay: number; currentPlan: WorkPlanDay }) {
+  const { progress, actions } = useLearningProgress();
+  const [category, setCategory] = useState<Category>("travel");
+  const scenarios = getScenariosByCategory(category);
+  const [activeIds, setActiveIds] = useState<Record<Category, string>>({
+    travel: currentPlan.travelScenario,
+    work: currentPlan.scenario
+  });
+  const [tab, setTab] = useState<Tab>("sentences");
+  const [showZh, setShowZh] = useState(true);
+  const [answers, setAnswers] = useState<Record<string, string>>({});
+  const [savedScore, setSavedScore] = useState<number | null>(null);
+  const active = scenarios.find((scenario) => scenario.id === activeIds[category]) ?? scenarios[0];
+  const score = active.quiz.filter((item) => answers[item.id] === item.answer).length;
+  const allAnswered = active.quiz.every((item) => answers[item.id]);
+  const reading = getLongReading(active);
+  const dailyWords = getDailyItems(active.words, currentDay, 10, 5);
+  const dailySentences = getDailyItems(active.sentences, currentDay, 6, 3);
+
+  useEffect(() => {
+    setActiveIds({
+      travel: currentPlan.travelScenario,
+      work: currentPlan.scenario
+    });
+    setAnswers({});
+    setSavedScore(null);
+  }, [currentPlan.scenario, currentPlan.travelScenario]);
+
+  function chooseCategory(next: Category) {
+    setCategory(next);
+    setAnswers({});
+    setSavedScore(null);
+  }
+
+  function chooseScenario(scenario: Scenario) {
+    setActiveIds((current) => ({ ...current, [category]: scenario.id }));
+    setAnswers({});
+    setSavedScore(null);
+  }
+
+  function saveQuiz() {
+    const mistakes = active.quiz
+      .filter((item) => answers[item.id] !== item.answer)
+      .map((item) => ({
+        id: `${active.id}:${item.id}`,
+        source: `${active.title}测验`,
+        question: item.question,
+        answer: item.answer,
+        userAnswer: answers[item.id]
+      }));
+    actions.saveQuizScore(active.id, score, mistakes);
+    setSavedScore(score);
+  }
+
   return (
-    <div className="grid grid-cols-[18px_1fr_auto_16px] items-center gap-1.5 text-xs font-bold">
-      <span className="text-[#2f6fe4]">{icon}</span>
-      <span className="min-w-0 truncate text-slate-700">{label}</span>
-      <span className="whitespace-nowrap text-slate-500">{value}</span>
-      <span className={`h-4 w-4 rounded-full ${done ? "bg-[#06999a]" : "border-2 border-slate-200"}`}>
-        {done && <CheckCircle2 className="h-4 w-4 text-white" />}
-      </span>
-    </div>
+    <section id="study" className="mt-5">
+      <div className="flex items-center justify-between">
+        <div>
+          <h2 className="text-lg font-black">学习</h2>
+          <p className="text-xs font-bold text-slate-400">Day {currentDay} 自动更新内容</p>
+        </div>
+        <button
+          type="button"
+          onClick={() => setShowZh((value) => !value)}
+          className={`flex items-center gap-1.5 rounded-full px-3 py-2 text-xs font-black ${
+            showZh ? "bg-[#e9f7f7] text-[#06999a]" : "bg-slate-100 text-slate-400"
+          }`}
+          aria-pressed={showZh}
+          title="译文开关"
+        >
+          <Languages className="h-4 w-4" />
+          译文
+        </button>
+      </div>
+
+      <div className="mt-3 grid grid-cols-2 gap-2 rounded-2xl bg-slate-100 p-1">
+        {[
+          { id: "travel" as const, label: "旅行英语" },
+          { id: "work" as const, label: "工作英语" }
+        ].map((item) => (
+          <button
+            key={item.id}
+            type="button"
+            onClick={() => chooseCategory(item.id)}
+            className={`h-10 rounded-xl text-sm font-black ${
+              category === item.id ? "bg-white text-[#06999a] shadow-sm" : "text-slate-400"
+            }`}
+          >
+            {item.label}
+          </button>
+        ))}
+      </div>
+
+      <div className="mt-3 flex gap-2 overflow-x-auto pb-1">
+        {scenarios.map((scenario) => (
+          <button
+            key={scenario.id}
+            type="button"
+            onClick={() => chooseScenario(scenario)}
+            className={`shrink-0 rounded-full px-4 py-2 text-sm font-black ${
+              active.id === scenario.id ? "bg-[#06999a] text-white" : "bg-slate-100 text-slate-500"
+            }`}
+          >
+            {scenario.title}
+          </button>
+        ))}
+      </div>
+
+      <nav className="mt-3 grid grid-cols-5 border-b border-slate-100">
+        {tabs.map((item) => (
+          <button
+            key={item.id}
+            type="button"
+            onClick={() => setTab(item.id)}
+            className={`relative h-12 text-base font-black ${tab === item.id ? "text-[#06999a]" : "text-slate-400"}`}
+          >
+            {item.label}
+            {tab === item.id && <span className="absolute inset-x-5 bottom-0 h-1 rounded-full bg-[#06999a]" />}
+          </button>
+        ))}
+      </nav>
+
+      {tab === "sentences" && (
+        <div className="mt-4 space-y-4">
+          {dailySentences.map((sentence) => {
+            const id = `sentence:${active.id}:${sentence.index}`;
+            const legacyId = `${active.id}-${sentence.index}`;
+            const favorited = progress.favoriteSentences.includes(id) || progress.favoriteSentences.includes(legacyId);
+            return (
+              <SentenceCard
+                key={id}
+                en={sentence.item.en}
+                zh={sentence.item.zh}
+                showZh={showZh}
+                onSpeak={() => speakEnglish(sentence.item.en)}
+                favorited={favorited}
+                onFavorite={() => actions.toggleFavorite(id)}
+              />
+            );
+          })}
+        </div>
+      )}
+
+      {tab === "words" && (
+        <div className="mt-4 space-y-3">
+          {dailyWords.map((word) => {
+            const wordId = `word:${active.id}:${word.index}`;
+            const favorited = progress.favoriteWords.includes(wordId);
+            return (
+              <Card key={`${active.id}-${word.index}`} className="flex items-center justify-between gap-3 p-4">
+                <div className="min-w-0">
+                  <h2 className="text-lg font-black">{word.item.en}</h2>
+                  {showZh && <p className="mt-1 text-sm font-bold text-slate-400">{word.item.zh}</p>}
+                </div>
+                <div className="flex shrink-0 items-center gap-3">
+                  <button
+                    type="button"
+                    onClick={() => speakEnglish(word.item.en, "word")}
+                    className="flex h-10 w-10 items-center justify-center rounded-full bg-[#e9f7f7] text-[#06999a]"
+                    aria-label="朗读单词"
+                  >
+                    <Volume2 className="h-5 w-5" />
+                  </button>
+                  <button type="button" onClick={() => actions.toggleFavoriteWord(wordId)} className="text-slate-400" aria-label="收藏单词">
+                    <Star className={`h-7 w-7 ${favorited ? "fill-[#f6b73c] text-[#f6b73c]" : ""}`} />
+                  </button>
+                </div>
+              </Card>
+            );
+          })}
+        </div>
+      )}
+
+      {tab === "dialogue" && (
+        <div className="mt-4 space-y-3">
+          <button
+            type="button"
+            onClick={() => speakEnglishDialogue(active.dialogue.map((line) => line.en))}
+            className="mb-2 flex h-12 w-full items-center justify-center gap-2 rounded-xl bg-[#06999a] text-base font-black text-white"
+          >
+            <Volume2 className="h-5 w-5" />
+            播放整段对话
+          </button>
+          {active.dialogue.map((line, index) => (
+            <div key={`${line.speaker}-${index}`} className={`flex ${line.speaker === "B" ? "justify-end" : "justify-start"}`}>
+              <div className={`max-w-[86%] rounded-2xl p-4 ${line.speaker === "B" ? "bg-[#06999a] text-white" : "bg-slate-100"}`}>
+                <div className="flex items-start gap-3">
+                  <div className="min-w-0 flex-1">
+                    <p className="font-black">{line.en}</p>
+                    {showZh && <p className={`mt-2 text-sm font-semibold ${line.speaker === "B" ? "text-white/75" : "text-slate-500"}`}>{line.zh}</p>}
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => speakEnglish(line.en, "dialogue")}
+                    className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-full ${
+                      line.speaker === "B" ? "bg-white/20 text-white" : "bg-white text-[#06999a]"
+                    }`}
+                    aria-label="播放本句"
+                  >
+                    <Volume2 className="h-4 w-4" />
+                  </button>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
+
+      {tab === "reading" && (
+        <ReadingCard
+          title={`${active.title}长篇阅读`}
+          en={reading.en}
+          zh={reading.zh}
+          showZh={showZh}
+          favorited={progress.favoriteReadings.includes(`reading:${active.id}`)}
+          onFavorite={() => actions.toggleFavoriteReading(`reading:${active.id}`)}
+          onSpeak={() => speakEnglish(reading.en, "dialogue")}
+        />
+      )}
+
+      {tab === "quiz" && (
+        <div className="mt-4 space-y-4">
+          <Card className="bg-[#f4fbfb] p-5">
+            <p className="text-sm font-bold text-[#06999a]">当前得分</p>
+            <h2 className="mt-1 text-3xl font-black">{score}/{active.quiz.length}</h2>
+            {savedScore !== null && <p className="mt-2 text-sm font-black text-[#06999a]">已保存，本次 {savedScore}/{active.quiz.length} 分</p>}
+          </Card>
+          {active.quiz.map((item, index) => (
+            <Card key={item.id} className="p-4">
+              <h3 className="font-black">{index + 1}. {item.question}</h3>
+              <div className="mt-3 space-y-2">
+                {item.options.map((option) => {
+                  const selected = answers[item.id] === option;
+                  return (
+                    <button
+                      key={option}
+                      type="button"
+                      onClick={() => {
+                        setAnswers((current) => ({ ...current, [item.id]: option }));
+                        setSavedScore(null);
+                      }}
+                      className={`flex min-h-11 w-full items-center justify-between rounded-xl px-3 text-left text-sm font-bold ${
+                        selected ? "bg-[#e9f7f7] text-[#06999a]" : "bg-slate-50 text-slate-600"
+                      }`}
+                    >
+                      {option}
+                      {selected && <Check className="h-4 w-4" />}
+                    </button>
+                  );
+                })}
+              </div>
+            </Card>
+          ))}
+          <button
+            type="button"
+            disabled={!allAnswered}
+            onClick={saveQuiz}
+            className="h-14 w-full rounded-xl bg-[#06999a] text-lg font-black text-white disabled:bg-slate-300"
+          >
+            保存测验成绩
+          </button>
+          {!allAnswered && <p className="text-center text-xs font-bold text-slate-400">答完全部题目后才能保存成绩</p>}
+        </div>
+      )}
+    </section>
   );
 }
 
-function SceneEntry({
-  href,
-  variant,
+function ReadingCard({
   title,
-  subtitle,
-  progress,
-  scene
+  en,
+  zh,
+  showZh,
+  favorited,
+  onFavorite,
+  onSpeak
 }: {
-  href: string;
-  variant: "travel" | "work";
   title: string;
-  subtitle: string;
-  progress: string;
-  scene: string;
+  en: string;
+  zh: string;
+  showZh: boolean;
+  favorited: boolean;
+  onFavorite: () => void;
+  onSpeak: () => void;
 }) {
-  const travel = variant === "travel";
-
   return (
-    <Link
-      href={href}
-      className={`grid min-h-32 grid-cols-[128px_1fr] overflow-hidden rounded-2xl shadow-sm ${
-        travel ? "bg-[#d8f3f2]" : "bg-[#173c76] text-white"
-      }`}
-    >
-      <div className={`relative overflow-hidden ${travel ? "bg-[#9ededa]" : "bg-[#0b2345]"}`}>
-        <div className="absolute inset-x-0 bottom-0 h-16 bg-black/10" />
-        {travel ? <TravelIllustration /> : <WorkIllustration />}
-      </div>
-      <div className="p-4">
-        <p className={`text-xs font-black ${travel ? "text-[#06999a]" : "text-white/70"}`}>{scene}</p>
-        <h3 className="mt-1 text-xl font-black">{title}</h3>
-        <p className={`mt-1 text-xs font-semibold ${travel ? "text-slate-600" : "text-white/75"}`}>{subtitle}</p>
-        <div className="mt-3 flex items-center justify-between gap-3">
-          <span className={`rounded-lg px-2.5 py-1.5 text-xs font-black ${travel ? "bg-[#06999a] text-white" : "bg-white text-[#173c76]"}`}>
-            继续学习
-          </span>
-          <span className={`text-xs font-bold ${travel ? "text-slate-500" : "text-white/75"}`}>进度 {progress}</span>
+    <Card className="mt-4 p-5">
+      <div className="flex items-start justify-between gap-3">
+        <div>
+          <p className="text-xs font-black text-[#06999a]">长篇阅读</p>
+          <h3 className="mt-1 text-lg font-black">{title}</h3>
         </div>
-        <div className={`mt-3 h-1.5 overflow-hidden rounded-full ${travel ? "bg-white/80" : "bg-white/25"}`}>
-          <div className={`h-full rounded-full ${travel ? "bg-[#06999a]" : "bg-white"}`} style={{ width: progress }} />
+        <div className="flex shrink-0 gap-2">
+          <button
+            type="button"
+            onClick={onSpeak}
+            className="flex h-10 w-10 items-center justify-center rounded-full bg-[#e9f7f7] text-[#06999a]"
+            aria-label="朗读长篇阅读"
+          >
+            <Volume2 className="h-5 w-5" />
+          </button>
+          <button type="button" onClick={onFavorite} className="text-slate-400" aria-label="收藏阅读">
+            <Star className={`h-9 w-9 ${favorited ? "fill-[#f6b73c] text-[#f6b73c]" : ""}`} />
+          </button>
         </div>
       </div>
-    </Link>
+      <p className="mt-4 whitespace-pre-line text-base font-semibold leading-8 text-slate-800">{en}</p>
+      {showZh && <p className="mt-4 whitespace-pre-line rounded-2xl bg-slate-50 p-4 text-sm font-semibold leading-7 text-slate-500">{zh}</p>}
+    </Card>
   );
 }
 
-function TravelIllustration() {
-  return (
-    <div className="absolute inset-0">
-      <Plane className="absolute left-10 top-7 h-16 w-16 -rotate-12 text-white" />
-      <div className="absolute bottom-0 left-0 h-12 w-full bg-[#5bb8c0]" />
-      <div className="absolute bottom-2 left-10 h-14 w-10 rounded-t-xl bg-[#f59e0b]" />
-      <div className="absolute bottom-2 left-4 h-9 w-12 rounded-xl bg-[#223b53]" />
-      <div className="absolute bottom-14 left-5 h-2 w-10 rounded-full bg-white/70" />
-      <div className="absolute bottom-20 right-5 h-2 w-9 rounded-full bg-white/70" />
-    </div>
-  );
+function getDailyItems<T>(items: T[], currentDay: number, count: number, step: number) {
+  if (items.length === 0) {
+    return [];
+  }
+
+  const start = ((currentDay - 1) * step) % items.length;
+  return Array.from({ length: Math.min(count, items.length) }, (_, offset) => {
+    const index = (start + offset) % items.length;
+    return { item: items[index], index };
+  });
 }
 
-function WorkIllustration() {
+function SentenceCard({
+  en,
+  zh,
+  showZh,
+  onSpeak,
+  favorited,
+  onFavorite
+}: {
+  en: string;
+  zh: string;
+  showZh: boolean;
+  onSpeak: () => void;
+  favorited: boolean;
+  onFavorite: () => void;
+}) {
   return (
-    <div className="absolute inset-0">
-      <div className="absolute bottom-0 h-20 w-full bg-[#102b52]" />
-      <div className="absolute bottom-6 left-9 h-12 w-20 rounded-lg bg-[#dbeafe] shadow-lg" />
-      <div className="absolute bottom-9 left-12 h-7 w-14 rounded bg-[#60a5fa]" />
-      <div className="absolute bottom-4 left-5 h-4 w-28 rounded-full bg-[#8b5e34]" />
-      <BriefcaseBusiness className="absolute right-8 top-8 h-12 w-12 text-white/80" />
-    </div>
+    <Card className="p-5">
+      <div className="flex items-start justify-between gap-4">
+        <div className="min-w-0 flex-1">
+          <h2 className="text-xl font-black leading-7">{en}</h2>
+          {showZh && <p className="mt-2 text-base font-semibold text-slate-500">{zh}</p>}
+        </div>
+        <div className="flex shrink-0 gap-3">
+          <button type="button" onClick={onSpeak} className="flex h-11 w-11 items-center justify-center rounded-full bg-[#e9f7f7] text-[#06999a]" aria-label="朗读句子">
+            <Volume2 className="h-6 w-6" />
+          </button>
+          <button type="button" onClick={onFavorite} className="text-slate-400" aria-label="收藏句子">
+            <Star className={`h-8 w-8 ${favorited ? "fill-[#f6b73c] text-[#f6b73c]" : ""}`} />
+          </button>
+        </div>
+      </div>
+    </Card>
   );
 }
