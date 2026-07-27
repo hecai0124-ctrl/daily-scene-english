@@ -9,7 +9,6 @@ import { type LearningProgress, useLearningProgress } from "@/lib/progress";
 import { getWorkPlanDay, workPlanDays } from "@/lib/workPlan";
 
 export function WeeklyReview() {
-  const [reviewingMistakes, setReviewingMistakes] = useState(false);
   const [fileMessage, setFileMessage] = useState("");
   const fileInputRef = useRef<HTMLInputElement>(null);
   const { progress, actions } = useLearningProgress();
@@ -105,27 +104,8 @@ export function WeeklyReview() {
           icon={<FileSearch className="h-8 w-8" />}
           actionLabel="开始复习"
           disabled={mistakes.length === 0}
-          onClick={() => setReviewingMistakes(true)}
+          href={mistakes.length > 0 ? "/mistakes" : undefined}
         />
-
-        {reviewingMistakes && (
-          <section className="mt-5 space-y-3">
-            <div className="flex items-center justify-between">
-              <h2 className="text-xl font-black">错题记录</h2>
-              <button type="button" onClick={() => setReviewingMistakes(false)} className="text-sm font-black text-[#06999a]">
-                收起
-              </button>
-            </div>
-            {mistakes.map((item) => (
-              <Card key={item.id} className="p-4">
-                <p className="text-xs font-black text-[#ff624f]">{item.source}</p>
-                <h3 className="mt-2 font-black leading-7">{item.question}</h3>
-                {item.userAnswer && <p className="mt-2 text-sm font-bold text-slate-400">你的答案：{item.userAnswer}</p>}
-                <p className="mt-1 text-sm font-bold text-[#06999a]">正确答案：{item.answer}</p>
-              </Card>
-            ))}
-          </section>
-        )}
 
         <ReviewActionCard
           tone="warm"

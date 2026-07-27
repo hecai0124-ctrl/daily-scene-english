@@ -205,6 +205,9 @@ function LearningModule({ currentDay, currentPlan }: { currentDay: number; curre
   const active = scenarios.find((scenario) => scenario.id === activeIds[category]) ?? scenarios[0];
   const score = active.quiz.filter((item) => answers[item.id] === item.answer).length;
   const allAnswered = active.quiz.every((item) => answers[item.id]);
+  const wrongQuizItems = active.quiz
+    .map((item, index) => ({ item, index, userAnswer: answers[item.id] }))
+    .filter(({ item, userAnswer }) => userAnswer !== item.answer);
   const reading = getLongReading(active);
   const dailyWords = getDailyItems(active.words, currentDay, 10, 5);
   const dailySentences = getDailyItems(active.sentences, currentDay, 6, 3);
@@ -417,12 +420,41 @@ function LearningModule({ currentDay, currentPlan }: { currentDay: number; curre
             <h2 className="mt-1 text-3xl font-black">{score}/{active.quiz.length}</h2>
             {savedScore !== null && <p className="mt-2 text-sm font-black text-[#06999a]">已保存，本次 {savedScore}/{active.quiz.length} 分</p>}
           </Card>
+          {savedScore !== null && (
+            <Card className={`p-5 ${wrongQuizItems.length === 0 ? "bg-[#f4fbfb]" : "bg-[#fff7f4]"}`}>
+              <div className="flex items-center justify-between gap-3">
+                <div>
+                  <p className={`text-sm font-black ${wrongQuizItems.length === 0 ? "text-[#06999a]" : "text-[#ff624f]"}`}>
+                    {wrongQuizItems.length === 0 ? "全部答对" : `答错 ${wrongQuizItems.length} 题`}
+                  </p>
+                  <h3 className="mt-1 text-lg font-black">{wrongQuizItems.length === 0 ? "这组测验已经掌握" : "需要复习的题目"}</h3>
+                </div>
+                <span className={`rounded-full px-3 py-1 text-sm font-black ${wrongQuizItems.length === 0 ? "bg-white text-[#06999a]" : "bg-white text-[#ff624f]"}`}>
+                  {savedScore}/{active.quiz.length}
+                </span>
+              </div>
+              {wrongQuizItems.length > 0 && (
+                <div className="mt-4 space-y-3">
+                  {wrongQuizItems.map(({ item, index, userAnswer }) => (
+                    <div key={item.id} className="rounded-xl bg-white p-3">
+                      <p className="text-sm font-black text-slate-900">{index + 1}. {item.question}</p>
+                      <p className="mt-2 text-xs font-bold text-slate-400">你的答案：<span className="text-[#ff624f]">{userAnswer}</span></p>
+                      <p className="mt-1 text-xs font-bold text-slate-400">正确答案：<span className="text-[#06999a]">{item.answer}</span></p>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </Card>
+          )}
           {active.quiz.map((item, index) => (
             <Card key={item.id} className="p-4">
               <h3 className="font-black">{index + 1}. {item.question}</h3>
               <div className="mt-3 space-y-2">
                 {item.options.map((option) => {
                   const selected = answers[item.id] === option;
+                  const isSaved = savedScore !== null;
+                  const isCorrect = option === item.answer;
+                  const isWrongSelected = isSaved && selected && !isCorrect;
                   return (
                     <button
                       key={option}
@@ -432,15 +464,26 @@ function LearningModule({ currentDay, currentPlan }: { currentDay: number; curre
                         setSavedScore(null);
                       }}
                       className={`flex min-h-11 w-full items-center justify-between rounded-xl px-3 text-left text-sm font-bold ${
-                        selected ? "bg-[#e9f7f7] text-[#06999a]" : "bg-slate-50 text-slate-600"
+                        isSaved && isCorrect
+                          ? "bg-[#e9f7f7] text-[#06999a]"
+                          : isWrongSelected
+                            ? "bg-[#fff7f4] text-[#ff624f]"
+                            : selected
+                              ? "bg-[#e9f7f7] text-[#06999a]"
+                              : "bg-slate-50 text-slate-600"
                       }`}
                     >
                       {option}
-                      {selected && <Check className="h-4 w-4" />}
+                      {(selected || (isSaved && isCorrect)) && <Check className="h-4 w-4" />}
                     </button>
                   );
                 })}
               </div>
+              {savedScore !== null && answers[item.id] !== item.answer && (
+                <div className="mt-3 rounded-xl bg-[#fff7f4] p-3 text-xs font-bold text-slate-500">
+                  你选了 <span className="text-[#ff624f]">{answers[item.id]}</span>，正确答案是 <span className="text-[#06999a]">{item.answer}</span>
+                </div>
+              )}
             </Card>
           ))}
           <button
