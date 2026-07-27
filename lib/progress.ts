@@ -166,6 +166,27 @@ export function useLearningProgress() {
           ...nextProgress
         });
       },
+      mergeProgress(nextProgress: LearningProgress) {
+        setProgress((current) => ({
+          ...current,
+          syncCode: nextProgress.syncCode ?? current.syncCode,
+          cloudUpdatedAt: nextProgress.cloudUpdatedAt ?? current.cloudUpdatedAt,
+          checkedDays: mergeNumberArray(current.checkedDays, nextProgress.checkedDays),
+          favoriteWords: mergeStringArray(current.favoriteWords, nextProgress.favoriteWords),
+          favoriteSentences: mergeStringArray(current.favoriteSentences, nextProgress.favoriteSentences),
+          favoriteReadings: mergeStringArray(current.favoriteReadings, nextProgress.favoriteReadings),
+          mistakes: mergeMistakeItems(current.mistakes, nextProgress.mistakes),
+          quizScores: mergeScoreRecord(current.quizScores, nextProgress.quizScores),
+          completedScenarios: mergeStringArray(current.completedScenarios, nextProgress.completedScenarios),
+          level: nextProgress.level ?? current.level,
+          assessmentScore: Math.max(current.assessmentScore ?? 0, nextProgress.assessmentScore ?? 0) || undefined,
+          assessmentDate: getLatestDate(current.assessmentDate, nextProgress.assessmentDate),
+          dailyChecks: mergeScoreRecord(current.dailyChecks, nextProgress.dailyChecks),
+          checkInDates: { ...current.checkInDates, ...nextProgress.checkInDates },
+          workPlanStartDate: current.workPlanStartDate ?? nextProgress.workPlanStartDate,
+          completedWorkPlanDays: mergeNumberArray(current.completedWorkPlanDays, nextProgress.completedWorkPlanDays)
+        }));
+      },
     }),
     []
   );
@@ -178,6 +199,40 @@ function mergeMistakes(current: MistakeItem[], sourcePrefix: string, next: Mista
     ...current.filter((item) => !item.id.startsWith(`${sourcePrefix}:`)),
     ...next
   ];
+}
+
+function mergeStringArray(current: string[], next: string[]) {
+  return Array.from(new Set([...current, ...next]));
+}
+
+function mergeNumberArray(current: number[], next: number[]) {
+  return Array.from(new Set([...current, ...next])).sort((a, b) => a - b);
+}
+
+function mergeMistakeItems(current: MistakeItem[], next: MistakeItem[]) {
+  const merged = new Map<string, MistakeItem>();
+  [...current, ...next].forEach((item) => {
+    merged.set(item.id, item);
+  });
+  return Array.from(merged.values());
+}
+
+function mergeScoreRecord(current: Record<string, number>, next: Record<string, number>) {
+  const merged = { ...current };
+  Object.entries(next).forEach(([key, value]) => {
+    merged[key] = Math.max(merged[key] ?? 0, value);
+  });
+  return merged;
+}
+
+function getLatestDate(current?: string, next?: string) {
+  if (!current) {
+    return next;
+  }
+  if (!next) {
+    return current;
+  }
+  return new Date(next).getTime() > new Date(current).getTime() ? next : current;
 }
 
 function toDateKey(date: Date) {

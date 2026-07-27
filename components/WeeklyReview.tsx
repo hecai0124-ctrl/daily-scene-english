@@ -44,8 +44,8 @@ export function WeeklyReview() {
       const text = await file.text();
       const parsed = JSON.parse(text) as unknown;
       const nextProgress = parseImportedProgress(parsed);
-      actions.replaceProgress(nextProgress);
-      setFileMessage("已导入学习进度，当前设备数据已更新。");
+      actions.mergeProgress(nextProgress);
+      setFileMessage("已补充导入：收藏、错题、打卡和测验记录已合并去重。");
     } catch {
       setFileMessage("导入失败，请确认选择的是本应用导出的 JSON 文件。");
     } finally {
@@ -141,9 +141,9 @@ export function WeeklyReview() {
           <div className="flex items-start justify-between gap-4">
             <div>
               <p className="text-xs font-black text-[#06999a]">手机电脑同步</p>
-              <h2 className="mt-1 text-xl font-black">JSON 导入导出</h2>
+              <h2 className="mt-1 text-xl font-black">JSON 补充同步</h2>
               <p className="mt-2 text-sm font-semibold leading-6 text-slate-500">
-                不用数据库。把学习进度导出成 JSON，保存到 iCloud Drive，另一台设备再导入即可同步打卡、收藏、错题和测验记录。
+                不用数据库。把电脑学习进度导出成 JSON，手机导入后会补充合并收藏、错题、打卡和测验记录，不会清空手机已有数据。
               </p>
             </div>
             <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-white text-[#06999a] shadow-sm">
@@ -165,7 +165,7 @@ export function WeeklyReview() {
               className="flex h-12 items-center justify-center gap-2 rounded-xl bg-white text-sm font-black text-[#06999a] ring-1 ring-[#d6eeee]"
             >
               <Upload className="h-4 w-4" />
-              导入 JSON
+              补充导入
             </button>
           </div>
           <input
@@ -176,7 +176,7 @@ export function WeeklyReview() {
             onChange={(event) => importProgress(event.target.files?.[0])}
           />
           <p className="mt-3 text-xs font-bold text-slate-500">
-            建议每次换设备学习前先导入最新文件，学完后再导出覆盖保存。
+            导入采用补充合并：收藏和错题去重追加，测验分数保留更高分，打卡天数合并。
           </p>
           {fileMessage && <p className="mt-3 text-xs font-bold text-[#173c76]">{fileMessage}</p>}
         </Card>
