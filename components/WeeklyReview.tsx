@@ -1,23 +1,59 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
-import { ArrowLeft, BookOpen, Cloud, Download, FileSearch, MessageSquareText, NotebookText, Star, Upload, WholeWord } from "lucide-react";
+import { useRef, useState } from "react";
+import { ArrowLeft, BookOpen, Download, FileJson, FileSearch, MessageSquareText, NotebookText, Star, Upload, WholeWord } from "lucide-react";
 import { BottomNav, Card, PhoneShell } from "@/components/AppChrome";
 import { getScenario } from "@/lib/content";
-import { useLearningProgress } from "@/lib/progress";
-import { createSyncCode, isCloudSyncConfigured, normalizeSyncCode, pullCloudProgress, pushCloudProgress } from "@/lib/cloudSync";
+import { type LearningProgress, useLearningProgress } from "@/lib/progress";
 import { getWorkPlanDay, workPlanDays } from "@/lib/workPlan";
 
 export function WeeklyReview() {
   const [reviewingMistakes, setReviewingMistakes] = useState(false);
-  const [syncInput, setSyncInput] = useState("");
-  const [syncMessage, setSyncMessage] = useState("");
-  const [syncBusy, setSyncBusy] = useState(false);
+  const [fileMessage, setFileMessage] = useState("");
+  const fileInputRef = useRef<HTMLInputElement>(null);
   const { progress, actions } = useLearningProgress();
   const mistakes = progress.mistakes ?? [];
   const weekSummary = getCurrentWeekSummary(progress.checkInDates, progress.quizScores);
-  const syncCode = progress.syncCode ?? "";
+
+  function exportProgress() {
+    const payload = {
+      app: "daily-scene-english",
+      version: 1,
+      exportedAt: new Date().toISOString(),
+      progress
+    };
+    const blob = new Blob([JSON.stringify(payload, null, 2)], { type: "application/json" });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = `每日场景英语-学习进度-${toDateKey(new Date())}.json`;
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+    URL.revokeObjectURL(url);
+    setFileMessage("已导出学习进度 JSON，可以保存到 iCloud Drive。");
+  }
+
+  async function importProgress(file?: File) {
+    if (!file) {
+      return;
+    }
+
+    try {
+      const text = await file.text();
+      const parsed = JSON.parse(text) as unknown;
+      const nextProgress = parseImportedProgress(parsed);
+      actions.replaceProgress(nextProgress);
+      setFileMessage("已导入学习进度，当前设备数据已更新。");
+    } catch {
+      setFileMessage("导入失败，请确认选择的是本应用导出的 JSON 文件。");
+    } finally {
+      if (fileInputRef.current) {
+        fileInputRef.current.value = "";
+      }
+    }
+  }
 
   return (
     <PhoneShell>
@@ -105,85 +141,44 @@ export function WeeklyReview() {
           <div className="flex items-start justify-between gap-4">
             <div>
               <p className="text-xs font-black text-[#06999a]">手机电脑同步</p>
-              <h2 className="mt-1 text-xl font-black">同步码数据同步</h2>
+              <h2 className="mt-1 text-xl font-black">JSON 导入导出</h2>
               <p className="mt-2 text-sm font-semibold leading-6 text-slate-500">
-                两台设备输入同一个同步码，再上传或拉取数据，就能共用打卡、收藏、错题和测验记录。
+                不用数据库。把学习进度导出成 JSON，保存到 iCloud Drive，另一台设备再导入即可同步打卡、收藏、错题和测验记录。
               </p>
             </div>
             <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-white text-[#06999a] shadow-sm">
-              <Cloud className="h-7 w-7" />
+              <FileJson className="h-7 w-7" />
             </span>
           </div>
-          <div className="mt-4 grid grid-cols-[1fr_auto] gap-2">
-            <input
-              value={syncInput}
-              onChange={(event) => setSyncInput(event.target.value)}
-              placeholder={syncCode || "输入同步码"}
-              className="h-12 rounded-xl bg-white px-3 text-sm font-black uppercase text-slate-700 outline-none ring-1 ring-slate-100 placeholder:text-slate-300"
-            />
-            <button
-              type="button"
-              onClick={() => {
-                const nextCode = normalizeSyncCode(syncInput || createSyncCode());
-                actions.setSyncCode(nextCode);
-                setSyncInput("");
-                setSyncMessage(`当前同步码：${nextCode}`);
-              }}
-              className="h-12 rounded-xl bg-[#173c76] px-4 text-sm font-black text-white"
-            >
-              {syncCode ? "更换" : "生成"}
-            </button>
-          </div>
-          {syncCode && <p className="mt-2 text-sm font-black text-[#173c76]">当前同步码：{syncCode}</p>}
           <div className="mt-4 grid grid-cols-2 gap-3">
             <button
               type="button"
-              disabled={syncBusy || !syncCode || !isCloudSyncConfigured()}
-              onClick={async () => {
-                setSyncBusy(true);
-                setSyncMessage("");
-                try {
-                  await pushCloudProgress(syncCode, progress);
-                  setSyncMessage("已上传本机学习数据");
-                } catch (error) {
-                  setSyncMessage(error instanceof Error ? error.message : "上传失败");
-                } finally {
-                  setSyncBusy(false);
-                }
-              }}
-              className="flex h-12 items-center justify-center gap-2 rounded-xl bg-[#06999a] text-sm font-black text-white disabled:bg-slate-300"
+              onClick={exportProgress}
+              className="flex h-12 items-center justify-center gap-2 rounded-xl bg-[#06999a] text-sm font-black text-white"
             >
-              <Upload className="h-4 w-4" />
-              上传
+              <Download className="h-4 w-4" />
+              导出 JSON
             </button>
             <button
               type="button"
-              disabled={syncBusy || !syncCode || !isCloudSyncConfigured()}
-              onClick={async () => {
-                setSyncBusy(true);
-                setSyncMessage("");
-                try {
-                  const result = await pullCloudProgress(syncCode);
-                  if (!result.progress) {
-                    setSyncMessage("云端还没有这个同步码的数据");
-                    return;
-                  }
-                  actions.replaceProgress({ ...result.progress, syncCode });
-                  setSyncMessage("已拉取云端学习数据");
-                } catch (error) {
-                  setSyncMessage(error instanceof Error ? error.message : "拉取失败");
-                } finally {
-                  setSyncBusy(false);
-                }
-              }}
-              className="flex h-12 items-center justify-center gap-2 rounded-xl bg-white text-sm font-black text-[#06999a] ring-1 ring-[#d6eeee] disabled:bg-slate-100 disabled:text-slate-300"
+              onClick={() => fileInputRef.current?.click()}
+              className="flex h-12 items-center justify-center gap-2 rounded-xl bg-white text-sm font-black text-[#06999a] ring-1 ring-[#d6eeee]"
             >
-              <Download className="h-4 w-4" />
-              拉取
+              <Upload className="h-4 w-4" />
+              导入 JSON
             </button>
           </div>
-          {!isCloudSyncConfigured() && <p className="mt-3 text-xs font-bold text-[#ff624f]">腾讯云同步接口部署后可用。</p>}
-          {syncMessage && <p className="mt-3 text-xs font-bold text-slate-500">{syncMessage}</p>}
+          <input
+            ref={fileInputRef}
+            type="file"
+            accept="application/json,.json"
+            className="hidden"
+            onChange={(event) => importProgress(event.target.files?.[0])}
+          />
+          <p className="mt-3 text-xs font-bold text-slate-500">
+            建议每次换设备学习前先导入最新文件，学完后再导出覆盖保存。
+          </p>
+          {fileMessage && <p className="mt-3 text-xs font-bold text-[#173c76]">{fileMessage}</p>}
         </Card>
       </div>
       <BottomNav active="review" />
@@ -320,4 +315,51 @@ function toDateKey(date: Date) {
   const month = `${date.getMonth() + 1}`.padStart(2, "0");
   const day = `${date.getDate()}`.padStart(2, "0");
   return `${year}-${month}-${day}`;
+}
+
+function parseImportedProgress(value: unknown): LearningProgress {
+  const maybeWrapped = value as { progress?: unknown };
+  const raw = maybeWrapped && typeof maybeWrapped === "object" && "progress" in maybeWrapped ? maybeWrapped.progress : value;
+
+  if (!raw || typeof raw !== "object") {
+    throw new Error("Invalid progress file");
+  }
+
+  const progress = raw as Partial<LearningProgress>;
+  return {
+    checkedDays: normalizeNumberArray(progress.checkedDays),
+    favoriteWords: normalizeStringArray(progress.favoriteWords),
+    favoriteSentences: normalizeStringArray(progress.favoriteSentences),
+    favoriteReadings: normalizeStringArray(progress.favoriteReadings),
+    mistakes: Array.isArray(progress.mistakes) ? progress.mistakes : [],
+    quizScores: normalizeNumberRecord(progress.quizScores),
+    completedScenarios: normalizeStringArray(progress.completedScenarios),
+    level: progress.level,
+    assessmentScore: typeof progress.assessmentScore === "number" ? progress.assessmentScore : undefined,
+    assessmentDate: typeof progress.assessmentDate === "string" ? progress.assessmentDate : undefined,
+    dailyChecks: normalizeNumberRecord(progress.dailyChecks),
+    checkInDates: normalizeNumberRecord(progress.checkInDates),
+    workPlanStartDate: typeof progress.workPlanStartDate === "string" ? progress.workPlanStartDate : undefined,
+    completedWorkPlanDays: normalizeNumberArray(progress.completedWorkPlanDays),
+    syncCode: typeof progress.syncCode === "string" ? progress.syncCode : undefined,
+    cloudUpdatedAt: typeof progress.cloudUpdatedAt === "string" ? progress.cloudUpdatedAt : undefined
+  };
+}
+
+function normalizeStringArray(value: unknown) {
+  return Array.isArray(value) ? value.filter((item): item is string => typeof item === "string") : [];
+}
+
+function normalizeNumberArray(value: unknown) {
+  return Array.isArray(value) ? value.filter((item): item is number => typeof item === "number") : [];
+}
+
+function normalizeNumberRecord(value: unknown) {
+  if (!value || typeof value !== "object" || Array.isArray(value)) {
+    return {};
+  }
+
+  return Object.fromEntries(
+    Object.entries(value).filter((entry): entry is [string, number] => typeof entry[1] === "number")
+  );
 }
