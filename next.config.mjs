@@ -1,10 +1,8 @@
 /** @type {import('next').NextConfig} */
 const isGitHubPages = process.env.GITHUB_PAGES === "true";
-const isProductionBuild = process.env.NODE_ENV === "production";
 const repoName = "daily-scene-english";
 
 const nextConfig = {
-  distDir: isProductionBuild ? ".next-build" : ".next",
   output: "export",
   trailingSlash: true,
   basePath: isGitHubPages ? `/${repoName}` : "",
