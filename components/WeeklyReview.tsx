@@ -23,11 +23,11 @@ export function WeeklyReview() {
       exportedAt: new Date().toISOString(),
       progress
     };
-    const blob = new Blob([JSON.stringify(payload, null, 2)], { type: "application/json" });
+    const blob = new Blob([`\uFEFF${JSON.stringify(payload, null, 2)}`], { type: "application/json;charset=utf-8" });
     const url = URL.createObjectURL(blob);
     const link = document.createElement("a");
     link.href = url;
-    link.download = `每日场景英语-学习进度-${toDateKey(new Date())}.json`;
+    link.download = `daily-scene-english-progress-${toDateKey(new Date())}.json`;
     document.body.appendChild(link);
     link.click();
     link.remove();
