@@ -13,6 +13,8 @@ import {
 import { BottomNav, Card, PhoneShell } from "@/components/AppChrome";
 import { useEffect, useState } from "react";
 import { getScenariosByCategory, type Category, type DayPlan, type Scenario } from "@/lib/content";
+import { getDailyQuiz, getDailyQuizKey, getDailySentences, getDailyWords, getScenarioVisitIndex } from "@/lib/dailyContent";
+import { getDailyDialogue } from "@/lib/dialogues";
 import { useLearningProgress } from "@/lib/progress";
 import { getLongReading } from "@/lib/readings";
 import { speakEnglish, speakEnglishDialogue } from "@/lib/speech";
@@ -203,14 +205,18 @@ function LearningModule({ currentDay, currentPlan }: { currentDay: number; curre
   const [answers, setAnswers] = useState<Record<string, string>>({});
   const [savedScore, setSavedScore] = useState<number | null>(null);
   const active = scenarios.find((scenario) => scenario.id === activeIds[category]) ?? scenarios[0];
-  const score = active.quiz.filter((item) => answers[item.id] === item.answer).length;
-  const allAnswered = active.quiz.every((item) => answers[item.id]);
-  const wrongQuizItems = active.quiz
-    .map((item, index) => ({ item, index, userAnswer: answers[item.id] }))
+  const scenarioVisitIndex = getScenarioVisitIndex(currentDay, active.id);
+  const dailyWords = getDailyWords(active, currentDay);
+  const dailySentences = getDailySentences(active, currentDay);
+  const dailyQuiz = getDailyQuiz(active, currentDay);
+  const dailyQuizKey = getDailyQuizKey(active.id, currentDay);
+  const dialogue = getDailyDialogue(active, currentDay);
+  const score = dailyQuiz.filter(({ item }) => answers[item.id] === item.answer).length;
+  const allAnswered = dailyQuiz.every(({ item }) => answers[item.id]);
+  const wrongQuizItems = dailyQuiz
+    .map(({ item }, index) => ({ item, index, userAnswer: answers[item.id] }))
     .filter(({ item, userAnswer }) => userAnswer !== item.answer);
-  const reading = getLongReading(active);
-  const dailyWords = getDailyItems(active.words, currentDay, 10, 5);
-  const dailySentences = getDailyItems(active.sentences, currentDay, 6, 3);
+  const reading = getLongReading(active, currentDay);
 
   useEffect(() => {
     setActiveIds({
@@ -234,16 +240,16 @@ function LearningModule({ currentDay, currentPlan }: { currentDay: number; curre
   }
 
   function saveQuiz() {
-    const mistakes = active.quiz
-      .filter((item) => answers[item.id] !== item.answer)
-      .map((item) => ({
-        id: `${active.id}:${item.id}`,
+    const mistakes = dailyQuiz
+      .filter(({ item }) => answers[item.id] !== item.answer)
+      .map(({ item }) => ({
+        id: `${dailyQuizKey}:${item.id}`,
         source: `${active.title}测验`,
         question: item.question,
         answer: item.answer,
         userAnswer: answers[item.id]
       }));
-    actions.saveQuizScore(active.id, score, mistakes);
+    actions.saveQuizScore(dailyQuizKey, score, mistakes);
     setSavedScore(score);
   }
 
@@ -252,7 +258,7 @@ function LearningModule({ currentDay, currentPlan }: { currentDay: number; curre
       <div className="flex items-center justify-between">
         <div>
           <h2 className="text-lg font-black">学习</h2>
-          <p className="text-xs font-bold text-slate-400">Day {currentDay} 自动更新内容</p>
+          <p className="text-xs font-bold text-slate-400">Day {currentDay} · 第 {scenarioVisitIndex} 次学习该场景</p>
         </div>
         <button
           type="button"
@@ -370,13 +376,13 @@ function LearningModule({ currentDay, currentPlan }: { currentDay: number; curre
         <div className="mt-4 space-y-3">
           <button
             type="button"
-            onClick={() => speakEnglishDialogue(active.dialogue.map((line) => line.en))}
+            onClick={() => speakEnglishDialogue(dialogue.map((line) => line.en))}
             className="mb-2 flex h-12 w-full items-center justify-center gap-2 rounded-xl bg-[#06999a] text-base font-black text-white"
           >
             <Volume2 className="h-5 w-5" />
             播放整段对话
           </button>
-          {active.dialogue.map((line, index) => (
+          {dialogue.map((line, index) => (
             <div key={`${line.speaker}-${index}`} className={`flex ${line.speaker === "B" ? "justify-end" : "justify-start"}`}>
               <div className={`max-w-[86%] rounded-2xl p-4 ${line.speaker === "B" ? "bg-[#06999a] text-white" : "bg-slate-100"}`}>
                 <div className="flex items-start gap-3">
@@ -417,8 +423,8 @@ function LearningModule({ currentDay, currentPlan }: { currentDay: number; curre
         <div className="mt-4 space-y-4">
           <Card className="bg-[#f4fbfb] p-5">
             <p className="text-sm font-bold text-[#06999a]">当前得分</p>
-            <h2 className="mt-1 text-3xl font-black">{score}/{active.quiz.length}</h2>
-            {savedScore !== null && <p className="mt-2 text-sm font-black text-[#06999a]">已保存，本次 {savedScore}/{active.quiz.length} 分</p>}
+            <h2 className="mt-1 text-3xl font-black">{score}/{dailyQuiz.length}</h2>
+            {savedScore !== null && <p className="mt-2 text-sm font-black text-[#06999a]">已保存，本次 {savedScore}/{dailyQuiz.length} 分</p>}
           </Card>
           {savedScore !== null && (
             <Card className={`p-5 ${wrongQuizItems.length === 0 ? "bg-[#f4fbfb]" : "bg-[#fff7f4]"}`}>
@@ -430,7 +436,7 @@ function LearningModule({ currentDay, currentPlan }: { currentDay: number; curre
                   <h3 className="mt-1 text-lg font-black">{wrongQuizItems.length === 0 ? "这组测验已经掌握" : "需要复习的题目"}</h3>
                 </div>
                 <span className={`rounded-full px-3 py-1 text-sm font-black ${wrongQuizItems.length === 0 ? "bg-white text-[#06999a]" : "bg-white text-[#ff624f]"}`}>
-                  {savedScore}/{active.quiz.length}
+                  {savedScore}/{dailyQuiz.length}
                 </span>
               </div>
               {wrongQuizItems.length > 0 && (
@@ -446,7 +452,7 @@ function LearningModule({ currentDay, currentPlan }: { currentDay: number; curre
               )}
             </Card>
           )}
-          {active.quiz.map((item, index) => (
+          {dailyQuiz.map(({ item }, index) => (
             <Card key={item.id} className="p-4">
               <h3 className="font-black">{index + 1}. {item.question}</h3>
               <div className="mt-3 space-y-2">
@@ -543,18 +549,6 @@ function ReadingCard({
       {showZh && <p className="mt-4 whitespace-pre-line rounded-2xl bg-slate-50 p-4 text-sm font-semibold leading-7 text-slate-500">{zh}</p>}
     </Card>
   );
-}
-
-function getDailyItems<T>(items: T[], currentDay: number, count: number, step: number) {
-  if (items.length === 0) {
-    return [];
-  }
-
-  const start = ((currentDay - 1) * step) % items.length;
-  return Array.from({ length: Math.min(count, items.length) }, (_, offset) => {
-    const index = (start + offset) % items.length;
-    return { item: items[index], index };
-  });
 }
 
 function SentenceCard({

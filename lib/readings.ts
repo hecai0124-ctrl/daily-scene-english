@@ -1,4 +1,5 @@
 import type { Scenario } from "@/lib/content";
+import { getScenarioVisitIndex } from "@/lib/dailyContent";
 
 type Reading = {
   en: string;
@@ -118,6 +119,127 @@ We are now asking the carrier to prioritize this order and provide a delivery wi
   }
 };
 
-export function getLongReading(scenario: Scenario) {
-  return readings[scenario.id] ?? readings.airport;
+const extraReadings: Record<string, Reading[]> = {
+  airport: [
+    {
+      en: `Boarding Update: Gate Change and Final Call
+
+Passengers on Flight CX218 should note that the departure gate has changed from Gate 12 to Gate 16. The boarding time remains 10:20 a.m., but passengers are advised to move to the new gate as soon as possible. Priority boarding will begin first, followed by families with young children and then the remaining boarding groups.
+
+If you are still at security screening or in the duty-free area, please allow enough walking time. The airline will make a final call ten minutes before the gate closes. Passengers who miss the final call may need to rebook their flight at the transfer counter.`,
+      zh: `登机更新：登机口变更与最后广播
+
+乘坐 CX218 航班的旅客请注意，登机口已从 12 号改为 16 号。登机时间仍为上午 10 点 20 分，但建议旅客尽快前往新登机口。优先登机旅客会先登机，然后是携带幼儿的家庭，最后是其他登机组。
+
+如果你还在安检区或免税店，请预留足够步行时间。航空公司会在登机口关闭前十分钟进行最后广播。错过最后广播的旅客可能需要到转机柜台重新订票。`
+    }
+  ],
+  hotel: [
+    {
+      en: `Hotel Notice: Room Maintenance Schedule
+
+The hotel will carry out routine water system maintenance between 1:00 p.m. and 3:00 p.m. tomorrow. During this time, hot water may be temporarily unavailable on floors eight to twelve. Cold water, electricity, Wi-Fi, and elevator service will not be affected.
+
+Guests who need to shower during this period may contact the front desk for access to a temporary guest room on the fifth floor. If the maintenance affects your schedule, please speak with the front desk before noon so staff can help arrange a suitable solution.`,
+      zh: `酒店通知：客房维修安排
+
+酒店将于明天下午 1 点至 3 点进行例行供水系统维护。在此期间，8 至 12 楼可能暂时无法使用热水。冷水、电力、Wi-Fi 和电梯服务不受影响。
+
+如果住客需要在该时段洗浴，可以联系前台，使用五楼的临时客房。如果维护影响你的安排，请在中午前联系前台，工作人员会协助安排合适方案。`
+    }
+  ],
+  restaurant: [
+    {
+      en: `Restaurant Notice: Peak-Hour Ordering
+
+During dinner rush, the kitchen prepares grilled dishes, noodles, and desserts at separate stations. For this reason, dishes from the same table may not arrive at exactly the same time. If you have a train to catch or another time limit, please tell your server before ordering.
+
+The fastest options tonight are the chicken rice set, vegetable noodles, and tomato soup. Dishes with seafood or special sauces may take longer. Guests with allergies should confirm ingredients with staff because some sauces are prepared in advance.`,
+      zh: `餐厅说明：高峰期点餐
+
+晚餐高峰时，厨房会在不同区域分别制作烧烤类、面食和甜点。因此，同一桌的菜品可能不会完全同时上桌。如果你要赶火车或有其他时间限制，请在点餐前告知服务员。
+
+今晚出餐较快的选择是鸡肉饭套餐、蔬菜面和番茄汤。海鲜类或特殊酱汁菜品可能需要更久。有过敏情况的客人应向工作人员确认配料，因为部分酱汁是提前准备的。`
+    }
+  ],
+  directions: [
+    {
+      en: `Transit Notice: Temporary Exit Closure
+
+Exit A at Central Station is closed this week because of road work outside the station. Passengers going to the museum, the business district, or the airport bus stop should use Exit B instead. Signs have been placed near the ticket gates to guide passengers.
+
+If you are carrying luggage, take the elevator near Platform 2 and follow the blue signs to street level. The walking route from Exit B to the airport bus stop takes about six minutes. Station staff can mark the route on your map if you need help.`,
+      zh: `交通通知：临时出口关闭
+
+中央车站 A 出口本周因站外道路施工关闭。前往博物馆、商务区或机场巴士站的乘客请改走 B 出口。闸机附近已经设置指示牌引导乘客。
+
+如果你携带行李，请乘坐 2 号站台附近的电梯，并沿蓝色标识前往地面。从 B 出口步行到机场巴士站大约需要六分钟。如需帮助，车站工作人员可以在地图上为你标出路线。`
+    }
+  ],
+  meeting: [
+    {
+      en: `Meeting Notes: Product Page Conversion Review
+
+The team reviewed the latest conversion data for the product detail page. Mobile conversion dropped after the new image gallery was released, while desktop conversion stayed almost unchanged. The product manager suggested checking page speed, image loading order, and the position of the size selector.
+
+The next step is to run a quick comparison between the current page and last week's version. Design will review whether the size guide is easy to find, and operations will check customer questions related to sizing. The team will meet again on Friday to decide whether to roll back part of the update.`,
+      zh: `会议纪要：商品详情页转化复盘
+
+团队复盘了商品详情页的最新转化数据。新版图片展示上线后，移动端转化下降，而桌面端转化几乎没有变化。产品经理建议检查页面速度、图片加载顺序以及尺码选择器的位置。
+
+下一步是快速对比当前页面和上周版本。设计团队会评估尺码指南是否容易找到，运营团队会查看与尺码相关的客户问题。团队将在周五再次开会，决定是否回滚部分更新。`
+    }
+  ],
+  email: [
+    {
+      en: `Email Brief: Requesting Regional Feedback
+
+The campaign team needs feedback from the regional sales team before the final launch plan can be approved. The email should explain the purpose of the request, summarize the current proposal, and clearly state what needs to be confirmed.
+
+The most important questions are whether the launch date works for each region, whether the hero products match local demand, and whether translation support is needed for product pages. The sender should ask for replies by Friday noon so the team has enough time to make changes before Monday's launch.`,
+      zh: `邮件简报：请求区域反馈
+
+活动团队需要在最终上线计划获批前，获得区域销售团队的反馈。邮件需要说明请求目的、概括当前方案，并清楚写出需要确认的事项。
+
+最重要的问题包括：上线日期是否适合各区域、主推商品是否符合本地需求，以及商品页是否需要翻译支持。发件人应请求对方在周五中午前回复，以便团队有足够时间在周一上线前调整。`
+    }
+  ],
+  reporting: [
+    {
+      en: `Business Reading: Inventory Risk After Promotion
+
+After the weekend promotion, order volume increased sharply for travel accessories. Compact chargers, packing cubes, and waterproof bags sold faster than expected. By Sunday evening, three popular items were close to stockout, which could reduce sales next week if replenishment is delayed.
+
+The operations team should compare current inventory with the sales forecast and confirm delivery timing with the supply chain team. If replenishment cannot arrive before Friday, the team may need to lower ad spend for low-stock items and shift traffic to similar products with healthier inventory.`,
+      zh: `业务阅读：促销后的库存风险
+
+周末促销后，旅行配件的订单量明显上升。便携充电器、收纳袋和防水包的销量高于预期。到周日晚上，三款热门商品已经接近缺货。如果补货延迟，下周销售可能受到影响。
+
+运营团队应将当前库存与销售预测进行对比，并与供应链团队确认到货时间。如果补货无法在周五前到达，团队可能需要降低低库存商品的广告投放，并把流量转向库存更健康的相似商品。`
+    }
+  ],
+  client: [
+    {
+      en: `Client Update: Replacement Shipment Option
+
+The client reported that a delayed package may affect a campaign photo shoot scheduled for Friday. The support team checked the tracking record and found that the package had arrived at the local warehouse, but the final delivery scan had not been updated.
+
+To reduce risk, the team offered two options: prioritize the original package with the carrier or arrange a replacement shipment from a nearby warehouse. The client preferred the replacement option if delivery could be confirmed by tomorrow morning. The support owner will send a written update before 5:00 p.m. today.`,
+      zh: `客户更新：补发方案
+
+客户反馈，一个延误包裹可能影响周五安排的活动拍摄。客服团队查询物流记录后发现，包裹已经到达本地仓库，但最终配送扫描尚未更新。
+
+为了降低风险，团队提供两个方案：要求承运商优先配送原包裹，或从附近仓库安排补发。如果能确认明早送达，客户更倾向于补发方案。客服负责人会在今天下午 5 点前发送书面更新。`
+    }
+  ]
+};
+
+export function getLongReading(scenario: Scenario, currentDay?: number) {
+  const options = [readings[scenario.id] ?? readings.airport, ...(extraReadings[scenario.id] ?? [])];
+  if (!currentDay) {
+    return options[0];
+  }
+
+  const visitIndex = getScenarioVisitIndex(currentDay, scenario.id);
+  return options[(visitIndex - 1) % options.length];
 }

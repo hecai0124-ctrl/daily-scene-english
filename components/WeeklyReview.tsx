@@ -5,6 +5,8 @@ import { useRef, useState } from "react";
 import { ArrowLeft, BookOpen, Download, FileJson, FileSearch, MessageSquareText, NotebookText, Star, Upload, WholeWord } from "lucide-react";
 import { BottomNav, Card, PhoneShell } from "@/components/AppChrome";
 import { getScenario } from "@/lib/content";
+import { getDailyQuiz, getDailyQuizKey, getDailySentences, getDailyWords } from "@/lib/dailyContent";
+import { getDailyDialogue } from "@/lib/dialogues";
 import { type LearningProgress, useLearningProgress } from "@/lib/progress";
 import { getWorkPlanDay, workPlanDays } from "@/lib/workPlan";
 
@@ -249,18 +251,23 @@ function getCurrentWeekSummary(checkInDates: Record<string, number>, quizScores:
       const plan = getWorkPlanDay(day);
       const travel = getScenario(plan.travelScenario);
       const work = getScenario(plan.scenario);
+      const travelQuiz = getDailyQuiz(travel, day);
+      const workQuiz = getDailyQuiz(work, day);
+      const travelScore = quizScores[getDailyQuizKey(travel.id, day)] ?? quizScores[travel.id];
+      const workScore = quizScores[getDailyQuizKey(work.id, day)] ?? quizScores[work.id];
       const scoredQuizzes = [travel, work]
-        .map((scenario) => ({
-          score: quizScores[scenario.id],
-          total: scenario.quiz.length
-        }))
+        .map((scenario) => {
+          const quiz = scenario.id === travel.id ? travelQuiz : workQuiz;
+          const score = scenario.id === travel.id ? travelScore : workScore;
+          return { score, total: quiz.length };
+        })
         .filter((item) => typeof item.score === "number");
       return {
-        words: current.words + Math.min(10, travel.words.length) + Math.min(10, work.words.length),
-        sentences: current.sentences + Math.min(6, travel.sentences.length) + Math.min(6, work.sentences.length),
-        dialogueLines: current.dialogueLines + travel.dialogue.length + work.dialogue.length,
+        words: current.words + getDailyWords(travel, day).length + getDailyWords(work, day).length,
+        sentences: current.sentences + getDailySentences(travel, day).length + getDailySentences(work, day).length,
+        dialogueLines: current.dialogueLines + getDailyDialogue(travel, day).length + getDailyDialogue(work, day).length,
         readings: current.readings + 2,
-        quizQuestions: current.quizQuestions + travel.quiz.length + work.quiz.length,
+        quizQuestions: current.quizQuestions + travelQuiz.length + workQuiz.length,
         quizCorrect: current.quizCorrect + scoredQuizzes.reduce((total, item) => total + item.score, 0),
         quizAnswered: current.quizAnswered + scoredQuizzes.reduce((total, item) => total + item.total, 0)
       };
