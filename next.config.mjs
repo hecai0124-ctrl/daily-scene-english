@@ -1,9 +1,10 @@
 /** @type {import('next').NextConfig} */
 const isGitHubPages = process.env.GITHUB_PAGES === "true";
+const isDev = process.env.NODE_ENV === "development";
 const repoName = "daily-scene-english";
 
 const nextConfig = {
-  output: "export",
+  ...(isDev ? {} : { output: "export" }),
   trailingSlash: true,
   basePath: isGitHubPages ? `/${repoName}` : "",
   assetPrefix: isGitHubPages ? `/${repoName}/` : "",

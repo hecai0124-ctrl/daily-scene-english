@@ -241,5 +241,24 @@ export function getLongReading(scenario: Scenario, currentDay?: number) {
   }
 
   const visitIndex = getScenarioVisitIndex(currentDay, scenario.id);
-  return options[(visitIndex - 1) % options.length];
+  return options[visitIndex - 1] ?? generateReading(scenario, visitIndex);
+}
+
+function generateReading(scenario: Scenario, visitIndex: number): Reading {
+  const topic = scenario.category === "travel" ? "service information" : "business update";
+  const zhTopic = scenario.category === "travel" ? "服务信息" : "业务更新";
+  const caseNumber = String(visitIndex).padStart(2, "0");
+
+  return {
+    en: `${scenario.title} Reading ${caseNumber}: Practical ${topic}
+
+This material is designed for a real ${scenario.title.toLowerCase()} situation. The first goal is to understand the main request, the key detail, and the expected next step. When you read it, focus on names, times, numbers, locations, and action verbs instead of translating every word.
+
+In this case, the speaker needs to confirm an important detail, explain a small problem, and ask for a clear solution. A good response should be polite, specific, and easy to act on. After reading, summarize the situation in two English sentences and say what you would do next.`,
+    zh: `${scenario.title}阅读 ${caseNumber}：实用${zhTopic}
+
+这份材料用于真实的${scenario.title}场景。第一个目标是理解主要请求、关键信息和预期下一步。阅读时，重点抓姓名、时间、数字、地点和动作动词，而不是逐词翻译。
+
+在这个案例中，说话人需要确认一个重要细节，解释一个小问题，并请求明确的解决方案。好的回应应该礼貌、具体、便于执行。读完后，用两句英文总结情况，并说出你下一步会怎么做。`
+  };
 }

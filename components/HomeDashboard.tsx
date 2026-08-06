@@ -12,8 +12,8 @@ import {
 } from "lucide-react";
 import { BottomNav, Card, PhoneShell } from "@/components/AppChrome";
 import { useEffect, useState } from "react";
-import { getScenariosByCategory, type Category, type DayPlan, type Scenario } from "@/lib/content";
-import { getDailyQuiz, getDailyQuizKey, getDailySentences, getDailyWords, getScenarioVisitIndex } from "@/lib/dailyContent";
+import { getScenario, type Category, type DayPlan, type Scenario } from "@/lib/content";
+import { getDailyQuiz, getDailyQuizKey, getDailySentences, getDailyWords, getScenarioVisitIndex, getShuffledQuizOptions } from "@/lib/dailyContent";
 import { getDailyDialogue } from "@/lib/dialogues";
 import { useLearningProgress } from "@/lib/progress";
 import { getLongReading } from "@/lib/readings";
@@ -195,7 +195,9 @@ const tabs: Array<{ id: Tab; label: string }> = [
 function LearningModule({ currentDay, currentPlan }: { currentDay: number; currentPlan: WorkPlanDay }) {
   const { progress, actions } = useLearningProgress();
   const [category, setCategory] = useState<Category>("travel");
-  const scenarios = getScenariosByCategory(category);
+  const scenarios = (category === "travel" ? currentPlan.travelScenarios : currentPlan.workScenarios)
+    .map((id) => getScenario(id))
+    .filter(Boolean);
   const [activeIds, setActiveIds] = useState<Record<Category, string>>({
     travel: currentPlan.travelScenario,
     work: currentPlan.scenario
@@ -213,6 +215,7 @@ function LearningModule({ currentDay, currentPlan }: { currentDay: number; curre
   const dialogue = getDailyDialogue(active, currentDay);
   const score = dailyQuiz.filter(({ item }) => answers[item.id] === item.answer).length;
   const allAnswered = dailyQuiz.every(({ item }) => answers[item.id]);
+  const canSaveQuiz = dailyQuiz.length > 0 && allAnswered;
   const wrongQuizItems = dailyQuiz
     .map(({ item }, index) => ({ item, index, userAnswer: answers[item.id] }))
     .filter(({ item, userAnswer }) => userAnswer !== item.answer);
@@ -220,12 +223,12 @@ function LearningModule({ currentDay, currentPlan }: { currentDay: number; curre
 
   useEffect(() => {
     setActiveIds({
-      travel: currentPlan.travelScenario,
-      work: currentPlan.scenario
+      travel: currentPlan.travelScenarios[0] ?? currentPlan.travelScenario,
+      work: currentPlan.workScenarios[0] ?? currentPlan.scenario
     });
     setAnswers({});
     setSavedScore(null);
-  }, [currentPlan.scenario, currentPlan.travelScenario]);
+  }, [currentPlan.scenario, currentPlan.travelScenario, currentPlan.travelScenarios, currentPlan.workScenarios]);
 
   function chooseCategory(next: Category) {
     setCategory(next);
@@ -258,7 +261,7 @@ function LearningModule({ currentDay, currentPlan }: { currentDay: number; curre
       <div className="flex items-center justify-between">
         <div>
           <h2 className="text-lg font-black">学习</h2>
-          <p className="text-xs font-bold text-slate-400">Day {currentDay} · 第 {scenarioVisitIndex} 次学习该场景</p>
+          <p className="text-xs font-bold text-slate-400">Day {currentDay} · 今日 3 旅行 + 3 工作</p>
         </div>
         <button
           type="button"
@@ -323,6 +326,7 @@ function LearningModule({ currentDay, currentPlan }: { currentDay: number; curre
 
       {tab === "sentences" && (
         <div className="mt-4 space-y-4">
+          {dailySentences.length === 0 && <EmptyLearningState module="句子" />}
           {dailySentences.map((sentence) => {
             const id = `sentence:${active.id}:${sentence.index}`;
             const legacyId = `${active.id}-${sentence.index}`;
@@ -344,6 +348,7 @@ function LearningModule({ currentDay, currentPlan }: { currentDay: number; curre
 
       {tab === "words" && (
         <div className="mt-4 space-y-3">
+          {dailyWords.length === 0 && <EmptyLearningState module="单词" />}
           {dailyWords.map((word) => {
             const wordId = `word:${active.id}:${word.index}`;
             const favorited = progress.favoriteWords.includes(wordId);
@@ -452,11 +457,12 @@ function LearningModule({ currentDay, currentPlan }: { currentDay: number; curre
               )}
             </Card>
           )}
+          {dailyQuiz.length === 0 && <EmptyLearningState module="测验" />}
           {dailyQuiz.map(({ item }, index) => (
             <Card key={item.id} className="p-4">
               <h3 className="font-black">{index + 1}. {item.question}</h3>
               <div className="mt-3 space-y-2">
-                {item.options.map((option) => {
+                {getShuffledQuizOptions(item, active.id, currentDay).map((option) => {
                   const selected = answers[item.id] === option;
                   const isSaved = savedScore !== null;
                   const isCorrect = option === item.answer;
@@ -494,16 +500,25 @@ function LearningModule({ currentDay, currentPlan }: { currentDay: number; curre
           ))}
           <button
             type="button"
-            disabled={!allAnswered}
+            disabled={!canSaveQuiz}
             onClick={saveQuiz}
             className="h-14 w-full rounded-xl bg-[#06999a] text-lg font-black text-white disabled:bg-slate-300"
           >
             保存测验成绩
           </button>
-          {!allAnswered && <p className="text-center text-xs font-bold text-slate-400">答完全部题目后才能保存成绩</p>}
+          {!canSaveQuiz && <p className="text-center text-xs font-bold text-slate-400">答完全部题目后才能保存成绩</p>}
         </div>
       )}
     </section>
+  );
+}
+
+function EmptyLearningState({ module }: { module: string }) {
+  return (
+    <Card className="p-5 text-center">
+      <p className="text-sm font-black text-slate-900">这一天暂无{module}内容</p>
+      <p className="mt-2 text-xs font-bold leading-5 text-slate-400">当前真实素材还没有覆盖到这个场景进度，我会继续补充词库，避免用模板硬凑内容。</p>
+    </Card>
   );
 }
 

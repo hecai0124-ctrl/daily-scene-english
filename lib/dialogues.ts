@@ -215,5 +215,71 @@ const dialogueSets: Record<string, DialogueLine[][]> = {
 export function getDailyDialogue(scenario: Scenario, currentDay: number) {
   const options = dialogueSets[scenario.id] ?? [scenario.dialogue];
   const visitIndex = getScenarioVisitIndex(currentDay, scenario.id);
-  return options[(visitIndex - 1) % options.length];
+  return options[visitIndex - 1] ?? generateDialogue(scenario, visitIndex);
+}
+
+const dialogueTopics: Record<string, Array<{ topic: string; zhTopic: string; request: string; zhRequest: string; detail: string; zhDetail: string }>> = {
+  airport: [
+    { topic: "check-in", zhTopic: "值机", request: "check in for my flight", zhRequest: "办理航班值机", detail: "I have one checked bag and one carry-on bag.", zhDetail: "我有一件托运行李和一件随身行李。" },
+    { topic: "a gate change", zhTopic: "登机口变更", request: "confirm the new gate", zhRequest: "确认新的登机口", detail: "The screen shows a different gate from my boarding pass.", zhDetail: "屏幕显示的登机口和我的登机牌不一样。" },
+    { topic: "a tight transfer", zhTopic: "紧张转机", request: "make my connection on time", zhRequest: "按时赶上转机", detail: "My next flight boards in forty minutes.", zhDetail: "我的下一段航班四十分钟后登机。" },
+    { topic: "lost baggage", zhTopic: "行李丢失", request: "file a baggage report", zhRequest: "登记行李报告", detail: "My suitcase did not arrive at baggage claim.", zhDetail: "我的行李箱没有出现在行李提取处。" }
+  ],
+  hotel: [
+    { topic: "check-in", zhTopic: "入住", request: "check in under my reservation", zhRequest: "按预订办理入住", detail: "The booking should include breakfast.", zhDetail: "这个预订应该包含早餐。" },
+    { topic: "room maintenance", zhTopic: "客房维修", request: "send someone to check the room", zhRequest: "安排人员检查房间", detail: "The air conditioner has not worked since I arrived.", zhDetail: "我到达后空调一直不能用。" },
+    { topic: "late checkout", zhTopic: "延迟退房", request: "extend my checkout time", zhRequest: "延长退房时间", detail: "My flight leaves late in the afternoon.", zhDetail: "我的航班下午较晚起飞。" },
+    { topic: "invoice details", zhTopic: "发票信息", request: "update the invoice details", zhRequest: "更新发票信息", detail: "The company name needs to be corrected.", zhDetail: "公司名称需要更正。" }
+  ],
+  restaurant: [
+    { topic: "a table request", zhTopic: "订桌需求", request: "get a table for two", zhRequest: "安排两人桌", detail: "We do not have a reservation.", zhDetail: "我们没有预订。" },
+    { topic: "food allergies", zhTopic: "食物过敏", request: "check the ingredients", zhRequest: "确认配料", detail: "I am allergic to peanuts and seafood.", zhDetail: "我对花生和海鲜过敏。" },
+    { topic: "taste preference", zhTopic: "口味偏好", request: "make the dish less spicy", zhRequest: "把菜做得少辣", detail: "Please put the sauce on the side.", zhDetail: "请把酱汁单独放。" },
+    { topic: "the bill", zhTopic: "结账", request: "pay the bill by card", zhRequest: "刷卡结账", detail: "Could you also pack the leftovers?", zhDetail: "也可以把剩菜打包吗？" }
+  ],
+  directions: [
+    { topic: "subway directions", zhTopic: "地铁路线", request: "find the right subway line", zhRequest: "找到正确的地铁线路", detail: "I need to get to the museum before noon.", zhDetail: "我需要中午前到博物馆。" },
+    { topic: "bus directions", zhTopic: "公交路线", request: "find the airport bus stop", zhRequest: "找到机场巴士站", detail: "I am carrying two suitcases.", zhDetail: "我带着两个行李箱。" },
+    { topic: "walking route", zhTopic: "步行路线", request: "walk to Central Square", zhRequest: "步行去中央广场", detail: "I would like to avoid crowded streets.", zhDetail: "我想避开拥挤的街道。" },
+    { topic: "a closed exit", zhTopic: "出口关闭", request: "find another station exit", zhRequest: "找到另一个车站出口", detail: "Exit A is closed for construction.", zhDetail: "A 出口因施工关闭。" }
+  ],
+  meeting: [
+    { topic: "campaign priorities", zhTopic: "活动优先级", request: "align on the top priority", zhRequest: "对齐最高优先级", detail: "The launch date is getting close.", zhDetail: "上线日期越来越近。" },
+    { topic: "checkout conversion", zhTopic: "结账转化", request: "review the conversion drop", zhRequest: "复盘转化下降", detail: "Mobile users dropped more than desktop users.", zhDetail: "移动端用户下降比桌面端更多。" },
+    { topic: "project blockers", zhTopic: "项目阻碍", request: "clarify the main blocker", zhRequest: "明确主要阻碍", detail: "Design resources are still limited this week.", zhDetail: "本周设计资源仍然有限。" },
+    { topic: "next steps", zhTopic: "下一步", request: "confirm owners and deadlines", zhRequest: "确认负责人和截止时间", detail: "We need a written summary after the meeting.", zhDetail: "会后我们需要一份书面总结。" }
+  ],
+  email: [
+    { topic: "asset follow-up", zhTopic: "素材跟进", request: "follow up on campaign assets", zhRequest: "跟进活动素材", detail: "The hero banner is still missing.", zhDetail: "主视觉横幅仍然缺失。" },
+    { topic: "approval", zhTopic: "审批", request: "request approval for the launch plan", zhRequest: "请求审批上线计划", detail: "The campaign is planned for next Monday.", zhDetail: "活动计划下周一上线。" },
+    { topic: "regional feedback", zhTopic: "区域反馈", request: "ask for regional feedback", zhRequest: "请求区域反馈", detail: "We need replies by Friday noon.", zhDetail: "我们需要周五中午前回复。" },
+    { topic: "meeting summary", zhTopic: "会议总结", request: "summarize the decision in writing", zhRequest: "用书面形式总结决策", detail: "Several owners changed during the meeting.", zhDetail: "会议中几个负责人发生了变化。" }
+  ],
+  reporting: [
+    { topic: "revenue growth", zhTopic: "收入增长", request: "explain the revenue increase", zhRequest: "解释收入增长", detail: "Paid search drove most of the traffic.", zhDetail: "付费搜索带来了大部分流量。" },
+    { topic: "conversion drop", zhTopic: "转化下降", request: "identify the root cause", zhRequest: "识别根因", detail: "The product page loaded more slowly after the update.", zhDetail: "更新后商品页加载更慢。" },
+    { topic: "inventory risk", zhTopic: "库存风险", request: "highlight the inventory risk", zhRequest: "强调库存风险", detail: "Three popular items may stock out this week.", zhDetail: "三款热销商品本周可能缺货。" },
+    { topic: "refund trend", zhTopic: "退款趋势", request: "review the refund trend", zhRequest: "复盘退款趋势", detail: "Sizing questions increased after the campaign.", zhDetail: "活动后尺码问题增加了。" }
+  ],
+  client: [
+    { topic: "delivery delay", zhTopic: "配送延误", request: "provide a delivery update", zhRequest: "提供配送更新", detail: "The package is already at the local warehouse.", zhDetail: "包裹已经到达本地仓库。" },
+    { topic: "refund request", zhTopic: "退款申请", request: "process the refund request", zhRequest: "处理退款申请", detail: "One receipt is still missing from the case.", zhDetail: "工单里仍缺一张收据。" },
+    { topic: "replacement shipment", zhTopic: "补发货件", request: "arrange a replacement shipment", zhRequest: "安排补发", detail: "The client needs the product before Friday.", zhDetail: "客户周五前需要商品。" },
+    { topic: "requirement change", zhTopic: "需求变更", request: "confirm the updated requirement", zhRequest: "确认更新后的需求", detail: "The requested quantity changed this morning.", zhDetail: "今天早上请求数量发生了变化。" }
+  ]
+};
+
+function generateDialogue(scenario: Scenario, visitIndex: number): DialogueLine[] {
+  const topics = dialogueTopics[scenario.id] ?? dialogueTopics.meeting;
+  const topic = topics[(visitIndex - 1) % topics.length];
+  const detailNumber = Math.floor((visitIndex - 1) / topics.length) + 1;
+
+  return [
+    { speaker: "A", en: `Hi, I need help with ${topic.topic}.`, zh: `你好，我需要处理${topic.zhTopic}。` },
+    { speaker: "B", en: `Sure. What exactly would you like to do?`, zh: `当然。你具体想做什么？` },
+    { speaker: "A", en: `I need to ${topic.request}.`, zh: `我需要${topic.zhRequest}。` },
+    { speaker: "B", en: `Understood. Could you share one more detail first?`, zh: `明白。你能先补充一个细节吗？` },
+    { speaker: "A", en: `${topic.detail} This is my practice case ${detailNumber}.`, zh: `${topic.zhDetail}这是我的第 ${detailNumber} 个练习案例。` },
+    { speaker: "B", en: `Thanks. Based on that, the next step is clear. I will help you handle it now.`, zh: `谢谢。根据这个信息，下一步很清楚。我现在帮你处理。` }
+  ];
 }

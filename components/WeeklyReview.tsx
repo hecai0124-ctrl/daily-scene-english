@@ -249,25 +249,19 @@ function getCurrentWeekSummary(checkInDates: Record<string, number>, quizScores:
   const totals = days.reduce(
     (current, day) => {
       const plan = getWorkPlanDay(day);
-      const travel = getScenario(plan.travelScenario);
-      const work = getScenario(plan.scenario);
-      const travelQuiz = getDailyQuiz(travel, day);
-      const workQuiz = getDailyQuiz(work, day);
-      const travelScore = quizScores[getDailyQuizKey(travel.id, day)] ?? quizScores[travel.id];
-      const workScore = quizScores[getDailyQuizKey(work.id, day)] ?? quizScores[work.id];
-      const scoredQuizzes = [travel, work]
-        .map((scenario) => {
-          const quiz = scenario.id === travel.id ? travelQuiz : workQuiz;
-          const score = scenario.id === travel.id ? travelScore : workScore;
-          return { score, total: quiz.length };
-        })
+      const scenarios = [...plan.travelScenarios, ...plan.workScenarios].map((id) => getScenario(id)).filter(Boolean);
+      const scoredQuizzes = scenarios
+        .map((scenario) => ({
+          score: quizScores[getDailyQuizKey(scenario.id, day)] ?? quizScores[scenario.id],
+          total: getDailyQuiz(scenario, day).length
+        }))
         .filter((item) => typeof item.score === "number");
       return {
-        words: current.words + getDailyWords(travel, day).length + getDailyWords(work, day).length,
-        sentences: current.sentences + getDailySentences(travel, day).length + getDailySentences(work, day).length,
-        dialogueLines: current.dialogueLines + getDailyDialogue(travel, day).length + getDailyDialogue(work, day).length,
-        readings: current.readings + 2,
-        quizQuestions: current.quizQuestions + travelQuiz.length + workQuiz.length,
+        words: current.words + scenarios.reduce((total, scenario) => total + getDailyWords(scenario, day).length, 0),
+        sentences: current.sentences + scenarios.reduce((total, scenario) => total + getDailySentences(scenario, day).length, 0),
+        dialogueLines: current.dialogueLines + scenarios.reduce((total, scenario) => total + getDailyDialogue(scenario, day).length, 0),
+        readings: current.readings + scenarios.length,
+        quizQuestions: current.quizQuestions + scenarios.reduce((total, scenario) => total + getDailyQuiz(scenario, day).length, 0),
         quizCorrect: current.quizCorrect + scoredQuizzes.reduce((total, item) => total + item.score, 0),
         quizAnswered: current.quizAnswered + scoredQuizzes.reduce((total, item) => total + item.total, 0)
       };

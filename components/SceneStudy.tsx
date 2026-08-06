@@ -5,7 +5,7 @@ import { useState } from "react";
 import { ArrowLeft, Check, Languages, Star, Volume2 } from "lucide-react";
 import { BottomNav, Card, PhoneShell } from "@/components/AppChrome";
 import { type Category, type Scenario } from "@/lib/content";
-import { getDailyQuiz, getDailyQuizKey, getDailySentences, getDailyWords, getScenarioVisitIndex } from "@/lib/dailyContent";
+import { getDailyQuiz, getDailyQuizKey, getDailySentences, getDailyWords, getScenarioVisitIndex, getShuffledQuizOptions } from "@/lib/dailyContent";
 import { getDailyDialogue } from "@/lib/dialogues";
 import { useLearningProgress } from "@/lib/progress";
 import { getLongReading } from "@/lib/readings";
@@ -48,6 +48,7 @@ export function SceneStudy({ category, scenarios }: SceneStudyProps) {
   const dialogue = getDailyDialogue(active, currentDay);
   const score = dailyQuiz.filter(({ item }) => answers[item.id] === item.answer).length;
   const allAnswered = dailyQuiz.every(({ item }) => answers[item.id]);
+  const canSaveQuiz = dailyQuiz.length > 0 && allAnswered;
   const wrongQuizItems = dailyQuiz
     .map(({ item }, index) => ({ item, index, userAnswer: answers[item.id] }))
     .filter(({ item, userAnswer }) => userAnswer !== item.answer);
@@ -116,6 +117,7 @@ export function SceneStudy({ category, scenarios }: SceneStudyProps) {
           {tab === "sentences" && (
             <>
               <div className="mt-5 space-y-4">
+                {dailySentences.length === 0 && <EmptyLearningState module="句子" />}
                 {dailySentences.map((sentence) => {
                   const id = `sentence:${active.id}:${sentence.index}`;
                   const legacyId = `${active.id}-${sentence.index}`;
@@ -138,6 +140,7 @@ export function SceneStudy({ category, scenarios }: SceneStudyProps) {
 
           {tab === "words" && (
             <div className="mt-5 space-y-3">
+              {dailyWords.length === 0 && <EmptyLearningState module="单词" />}
               {dailyWords.map((word) => {
                 const wordId = `word:${active.id}:${word.index}`;
                 const favorited = progress.favoriteWords.includes(wordId);
@@ -242,11 +245,12 @@ export function SceneStudy({ category, scenarios }: SceneStudyProps) {
                   )}
                 </Card>
               )}
+              {dailyQuiz.length === 0 && <EmptyLearningState module="测验" />}
               {dailyQuiz.map(({ item }, index) => (
                 <Card key={item.id} className="p-4">
                   <h3 className="font-black">{index + 1}. {item.question}</h3>
                   <div className="mt-3 space-y-2">
-                    {item.options.map((option) => {
+                    {getShuffledQuizOptions(item, active.id, currentDay).map((option) => {
                       const selected = answers[item.id] === option;
                       const isSaved = savedScore !== null;
                       const isCorrect = option === item.answer;
@@ -282,7 +286,7 @@ export function SceneStudy({ category, scenarios }: SceneStudyProps) {
                 </Card>
               ))}
               <button
-                disabled={!allAnswered}
+                disabled={!canSaveQuiz}
                 onClick={() => {
                   const mistakes = dailyQuiz
                     .filter(({ item }) => answers[item.id] !== item.answer)
@@ -300,13 +304,22 @@ export function SceneStudy({ category, scenarios }: SceneStudyProps) {
               >
                 保存测验成绩
               </button>
-              {!allAnswered && <p className="text-center text-xs font-bold text-slate-400">答完全部题目后才能保存成绩</p>}
+              {!canSaveQuiz && <p className="text-center text-xs font-bold text-slate-400">答完全部题目后才能保存成绩</p>}
             </div>
           )}
         </div>
       </div>
       <BottomNav active="study" />
     </PhoneShell>
+  );
+}
+
+function EmptyLearningState({ module }: { module: string }) {
+  return (
+    <Card className="p-5 text-center">
+      <p className="text-sm font-black text-slate-900">这一天暂无{module}内容</p>
+      <p className="mt-2 text-xs font-bold leading-5 text-slate-400">当前真实素材还没有覆盖到这个场景进度，我会继续补充词库，避免用模板硬凑内容。</p>
+    </Card>
   );
 }
 

@@ -21,14 +21,16 @@ export type WorkPlanDay = {
   reading: string;
   output: string;
   review: string;
-  scenario: "meeting" | "email" | "reporting" | "client";
-  travelScenario: "airport" | "hotel" | "restaurant" | "directions";
+  scenario: string;
+  travelScenario: string;
+  workScenarios: string[];
+  travelScenarios: string[];
 };
 
 type WeekModule = {
   phase: string;
   situation: string;
-  scenario: WorkPlanDay["scenario"];
+  scenario: string;
   vocabulary: string[];
   expressions: WorkExpression[];
 };
@@ -36,7 +38,7 @@ type WeekModule = {
 type TravelModule = {
   phase: string;
   situation: string;
-  scenario: WorkPlanDay["travelScenario"];
+  scenario: string;
   vocabulary: string[];
   expressions: WorkExpression[];
 };
@@ -276,13 +278,17 @@ const dailyRoutines = [
 ];
 
 const levels: WorkPlanDay["level"][] = ["基础", "基础", "进阶", "进阶", "进阶", "实战", "实战"];
+const travelScenarioIds = ["airport", "hotel", "restaurant", "directions", "shopping", "sightseeing", "pharmacy", "payment", "phone", "emergency", "car_rental", "services"];
+const workScenarioIds = ["meeting", "email", "reporting", "client", "interview", "onboarding", "project", "ecommerce", "collaboration", "performance", "workplace_social", "remote"];
 
-export const workPlanDays: WorkPlanDay[] = Array.from({ length: 90 }, (_, index) => {
+export const workPlanDays: WorkPlanDay[] = Array.from({ length: 30 }, (_, index) => {
   const day = index + 1;
   const module = weekModules[Math.min(Math.floor(index / 7), weekModules.length - 1)];
   const travelModule = travelModules[index % travelModules.length];
   const routine = dailyRoutines[index % dailyRoutines.length];
-  const week = Math.min(Math.floor(index / 7) + 1, 13);
+  const week = Math.min(Math.floor(index / 7) + 1, 5);
+  const travelScenarios = pickDailyScenarios(travelScenarioIds, index);
+  const workScenarios = pickDailyScenarios(workScenarioIds, index);
   const vocabStart = index % module.vocabulary.length;
   const vocabulary = Array.from({ length: 5 }, (__, offset) => module.vocabulary[(vocabStart + offset) % module.vocabulary.length]);
   const expressionStart = index % module.expressions.length;
@@ -310,10 +316,16 @@ export const workPlanDays: WorkPlanDay[] = Array.from({ length: 90 }, (_, index)
     reading: routine.reading,
     output: routine.output,
     review: day % 7 === 0 ? "完成本周复盘：挑 1 个旅行场景和 1 个工作场景，用英文各说 90 秒。" : "睡前用英文复述今天最有用的旅行句和工作句各 2 句。",
-    scenario: module.scenario,
-    travelScenario: travelModule.scenario
+    scenario: workScenarios[0],
+    travelScenario: travelScenarios[0],
+    workScenarios,
+    travelScenarios
   };
 });
+
+function pickDailyScenarios(ids: string[], dayIndex: number) {
+  return Array.from({ length: 3 }, (_, offset) => ids[(dayIndex * 3 + offset) % ids.length]);
+}
 
 export function getWorkPlanDay(day: number) {
   return workPlanDays[Math.min(Math.max(day, 1), workPlanDays.length) - 1];

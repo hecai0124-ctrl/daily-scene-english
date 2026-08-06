@@ -1,4 +1,5 @@
 import rawContent from "@/data/content.json";
+import { expandContent } from "@/lib/contentExpansion";
 
 export type Category = "travel" | "work";
 
@@ -51,7 +52,9 @@ type Content = {
   scenarios: Record<string, Scenario>;
 };
 
-export const content = rawContent as Content;
+export type { Content };
+
+export const content = expandContent(rawContent as Content);
 
 export function getTodayPlan() {
   const index = new Date().getDay() % content.days.length;
